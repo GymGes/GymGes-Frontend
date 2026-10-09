@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="web_standard" name="shell-type" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <style>
+        @layer base {
+
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                overscroll-behavior: none;
+            }
+
+            main>:first-child {
+                margin-top: 0 !important;
+            }
+
+            main>:last-child {
+                margin-bottom: 0 !important;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+        id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-secondary-fixed-variant": "#004b6f", "on-error": "#ffffff", "on-primary-fixed-variant": "#1a4b68", "secondary-fixed-dim": "#92cdfa", "on-background": "#0b1c30", "surface-container-low": "#eff4ff", "primary-container": "#013c58", "surface-dim": "#cbdbf5", "on-secondary-fixed": "#001e2f", "surface-container-highest": "#d3e4fe", "primary": "#002539", "on-error-container": "#93000a", "surface-container": "#e5eeff", "error": "#ba1a1a", "error-container": "#ffdad6", "surface-container-high": "#dce9ff", "surface-variant": "#d3e4fe", "tertiary-fixed": "#ffddb4", "secondary-fixed": "#cae6ff", "on-primary-container": "#7aa7c7", "on-tertiary": "#ffffff", "inverse-on-surface": "#eaf1ff", "secondary-container": "#95d0fd", "on-surface-variant": "#41474d", "on-tertiary-container": "#dd9200", "primary-fixed-dim": "#9fccee", "tertiary-fixed-dim": "#ffb955", "surface-container-lowest": "#ffffff", "surface-tint": "#366381", "tertiary-container": "#503200", "on-primary-fixed": "#001e2f", "secondary": "#21648c", "on-primary": "#ffffff", "primary-fixed": "#c8e6ff", "surface-bright": "#f8f9ff", "surface": "#f8f9ff", "on-tertiary-fixed-variant": "#633f00", "on-tertiary-fixed": "#291800", "inverse-surface": "#213145", "on-secondary": "#ffffff", "inverse-primary": "#9fccee", "outline": "#72787e", "on-secondary-container": "#105981", "on-surface": "#0b1c30", "outline-variant": "#c1c7ce", "background": "#f8f9ff", "tertiary": "#331e00" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-lg": "1.5rem", "space-xs": "0.25rem", "space-sm": "0.5rem", "margin-mobile": "1.25rem", "margin": "3rem", "gutter-mobile": "1rem", "margin-tablet": "2rem", "gutter": "1.5rem", "space-xl": "2.5rem", "space-md": "1rem" }, "fontFamily": { "headline-lg": ["Plus Jakarta Sans"], "headline-xl": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "label-xs": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "headline-xl-mobile": ["Plus Jakarta Sans"] }, "fontSize": { "headline-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.025em", "fontWeight": "600" }], "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.03em", "fontWeight": "700" }], "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "headline-sm": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "label-xs": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }], "body-md": ["15px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }], "headline-lg-mobile": ["26px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "400" }], "body-sm": ["13px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }], "headline-xl-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.025em", "fontWeight": "700" }] } } } };</script>
+</head>
+
+<body class="bg-background font-body-md text-on-surface antialiased">
+    <header
+        class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/90 backdrop-blur-md border-b border-outline-variant/30">
+        <div
+            class="h-20 max-w-[1440px] mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin flex items-center justify-between">
+            <div class="flex items-center gap-space-lg">
+                <a class="flex items-center gap-space-sm" data-path="actividades" href="index.html">
+                    <img alt="PulseGym Studio Logo" class="h-8 w-auto object-contain"
+                        src="https://lh3.googleusercontent.com/aida/AEtjO1VlvDeUgMK1aJ7EVgNZCYwQe-TpB2r654HWz1WiKX7Qvq_X7Y3v0uLlV-8nZkJzAntAr3KQoi_vPyp6TbjdqP_jOqxWgQc_fElMvLpA7tQc2Vd_MAjmabmOXvGnuqf8QzvEfVkfNWbJlZC3CcQtXTmYZqEg79UPBIPuQEna1MsDDhSA60c-Yz5dnE3mrzOtSZGm4dHx_r_Q8x1YrWbrsIMsWYJsZI7iAFF05g2o5BJdz4LVi8JuE1_H2z9K" />
+                    <span
+                        class="font-headline-sm text-headline-sm text-primary tracking-tight font-semibold">PulseGym</span>
+                </a>
+                <nav class="hidden md:flex items-center gap-space-lg ml-space-sm"
+                    data-active-classes="text-primary font-label-md underline underline-offset-8 decoration-2 decoration-on-tertiary-container">
+                    <a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors"
+                        data-path="actividades" href="index.html">Actividades</a>
+                    <a aria-current="page"
+                        class="transition-colors text-primary font-label-md underline underline-offset-8 decoration-2 decoration-on-tertiary-container"
+                        data-path="horario-semanal" href="horario.html">Horario Semanal</a>
+                    <a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors"
+                        data-path="mi-espacio" href="socio.html">Mi Espacio</a>
+                </nav>
+            </div>
+            <div class="flex items-center gap-space-md">
+                <a class="inline-flex items-center justify-center bg-tertiary-fixed-dim text-primary font-label-md text-label-md px-space-md py-space-xs rounded-full hover:bg-tertiary-fixed transition-colors shadow-sm"
+                    data-path="mi-espacio" href="socio.html">Acceso Socio</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="w-full pt-20 bg-background min-h-screen">
+        <div class="max-w-[1440px] w-full mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin py-space-xl">
+
+            <!-- Encabezado de sección -->
+            <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-md mb-space-lg">
+                <div>
+                    <div
+                        class="flex items-center gap-space-xs mb-space-xs text-secondary font-label-sm text-label-sm uppercase tracking-wider">
+                        <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                        Cartelera de Sesiones
+                    </div>
+                    <h1 class="font-headline-xl text-headline-xl text-primary font-bold tracking-tight">Horario Semanal
+                    </h1>
+                    <p class="font-body-lg text-body-lg text-on-surface-variant mt-space-xs">
+                        Elige tu disciplina y pulsa sobre la hora disponible para reservar tu plaza.
+                    </p>
+                </div>
+                <div
+                    class="flex items-center gap-4 text-[12px] font-label-sm text-on-surface-variant bg-surface-container-low px-4 py-2 rounded-xl">
+                    <span class="flex items-center gap-1.5">
+                        <span class="w-2.5 h-2.5 rounded-full bg-primary-container"></span> Disponible
+                    </span>
+                    <span class="flex items-center gap-1.5">
+                        <span class="w-2.5 h-2.5 rounded-full bg-[#F5A201]"></span> Reservado
+                    </span>
+                    <span class="flex items-center gap-1.5">
+                        <span class="w-2.5 h-2.5 rounded-full bg-outline-variant"></span> Completo
+                    </span>
+                </div>
+            </div>
+
+            <!-- Selector Semanal (Estilo Cartelera) -->
+            <div
+                class="bg-surface-container-lowest rounded-2xl shadow-sm p-2 mb-space-xl border border-outline-variant/30">
+                <div class="grid grid-cols-7 gap-2">
+                    <button
+                        class="day-tab flex flex-col items-center justify-center py-3 rounded-xl transition-all text-on-surface-variant hover:bg-surface-container-low"
+                        data-day="1">
+                        <span class="font-label-sm text-label-sm uppercase font-semibold">Lun</span>
+                        <span class="font-headline-sm text-primary mt-0.5">21</span>
+                    </button>
+                    <button
+                        class="day-tab flex flex-col items-center justify-center py-3 rounded-xl transition-all text-on-surface-variant hover:bg-surface-container-low"
+                        data-day="2">
+                        <span class="font-label-sm text-label-sm uppercase font-semibold">Mar</span>
+                        <span class="font-headline-sm text-primary mt-0.5">22</span>
+                    </button>
+                    <button
+                        class="day-tab active-day flex flex-col items-center justify-center py-3 rounded-xl transition-all bg-primary-container text-on-primary shadow-sm"
+                        data-day="3">
+                        <span
+                            class="font-label-sm text-label-sm uppercase font-semibold text-secondary-fixed">Mié</span>
+                        <span class="font-headline-sm text-on-primary font-bold mt-0.5">23</span>
+                    </button>
+                    <button
+                        class="day-tab flex flex-col items-center justify-center py-3 rounded-xl transition-all text-on-surface-variant hover:bg-surface-container-low"
+                        data-day="4">
+                        <span class="font-label-sm text-label-sm uppercase font-semibold">Jue</span>
+                        <span class="font-headline-sm text-primary mt-0.5">24</span>
+                    </button>
+                    <button
+                        class="day-tab flex flex-col items-center justify-center py-3 rounded-xl transition-all text-on-surface-variant hover:bg-surface-container-low"
+                        data-day="5">
+                        <span class="font-label-sm text-label-sm uppercase font-semibold">Vie</span>
+                        <span class="font-headline-sm text-primary mt-0.5">25</span>
+                    </button>
+                    <button
+                        class="day-tab flex flex-col items-center justify-center py-3 rounded-xl transition-all text-on-surface-variant hover:bg-surface-container-low"
+                        data-day="6">
+                        <span class="font-label-sm text-label-sm uppercase font-semibold">Sáb</span>
+                        <span class="font-headline-sm text-primary mt-0.5">26</span>
+                    </button>
+                    <button
+                        class="day-tab flex flex-col items-center justify-center py-3 rounded-xl transition-all text-on-surface-variant hover:bg-surface-container-low"
+                        data-day="7">
+                        <span class="font-label-sm text-label-sm uppercase font-semibold">Dom</span>
+                        <span class="font-headline-sm text-primary mt-0.5">27</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Listado de Actividades con sus Horarios Asociados -->
+            <div
+                class="flex flex-col divide-y divide-outline-variant/30 bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/30 overflow-hidden">
+
+                <!-- Actividad 1: Crossfit Studio -->
+                <article
+                    class="p-space-lg flex flex-col md:flex-row md:items-center justify-between gap-space-lg hover:bg-surface-bright/50 transition-colors">
+                    <div class="flex items-center gap-space-md min-w-[300px]">
+                        <img class="w-24 h-24 rounded-xl object-cover shadow-sm shrink-0"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCbKlWkvNFcFZV6Uq59uuc6qEAlkyNXUsSfkZFTCAQfMLwYYjeSKbdGb9J7uEdvHKsPkcKVTt0s7_PNSRylpoS22kKZgQl1x_IYKYfyi-pZrO0R-CoED3AVCNyJTiuk4wHtrB4qu9ybiG2NXjCKMpwTNRMFN0waoAYTXlwnuwTbuzs9hj0fTc538UOhH_lTF45zBu4mbNUeS4teVRlTf_uedIzOowaLT3WqO42BFUoZAH8pMw2js_osw"
+                            alt="Crossfit Studio" />
+                        <div>
+                            <h2 class="font-headline-sm text-headline-sm text-primary font-bold">Crossfit Studio</h2>
+                            <div
+                                class="flex items-center gap-space-sm text-on-surface-variant font-body-sm text-body-sm mt-1">
+                                <span class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
+                                    50 min
+                                </span>
+                                <span>•</span>
+                                <span>Aforo máx. 16</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Horarios asociados -->
+                    <div class="flex-1 flex flex-wrap items-center gap-2 md:justify-end">
+                        <!-- Horario ya reservado por el socio en naranja corporativo #F5A201 -->
+                        <button disabled
+                            class="flex flex-col items-center justify-center px-4 py-2 rounded-xl bg-[#F5A201] text-primary shadow-sm border border-amber-600/20 select-none cursor-default">
+                            <div class="flex items-center gap-1">
+                                <span
+                                    class="font-headline-sm font-bold text-[17px] leading-tight text-primary">09:00</span>
+                                <span class="material-symbols-outlined text-[16px] text-primary">check_circle</span>
+                            </div>
+                            <span
+                                class="font-label-xs text-[11px] font-bold text-primary tracking-wide">Reservado</span>
+                        </button>
+                        <button onclick="openBookingModal('Crossfit Studio', '11:30', 'Elena Gómez', 5, 16)"
+                            class="group flex flex-col items-center justify-center px-4 py-2 rounded-xl bg-surface-container-low hover:bg-primary-container text-primary hover:text-on-primary border border-outline-variant/40 hover:border-transparent transition-all shadow-sm">
+                            <span class="font-headline-sm font-bold text-[17px] leading-tight">11:30</span>
+                            <span
+                                class="font-label-xs text-[11px] text-secondary group-hover:text-secondary-fixed">Elena
+                                Gómez · 5 libres</span>
+                        </button>
+                        <button disabled
+                            class="flex flex-col items-center justify-center px-4 py-2 rounded-xl bg-surface-container-highest/50 text-outline border border-outline-variant/20 cursor-not-allowed select-none">
+                            <span class="font-headline-sm font-bold text-[17px] leading-tight line-through">18:00</span>
+                            <span class="font-label-xs text-[11px]">Completo</span>
+                        </button>
+                        <button onclick="openBookingModal('Crossfit Studio', '20:15', 'Elena Gómez', 4, 16)"
+                            class="group flex flex-col items-center justify-center px-4 py-2 rounded-xl bg-surface-container-low hover:bg-primary-container text-primary hover:text-on-primary border border-outline-variant/40 hover:border-transparent transition-all shadow-sm">
+                            <span class="font-headline-sm font-bold text-[17px] leading-tight">20:15</span>
+                            <span
+                                class="font-label-xs text-[11px] text-secondary group-hover:text-secondary-fixed">Elena
+                                Gómez · 4 libres</span>
+                        </button>
+                    </div>
+                </article>
+
+                <!-- Actividad 2: Hyrox Conditioning -->
+                <article
+                    class="p-space-lg flex flex-col md:flex-row md:items-center justify-between gap-space-lg hover:bg-surface-bright/50 transition-colors">
+                    <div class="flex items-center gap-space-md min-w-[300px]">
+                        <img class="w-24 h-24 rounded-xl object-cover shadow-sm shrink-0"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmnvv3hDgfaufGsKgGb1gkc9DhRk0Ojt4uh56G55qsJ_9kR1JIQ4tSaSKUNRl4vbekBmjAKGhwRv2KpxCm5LUzInEqxDuY1VO2xbSvEHLg0ur-qOWi3W06Uc8MpGipWE1BmqC6EwHKBGTWjApPcntbQk86aXTRyU1Wy5I37WgyKa-ZnoYks-LTgBkK980VapacREkhMR2-Y-YhgkNAqaR6ZyHBiFoTEJ6F_FAOS2REXF6Y8ccUF7R6Sg"
+                            alt="Hyrox Conditioning" />
+                        <div>
+                            <h2 class="font-headline-sm text-headline-sm text-primary font-bold">Hyrox Conditioning</h2>
+                            <div
+                                class="flex items-center gap-space-sm text-on-surface-variant font-body-sm text-body-sm mt-1">
+                                <span class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
+                                    50 min
+                                </span>
+                                <span>•</span>
+                                <span>Aforo máx. 20</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Horarios asociados -->
+                    <div class="flex-1 flex flex-wrap items-center gap-2 md:justify-end">
+                        <button onclick="openBookingModal('Hyrox Conditioning', '07:30', 'Marc Soler', 4, 20)"
+                            class="group flex flex-col items-center justify-center px-4 py-2 rounded-xl bg-surface-container-low hover:bg-primary-container text-primary hover:text-on-primary border border-outline-variant/40 hover:border-transparent transition-all shadow-sm">
+                            <span class="font-headline-sm font-bold text-[17px] leading-tight">07:30</span>
+                            <span class="font-label-xs text-[11px] text-secondary group-hover:text-secondary-fixed">Marc
+                                Soler · 4 libres</span>
+                        </button>
+                        <button onclick="openBookingModal('Hyrox Conditioning', '12:00', 'Marc Soler', 6, 20)"
+                            class="group flex flex-col items-center justify-center px-4 py-2 rounded-xl bg-surface-container-low hover:bg-primary-container text-primary hover:text-on-primary border border-outline-variant/40 hover:border-transparent transition-all shadow-sm">
+                            <span class="font-headline-sm font-bold text-[17px] leading-tight">12:00</span>
+                            <span class="font-label-xs text-[11px] text-secondary group-hover:text-secondary-fixed">Marc
+                                Soler · 6 libres</span>
+                        </button>
+                        <button onclick="openBookingModal('Hyrox Conditioning', '19:15', 'Marc Soler', 3, 20)"
+                            class="group flex flex-col items-center justify-center px-4 py-2 rounded-xl bg-surface-container-low hover:bg-primary-container text-primary hover:text-on-primary border border-outline-variant/40 hover:border-transparent transition-all shadow-sm">
+                            <span class="font-headline-sm font-bold text-[17px] leading-tight">19:15</span>
+                            <span class="font-label-xs text-[11px] text-secondary group-hover:text-secondary-fixed">Marc
+                                Soler · 3 libres</span>
+                        </button>
+                    </div>
+                </article>
+
+                <!-- Actividad 3: Pilates Reformer -->
+                <article
+                    class="p-space-lg flex flex-col md:flex-row md:items-center justify-between gap-space-lg hover:bg-surface-bright/50 transition-colors">
+                    <div class="flex items-center gap-space-md min-w-[300px]">
+                        <img class="w-24 h-24 rounded-xl object-cover shadow-sm shrink-0"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1bqNH9tL8RqMEgH0Y0nofwXOuMu3j-GbUP7A5KOG1-LxoTDI-Te_gESBbGleROmyES9AgAHLGrr-pQuUeMmhntqlb_Oo8YdcTFhpGUbsqCTktd4LfOc3lF23hv7Ii4ONML8yg2uzlHxTSCcVP1J2whvA3MSKGfFz5uGtJzCWA3PYUrSMZ2aY1qGVTjQCv7jbPbpzwvOMNisnaoT6MD3uwjBvWOhb4ECCbEq8M-sTnLgyAURrztLdiLQ"
+                            alt="Pilates Reformer" />
+                        <div>
+                            <h2 class="font-headline-sm text-headline-sm text-primary font-bold">Pilates Reformer</h2>
+                            <div
+                                class="flex items-center gap-space-sm text-on-surface-variant font-body-sm text-body-sm mt-1">
+                                <span class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
+                                    50 min
+                                </span>
+                                <span>•</span>
+                                <span>Aforo máx. 12</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Horarios asociados -->
+                    <div class="flex-1 flex flex-wrap items-center gap-2 md:justify-end">
+                        <button disabled
+                            class="flex flex-col items-center justify-center px-4 py-2 rounded-xl bg-surface-container-highest/50 text-outline border border-outline-variant/20 cursor-not-allowed select-none">
+                            <span class="font-headline-sm font-bold text-[17px] leading-tight line-through">09:30</span>
+                            <span class="font-label-xs text-[11px]">Completo</span>
+                        </button>
+                        <button onclick="openBookingModal('Pilates Reformer', '18:00', 'Clara Vega', 2, 12)"
+                            class="group flex flex-col items-center justify-center px-4 py-2 rounded-xl bg-surface-container-low hover:bg-primary-container text-primary hover:text-on-primary border border-outline-variant/40 hover:border-transparent transition-all shadow-sm">
+                            <span class="font-headline-sm font-bold text-[17px] leading-tight">18:00</span>
+                            <span
+                                class="font-label-xs text-[11px] text-secondary group-hover:text-secondary-fixed">Clara
+                                Vega · 2 libres</span>
+                        </button>
+                    </div>
+                </article>
+
+                <!-- Actividad 4: HIIT Circuit -->
+                <article
+                    class="p-space-lg flex flex-col md:flex-row md:items-center justify-between gap-space-lg hover:bg-surface-bright/50 transition-colors">
+                    <div class="flex items-center gap-space-md min-w-[300px]">
+                        <img class="w-24 h-24 rounded-xl object-cover shadow-sm shrink-0"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyUGoypimWzJIwc6qnHC5lwHfaWZwGTE1elGN7VpqtjDSQjM8dupED9_jMN2RnIWUFEEJmgnxjDK1j_RT7nHr2y_VroohgZFzGHbKIuJ_ThlcWEEYMdOnC5QfLaXKpX6ytHQvUapyUqq2U6u76CjUi_82kMznwNK4HE4ripXsuUgYYlLeEEF0zHS0zJbclriQ93KXWWJNhAQwID7IDgU4GFWbhP4UQtvPnVc9ZATAdxbhyj3ALvJVbrg"
+                            alt="HIIT Circuit" />
+                        <div>
+                            <h2 class="font-headline-sm text-headline-sm text-primary font-bold">HIIT Circuit</h2>
+                            <div
+                                class="flex items-center gap-space-sm text-on-surface-variant font-body-sm text-body-sm mt-1">
+                                <span class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
+                                    50 min
+                                </span>
+                                <span>•</span>
+                                <span>Aforo máx. 18</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Horarios asociados -->
+                    <div class="flex-1 flex flex-wrap items-center gap-2 md:justify-end">
+                        <button onclick="openBookingModal('HIIT Circuit', '10:00', 'David Rivas', 4, 18)"
+                            class="group flex flex-col items-center justify-center px-4 py-2 rounded-xl bg-surface-container-low hover:bg-primary-container text-primary hover:text-on-primary border border-outline-variant/40 hover:border-transparent transition-all shadow-sm">
+                            <span class="font-headline-sm font-bold text-[17px] leading-tight">10:00</span>
+                            <span
+                                class="font-label-xs text-[11px] text-secondary group-hover:text-secondary-fixed">David
+                                Rivas · 4 libres</span>
+                        </button>
+                        <button disabled
+                            class="flex flex-col items-center justify-center px-4 py-2 rounded-xl bg-surface-container-highest/50 text-outline border border-outline-variant/20 cursor-not-allowed select-none">
+                            <span class="font-headline-sm font-bold text-[17px] leading-tight line-through">13:30</span>
+                            <span class="font-label-xs text-[11px]">Completo</span>
+                        </button>
+                        <button onclick="openBookingModal('HIIT Circuit', '19:00', 'David Rivas', 3, 18)"
+                            class="group flex flex-col items-center justify-center px-4 py-2 rounded-xl bg-surface-container-low hover:bg-primary-container text-primary hover:text-on-primary border border-outline-variant/40 hover:border-transparent transition-all shadow-sm">
+                            <span class="font-headline-sm font-bold text-[17px] leading-tight">19:00</span>
+                            <span
+                                class="font-label-xs text-[11px] text-secondary group-hover:text-secondary-fixed">David
+                                Rivas · 3 libres</span>
+                        </button>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+
+        <!-- Modal de Reserva de Plaza -->
+        <div id="booking-modal"
+            class="fixed inset-0 z-50 hidden bg-primary/40 backdrop-blur-sm flex items-center justify-center p-4">
+            <div
+                class="bg-surface-container-lowest rounded-2xl max-w-md w-full p-space-lg shadow-2xl border border-outline-variant/30 animate-in fade-in zoom-in duration-200">
+                <div class="flex items-center justify-between pb-3 border-b border-outline-variant/20">
+                    <h3 class="font-headline-sm text-primary font-bold">Confirmar Reserva</h3>
+                    <button onclick="closeBookingModal()" class="text-outline hover:text-primary transition-colors">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <div class="py-space-md flex flex-col gap-space-sm text-on-surface-variant font-body-md">
+                    <div class="p-3 bg-surface-container-low rounded-xl">
+                        <p class="font-headline-sm text-primary font-semibold" id="modal-activity">Crossfit Studio</p>
+                        <p class="text-secondary font-label-sm mt-1" id="modal-details">09:00 · Elena Gómez</p>
+                    </div>
+                    <div>
+                        <label class="block font-label-sm text-primary font-semibold mb-1" for="modal-socio-code">Tu
+                            Código de Socio (DNI)</label>
+                        <input type="text" id="modal-socio-code" placeholder="ej. 48291034X" value="48291034X"
+                            class="w-full h-11 px-3 bg-surface-container-lowest rounded-lg border border-outline-variant/60 font-body-md text-primary focus:outline-none focus:ring-2 focus:ring-secondary" />
+                    </div>
+                </div>
+                <div class="flex items-center justify-end gap-2 pt-3 border-t border-outline-variant/20">
+                    <button onclick="closeBookingModal()"
+                        class="px-4 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low font-label-md">
+                        Cancelar
+                    </button>
+                    <button onclick="confirmBooking()"
+                        class="px-5 py-2 rounded-lg bg-tertiary-fixed-dim hover:bg-tertiary-fixed text-primary font-label-md font-semibold transition-all">
+                        Reservar Plaza
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function openBookingModal(activity, time, trainer, freeSpots, maxSpots) {
+                document.getElementById('modal-activity').textContent = activity;
+                document.getElementById('modal-details').textContent = `${time} · Profesor: ${trainer} (${freeSpots} de ${maxSpots} plazas)`;
+                document.getElementById('booking-modal').classList.remove('hidden');
+            }
+
+            function closeBookingModal() {
+                document.getElementById('booking-modal').classList.add('hidden');
+            }
+
+            function confirmBooking() {
+                const code = document.getElementById('modal-socio-code').value.trim();
+                if (!code) {
+                    alert('Por favor, indica tu código de socio.');
+                    return;
+                }
+                alert('¡Plaza reservada con éxito para el socio ' + code + '! Podrás gestionarla desde Mi Espacio.');
+                closeBookingModal();
+            }
+
+            // Switch day tabs
+            document.querySelectorAll('.day-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.day-tab').forEach(t => {
+                        t.classList.remove('active-day', 'bg-primary-container', 'text-on-primary', 'shadow-sm');
+                        t.classList.add('text-on-surface-variant', 'hover:bg-surface-container-low');
+                        const dayNum = t.querySelector('span:last-child');
+                        if (dayNum) dayNum.classList.remove('font-bold', 'text-on-primary');
+                    });
+                    tab.classList.add('active-day', 'bg-primary-container', 'text-on-primary', 'shadow-sm');
+                    tab.classList.remove('text-on-surface-variant', 'hover:bg-surface-container-low');
+                    const dayNum = tab.querySelector('span:last-child');
+                    if (dayNum) dayNum.classList.add('font-bold', 'text-on-primary');
+                });
+            });
+        </script>
+    </main>
+
+    <footer class="w-full bg-surface-container-lowest border-t border-outline-variant/30 py-space-xl">
+        <div
+            class="max-w-[1440px] mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin flex flex-col md:flex-row items-center justify-between gap-space-md">
+            <div class="flex items-center gap-space-sm">
+                <span class="font-headline-sm text-headline-sm text-primary">PulseGym</span>
+                <span class="font-body-sm text-body-sm text-on-surface-variant">— Boutique Movement &amp; Reformer
+                    Studio</span>
+            </div>
+            <p class="font-body-sm text-body-sm text-on-surface-variant">© 2025 PulseGym Studio. Todos los derechos
+                reservados.</p>
+        </div>
+    </footer>
+</body>
+
+</html>
