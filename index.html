@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <meta content="web_standard" name="shell-type" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <style>
+    @layer base {
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        overscroll-behavior: none;
+      }
+
+      main>:first-child {
+        margin-top: 0 !important;
+      }
+
+      main>:last-child {
+        margin-bottom: 0 !important;
+      }
+    }
+
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script
+    id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-secondary-fixed-variant": "#004b6f", "on-error": "#ffffff", "on-primary-fixed-variant": "#1a4b68", "secondary-fixed-dim": "#92cdfa", "on-background": "#0b1c30", "surface-container-low": "#eff4ff", "primary-container": "#013c58", "surface-dim": "#cbdbf5", "on-secondary-fixed": "#001e2f", "surface-container-highest": "#d3e4fe", "primary": "#002539", "on-error-container": "#93000a", "surface-container": "#e5eeff", "error": "#ba1a1a", "error-container": "#ffdad6", "surface-container-high": "#dce9ff", "surface-variant": "#d3e4fe", "tertiary-fixed": "#ffddb4", "secondary-fixed": "#cae6ff", "on-primary-container": "#7aa7c7", "on-tertiary": "#ffffff", "inverse-on-surface": "#eaf1ff", "secondary-container": "#95d0fd", "on-surface-variant": "#41474d", "on-tertiary-container": "#dd9200", "primary-fixed-dim": "#9fccee", "tertiary-fixed-dim": "#ffb955", "surface-container-lowest": "#ffffff", "surface-tint": "#366381", "tertiary-container": "#503200", "on-primary-fixed": "#001e2f", "secondary": "#21648c", "on-primary": "#ffffff", "primary-fixed": "#c8e6ff", "surface-bright": "#f8f9ff", "surface": "#f8f9ff", "on-tertiary-fixed-variant": "#633f00", "on-tertiary-fixed": "#291800", "inverse-surface": "#213145", "on-secondary": "#ffffff", "inverse-primary": "#9fccee", "outline": "#72787e", "on-secondary-container": "#105981", "on-surface": "#0b1c30", "outline-variant": "#c1c7ce", "background": "#f8f9ff", "tertiary": "#331e00" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-lg": "1.5rem", "space-xs": "0.25rem", "space-sm": "0.5rem", "margin-mobile": "1.25rem", "margin": "3rem", "gutter-mobile": "1rem", "margin-tablet": "2rem", "gutter": "1.5rem", "space-xl": "2.5rem", "space-md": "1rem" }, "fontFamily": { "headline-lg": ["Plus Jakarta Sans"], "headline-xl": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "label-xs": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "headline-xl-mobile": ["Plus Jakarta Sans"] }, "fontSize": { "headline-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.025em", "fontWeight": "600" }], "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.03em", "fontWeight": "700" }], "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "headline-sm": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "label-xs": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }], "body-md": ["15px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }], "headline-lg-mobile": ["26px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "400" }], "body-sm": ["13px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }], "headline-xl-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.025em", "fontWeight": "700" }] } } } };</script>
+</head>
+
+<body class="bg-background font-body-md text-on-surface antialiased">
+  <header
+    class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/90 backdrop-blur-md border-b border-outline-variant/30">
+    <div
+      class="h-20 max-w-[1440px] mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin flex items-center justify-between">
+      <div class="flex items-center gap-space-lg"><a class="flex items-center gap-space-sm" data-path="actividades"
+          href="#"><img alt="PulseGym Studio Logo" class="h-8 w-auto object-contain"
+            src="https://lh3.googleusercontent.com/aida/AEtjO1VlvDeUgMK1aJ7EVgNZCYwQe-TpB2r654HWz1WiKX7Qvq_X7Y3v0uLlV-8nZkJzAntAr3KQoi_vPyp6TbjdqP_jOqxWgQc_fElMvLpA7tQc2Vd_MAjmabmOXvGnuqf8QzvEfVkfNWbJlZC3CcQtXTmYZqEg79UPBIPuQEna1MsDDhSA60c-Yz5dnE3mrzOtSZGm4dHx_r_Q8x1YrWbrsIMsWYJsZI7iAFF05g2o5BJdz4LVi8JuE1_H2z9K" /><span
+            class="font-headline-sm text-headline-sm text-primary tracking-tight font-semibold">PulseGym</span></a>
+        <nav class="hidden md:flex items-center gap-space-lg ml-space-sm"
+          data-active-classes="text-primary font-label-md underline underline-offset-8 decoration-2 decoration-on-tertiary-container">
+          <a aria-current="page"
+            class="transition-colors text-primary font-label-md underline underline-offset-8 decoration-2 decoration-on-tertiary-container"
+            data-path="actividades" href="#">Actividades</a><a
+            class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors"
+            data-path="horario-semanal" href="#">Horario Semanal</a><a
+            class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors"
+            data-path="mi-espacio" href="#">Mi Espacio</a></nav>
+      </div>
+      <div class="flex items-center gap-space-md"><a
+          class="inline-flex items-center justify-center bg-tertiary-fixed-dim text-primary font-label-md text-label-md px-space-md py-space-xs rounded-full hover:bg-tertiary-fixed transition-colors shadow-sm"
+          data-path="mi-espacio" href="#">Acceso Socio</a>
+      </div>
+    </div>
+  </header>
+  <main class="w-full pt-20 bg-background min-h-screen">
+    <div class="flex flex-col w-full">
+      <section
+        class="max-w-[1440px] w-full mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin pt-space-xl pb-space-lg">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md mb-space-xl">
+          <div class="max-w-2xl">
+            <div
+              class="flex items-center gap-space-xs mb-space-sm text-secondary font-label-sm text-label-sm uppercase tracking-widest">
+              <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+              <span>Catálogo de Disciplinas</span>
+            </div>
+            <h1 class="font-headline-xl text-headline-xl text-primary font-bold tracking-tight">Nuestras Actividades
+            </h1>
+            <p class="font-body-lg text-body-lg text-on-surface-variant mt-space-xs">
+              Experiencias de entrenamiento guiado con grupos reducidos y máxima atención técnica en un entorno
+              arquitectónico sereno.
+            </p>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter" id="activities-grid">
+          <article
+            class="activity-card group flex flex-col bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md transition-all duration-300">
+            <div class="relative h-48 w-full rounded-lg overflow-hidden mb-space-md">
+              <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                data-alt="Minimalist luxury athletic studio interior with olympic barbells and clean wood floors bathed in soft natural morning sunlight. Deep navy and matte black metal details with pristine white architecture."
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCbKlWkvNFcFZV6Uq59uuc6qEAlkyNXUsSfkZFTCAQfMLwYYjeSKbdGb9J7uEdvHKsPkcKVTt0s7_PNSRylpoS22kKZgQl1x_IYKYfyi-pZrO0R-CoED3AVCNyJTiuk4wHtrB4qu9ybiG2NXjCKMpwTNRMFN0waoAYTXlwnuwTbuzs9hj0fTc538UOhH_lTF45zBu4mbNUeS4teVRlTf_uedIzOowaLT3WqO42BFUoZAH8pMw2js_osw" />
+              <div
+                class="absolute top-3 left-3 w-10 h-10 rounded-full bg-surface-container-lowest/90 backdrop-blur-sm flex items-center justify-center text-primary shadow-sm">
+                <span class="material-symbols-outlined text-[20px]">fitness_center</span>
+              </div>
+              <div
+                class="absolute bottom-3 right-3 bg-secondary-fixed text-primary px-space-sm py-1 rounded-full font-label-xs text-label-xs font-semibold">
+                Máx. 16 personas
+              </div>
+            </div>
+            <div class="flex items-center justify-end gap-space-xs mb-space-xs">
+              <span class="flex items-center text-on-surface-variant font-label-sm text-label-sm gap-1">
+                <span class="material-symbols-outlined text-[16px]">schedule</span> 50 min
+              </span>
+            </div>
+            <h2 class="font-headline-sm text-headline-sm text-primary font-bold text-center">Crossfit Studio</h2>
+          </article>
+          <article
+            class="activity-card group flex flex-col bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md transition-all duration-300">
+            <div class="relative h-48 w-full rounded-lg overflow-hidden mb-space-md">
+              <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                data-alt="Athletes performing sled pushes in a luminous boutique fitness club with floor-to-ceiling glass windows and white walls. Sleek minimalist cardio equipment with ocean blue accents."
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmnvv3hDgfaufGsKgGb1gkc9DhRk0Ojt4uh56G55qsJ_9kR1JIQ4tSaSKUNRl4vbekBmjAKGhwRv2KpxCm5LUzInEqxDuY1VO2xbSvEHLg0ur-qOWi3W06Uc8MpGipWE1BmqC6EwHKBGTWjApPcntbQk86aXTRyU1Wy5I37WgyKa-ZnoYks-LTgBkK980VapacREkhMR2-Y-YhgkNAqaR6ZyHBiFoTEJ6F_FAOS2REXF6Y8ccUF7R6Sg" />
+              <div
+                class="absolute top-3 left-3 w-10 h-10 rounded-full bg-surface-container-lowest/90 backdrop-blur-sm flex items-center justify-center text-primary shadow-sm">
+                <span class="material-symbols-outlined text-[20px]">sprint</span>
+              </div>
+              <div
+                class="absolute bottom-3 right-3 bg-secondary-fixed text-primary px-space-sm py-1 rounded-full font-label-xs text-label-xs font-semibold">
+                Máx. 20 personas
+              </div>
+            </div>
+            <div class="flex items-center justify-end gap-space-xs mb-space-xs">
+              <span class="flex items-center text-on-surface-variant font-label-sm text-label-sm gap-1">
+                <span class="material-symbols-outlined text-[16px]">schedule</span> 50 min
+              </span>
+            </div>
+            <h2 class="font-headline-sm text-headline-sm text-primary font-bold text-center">Hyrox Conditioning</h2>
+          </article>
+          <article
+            class="activity-card group flex flex-col bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md transition-all duration-300">
+            <div class="relative h-48 w-full rounded-lg overflow-hidden mb-space-md">
+              <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                data-alt="High-end functional fitness interval training area with kettlebells, rowers, and clean architectural lighting. Pristine white interior with subtle deep ocean navy flooring mats."
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyUGoypimWzJIwc6qnHC5lwHfaWZwGTE1elGN7VpqtjDSQjM8dupED9_jMN2RnIWUFEEJmgnxjDK1j_RT7nHr2y_VroohgZFzGHbKIuJ_ThlcWEEYMdOnC5QfLaXKpX6ytHQvUapyUqq2U6u76CjUi_82kMznwNK4HE4ripXsuUgYYlLeEEF0zHS0zJbclriQ93KXWWJNhAQwID7IDgU4GFWbhP4UQtvPnVc9ZATAdxbhyj3ALvJVbrg" />
+              <div
+                class="absolute top-3 left-3 w-10 h-10 rounded-full bg-surface-container-lowest/90 backdrop-blur-sm flex items-center justify-center text-primary shadow-sm">
+                <span class="material-symbols-outlined text-[20px]">timer</span>
+              </div>
+              <div
+                class="absolute bottom-3 right-3 bg-secondary-fixed text-primary px-space-sm py-1 rounded-full font-label-xs text-label-xs font-semibold">
+                Máx. 18 personas
+              </div>
+            </div>
+            <div class="flex items-center justify-end gap-space-xs mb-space-xs">
+              <span class="flex items-center text-on-surface-variant font-label-sm text-label-sm gap-1">
+                <span class="material-symbols-outlined text-[16px]">schedule</span> 50 min
+              </span>
+            </div>
+            <h2 class="font-headline-sm text-headline-sm text-primary font-bold text-center">HIIT Circuit</h2>
+          </article>
+          <article
+            class="activity-card group flex flex-col bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md transition-all duration-300">
+            <div class="relative h-48 w-full rounded-lg overflow-hidden mb-space-md">
+              <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                data-alt="Serene sunlit yoga sanctuary with natural light filtering through sheer curtains. Woman in peaceful vinyasa pose on high-density natural rubber mat. Calming architectural white and sand tones."
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIcYNQeYAUYurrzMAJB9Y_DfOUAyaAQfWYAI1Ec1A3AjmGG8-pP4NKcukujD5NoaIh_zH23IsEL-n2aT2VOlwkKvuA0TKGtdoEbo8ckyg_vqZsFKVGDyjlhKoDCClJb0DVS_9QslmcgeWg_aXsqZErbGVgJGqD3Hz1ROq957fY9LwtW0y1zsFehabsIJvm96NNJZMuVZ_MZ8Kz-m1RxVi62N6pzMj07uoV8yK4yufWeC4_9QzW95pjgw" />
+              <div
+                class="absolute top-3 left-3 w-10 h-10 rounded-full bg-surface-container-lowest/90 backdrop-blur-sm flex items-center justify-center text-primary shadow-sm">
+                <span class="material-symbols-outlined text-[20px]">self_improvement</span>
+              </div>
+              <div
+                class="absolute bottom-3 right-3 bg-secondary-fixed text-primary px-space-sm py-1 rounded-full font-label-xs text-label-xs font-semibold">
+                Máx. 14 personas
+              </div>
+            </div>
+            <div class="flex items-center justify-end gap-space-xs mb-space-xs">
+              <span class="flex items-center text-on-surface-variant font-label-sm text-label-sm gap-1">
+                <span class="material-symbols-outlined text-[16px]">schedule</span> 50 min
+              </span>
+            </div>
+            <h2 class="font-headline-sm text-headline-sm text-primary font-bold text-center">Vinyasa Yoga</h2>
+          </article>
+          <article
+            class="activity-card group flex flex-col bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md transition-all duration-300">
+            <div class="relative h-48 w-full rounded-lg overflow-hidden mb-space-md">
+              <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                data-alt="Row of cast iron competition kettlebells aligned on light oak flooring in an immaculate modern fitness studio with warm daylight and crisp minimal navy walls in the backdrop."
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHMaXkgjsdA1rSdmbCbz1sMepsdxB76yVHlg8S85Lv37x6s9ZsIi5g2VMp3KLZnrlThdhDy_EQUx4sztRoE0pYo0OEYnerW839UqKNoc1dt8fS5Bo5I3-BGbXAHgAy8gBX28yZ081fK9LQJlNflyGOjGPAD1bsgFH6dHe9rOjPW2NkJNeFAwhqXODK4ovhZFI1DL03RwlblZj1aZ8O4bRDKpAmokV_PECwoKVNnSRGZaVl6yP-unz-tQ" />
+              <div
+                class="absolute top-3 left-3 w-10 h-10 rounded-full bg-surface-container-lowest/90 backdrop-blur-sm flex items-center justify-center text-primary shadow-sm">
+                <span class="material-symbols-outlined text-[20px]">sports_martial_arts</span>
+              </div>
+              <div
+                class="absolute bottom-3 right-3 bg-secondary-fixed text-primary px-space-sm py-1 rounded-full font-label-xs text-label-xs font-semibold">
+                Máx. 16 personas
+              </div>
+            </div>
+            <div class="flex items-center justify-end gap-space-xs mb-space-xs">
+              <span class="flex items-center text-on-surface-variant font-label-sm text-label-sm gap-1">
+                <span class="material-symbols-outlined text-[16px]">schedule</span> 50 min
+              </span>
+            </div>
+            <h2 class="font-headline-sm text-headline-sm text-primary font-bold text-center">Kettlebell &amp; Core
+            </h2>
+          </article>
+          <article
+            class="activity-card group flex flex-col bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md transition-all duration-300">
+            <div class="relative h-48 w-full rounded-lg overflow-hidden mb-space-md">
+              <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                data-alt="Top-tier boutique reformer pilates studio with sleek aluminum Reformer machines aligned symmetrically in an airy, illuminated room with high ceilings and floor-to-ceiling mirrors."
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1bqNH9tL8RqMEgH0Y0nofwXOuMu3j-GbUP7A5KOG1-LxoTDI-Te_gESBbGleROmyES9AgAHLGrr-pQuUeMmhntqlb_Oo8YdcTFhpGUbsqCTktd4LfOc3lF23hv7Ii4ONML8yg2uzlHxTSCcVP1J2whvA3MSKGfFz5uGtJzCWA3PYUrSMZ2aY1qGVTjQCv7jbPbpzwvOMNisnaoT6MD3uwjBvWOhb4ECCbEq8M-sTnLgyAURrztLdiLQ" />
+              <div
+                class="absolute top-3 left-3 w-10 h-10 rounded-full bg-surface-container-lowest/90 backdrop-blur-sm flex items-center justify-center text-primary shadow-sm">
+                <span class="material-symbols-outlined text-[20px]">airline_seat_recline_extra</span>
+              </div>
+              <div
+                class="absolute bottom-3 right-3 bg-secondary-fixed text-primary px-space-sm py-1 rounded-full font-label-xs text-label-xs font-semibold">
+                Máx. 12 personas
+              </div>
+            </div>
+            <div class="flex items-center justify-end gap-space-xs mb-space-xs">
+              <span class="flex items-center text-on-surface-variant font-label-sm text-label-sm gap-1">
+                <span class="material-symbols-outlined text-[16px]">schedule</span> 50 min
+              </span>
+            </div>
+            <h2 class="font-headline-sm text-headline-sm text-primary font-bold text-center">Pilates Reformer</h2>
+          </article>
+        </div>
+        <div
+          class="mt-space-xl bg-surface-container-low rounded-xl p-space-lg flex flex-col md:flex-row items-center justify-between gap-space-lg">
+          <div class="flex items-start gap-space-md max-w-2xl">
+            <div
+              class="w-12 h-12 rounded-full bg-secondary-fixed flex items-center justify-center text-primary flex-shrink-0">
+              <span class="material-symbols-outlined text-[24px]">verified_user</span>
+            </div>
+            <div>
+              <h3 class="font-headline-sm text-headline-sm text-primary font-semibold mb-1">Ratio Reducido Garantizado
+              </h3>
+              <p class="font-body-sm text-body-sm text-on-surface-variant">
+                Nuestros aforos estrictos por sesión (12 a 20 alumnos) aseguran correcciones biomecánicas individuales y
+                una atmósfera de concentración absoluta. Tu plaza incluye toalla de estudio y equipamiento asignado sin
+                esperas.
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-space-md flex-shrink-0 w-full md:w-auto">
+            <a class="w-full md:w-auto inline-flex items-center justify-center bg-primary text-on-primary font-label-md text-label-md px-space-lg py-3 rounded-lg hover:bg-primary-container transition-colors shadow-sm"
+              data-path="horario-semanal" href="#">
+              Consultar Horarios Completos
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer class="w-full bg-surface-container-lowest border-t border-outline-variant/30 py-space-xl">
+    <div
+      class="max-w-[1440px] mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin flex flex-col md:flex-row items-center justify-between gap-space-md">
+      <div class="flex items-center gap-space-sm"><span
+          class="font-headline-sm text-headline-sm text-primary">PulseGym</span><span
+          class="font-body-sm text-body-sm text-on-surface-variant">— Boutique Movement &amp; Reformer Studio</span>
+      </div>
+      <p class="font-body-sm text-body-sm text-on-surface-variant">© 2025 PulseGym Studio. Todos los derechos
+        reservados.</p>
+    </div>
+  </footer>
+</body>
+
+</html>
