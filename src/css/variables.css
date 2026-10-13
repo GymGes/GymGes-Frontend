@@ -1,0 +1,29 @@
+:root {
+    /* Identidad corporativa */
+    --color-primary: #002539;
+    --color-primary-container: #013C58;
+    --color-accent-gold: #F5A201;
+    --color-secondary: #21648C;
+
+    /* Superficies y fondos */
+    --color-bg: #F8F9FF;
+    --color-surface: #FFFFFF;
+    --color-surface-low: #EFF4FF;
+    --color-surface-border: rgba(193, 199, 206, 0.35);
+
+    /* Textos y estados */
+    --color-text-main: #0B1C30;
+    --color-text-muted: #41474D;
+    --color-error: #BA1A1A;
+
+    /* Tipografía y bordes */
+    --font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-full: 9999px;
+
+    /* Elevación */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 12px rgba(1, 60, 88, 0.08);
+}
