@@ -1,0 +1,19 @@
+/* 1. Base y Tokens */
+@import './variables.css';
+@import './reset.css';
+
+/* 2. Layout global */
+@import './layout/header.css';
+@import './layout/sidebar.css';
+@import './layout/footer.css';
+
+/* 3. Componentes reutilizables */
+@import './components/buttons.css';
+@import './components/modals.css';
+@import './components/tables.css';
+
+/* 4. Vistas / Páginas */
+@import './pages/activities.css';
+@import './pages/schedules.css';
+@import './pages/members.css';
+@import './pages/bookings.css';
