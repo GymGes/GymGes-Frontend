@@ -2,6 +2,8 @@
 @import './variables.css';
 @import './layout/header.css';
 @import './layout/footer.css';
+@import './layout/grid.css';
+@import './components/cards.css';
 
 /* Reseteo y estructura base (Sticky Footer) */
 *,
@@ -25,6 +27,5 @@ body {
 .main-content {
     flex: 1;
     padding-top: 80px;
-    /* Compensa el header fixed de 80px */
     width: 100%;
 }
