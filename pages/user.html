@@ -45,29 +45,38 @@
 </head>
 
 <body class="bg-background font-body-md text-on-surface antialiased">
-  <header
+<header
     class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/90 backdrop-blur-md border-b border-outline-variant/30">
     <div
       class="h-20 max-w-[1440px] mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin flex items-center justify-between">
-      <div class="flex items-center gap-space-lg"><a class="flex items-center gap-space-sm" data-path="actividades"
-          href="index.html"><img alt="PulseGym Studio Logo" class="h-8 w-auto object-contain"
-            src="https://lh3.googleusercontent.com/aida/AEtjO1VlvDeUgMK1aJ7EVgNZCYwQe-TpB2r654HWz1WiKX7Qvq_X7Y3v0uLlV-8nZkJzAntAr3KQoi_vPyp6TbjdqP_jOqxWgQc_fElMvLpA7tQc2Vd_MAjmabmOXvGnuqf8QzvEfVkfNWbJlZC3CcQtXTmYZqEg79UPBIPuQEna1MsDDhSA60c-Yz5dnE3mrzOtSZGm4dHx_r_Q8x1YrWbrsIMsWYJsZI7iAFF05g2o5BJdz4LVi8JuE1_H2z9K" /><span
-            class="font-headline-sm text-headline-sm text-primary tracking-tight font-semibold">PulseGym</span></a>
-        <nav class="hidden md:flex items-center gap-space-lg ml-space-sm"
-          data-active-classes="text-primary font-label-md underline underline-offset-8 decoration-2 decoration-on-tertiary-container">
+      <div class="flex items-center gap-space-lg">
+        <a class="flex items-center gap-2.5" href="../index.html">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0">
+            <rect width="32" height="32" rx="8" fill="#013C58"/>
+            <path d="M5 16H9L12 8L16 24L20 13L23 16H27" stroke="#F5A201" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="font-headline-sm text-headline-sm text-primary tracking-tight font-semibold">PulseGym</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-space-lg ml-space-sm">
           <a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors"
-            data-path="actividades" href="index.html">Actividades</a><a
-            class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors"
-            data-path="horario-semanal" href="#">Horario Semanal</a><a aria-current="page"
+            href="../index.html">Actividades</a>
+          <a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors"
+            href="calendar.html">Horario Semanal</a>
+          <a aria-current="page"
             class="transition-colors text-primary font-label-md underline underline-offset-8 decoration-2 decoration-on-tertiary-container"
-            data-path="mi-espacio" href="#">Mi Espacio</a></nav>
+            href="user.html">Mi Espacio</a>
+        </nav>
       </div>
-      <div class="flex items-center gap-space-md"><a
-          class="inline-flex items-center justify-center bg-tertiary-fixed-dim text-primary font-label-md text-label-md px-space-md py-space-xs rounded-full hover:bg-tertiary-fixed transition-colors shadow-sm"
-          data-path="mi-espacio" href="#">Acceso Socio</a>
+
+      <div class="flex items-center gap-space-xs sm:gap-space-sm">
+        <a class="inline-flex items-center justify-center bg-tertiary-fixed-dim text-primary font-label-md text-label-md px-space-md py-space-xs rounded-full hover:bg-tertiary-fixed transition-colors shadow-sm"
+          href="user.html">Acceso Socio</a>
+        <a class="inline-flex items-center justify-center bg-primary-container text-on-primary font-label-md text-label-md px-space-md py-space-xs rounded-full hover:bg-primary transition-colors shadow-sm"
+          href="admin/index.html">Acceso Admin</a>
       </div>
     </div>
   </header>
+  
   <main class="w-full pt-20 bg-background min-h-screen">
     <div class="flex flex-col w-full">
       <div

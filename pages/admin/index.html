@@ -44,7 +44,7 @@
         id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-secondary-fixed-variant": "#004b6f", "on-error": "#ffffff", "on-primary-fixed-variant": "#1a4b68", "secondary-fixed-dim": "#92cdfa", "on-background": "#0b1c30", "surface-container-low": "#eff4ff", "primary-container": "#013c58", "surface-dim": "#cbdbf5", "on-secondary-fixed": "#001e2f", "surface-container-highest": "#d3e4fe", "primary": "#002539", "on-error-container": "#93000a", "surface-container": "#e5eeff", "error": "#ba1a1a", "error-container": "#ffdad6", "surface-container-high": "#dce9ff", "surface-variant": "#d3e4fe", "tertiary-fixed": "#ffddb4", "secondary-fixed": "#cae6ff", "on-primary-container": "#7aa7c7", "on-tertiary": "#ffffff", "inverse-on-surface": "#eaf1ff", "secondary-container": "#95d0fd", "on-surface-variant": "#41474d", "on-tertiary-container": "#dd9200", "primary-fixed-dim": "#9fccee", "tertiary-fixed-dim": "#ffb955", "surface-container-lowest": "#ffffff", "surface-tint": "#366381", "tertiary-container": "#503200", "on-primary-fixed": "#001e2f", "secondary": "#21648c", "on-primary": "#ffffff", "primary-fixed": "#c8e6ff", "surface-bright": "#f8f9ff", "surface": "#f8f9ff", "on-tertiary-fixed-variant": "#633f00", "on-tertiary-fixed": "#291800", "inverse-surface": "#213145", "on-secondary": "#ffffff", "inverse-primary": "#9fccee", "outline": "#72787e", "on-secondary-container": "#105981", "on-surface": "#0b1c30", "outline-variant": "#c1c7ce", "background": "#f8f9ff", "tertiary": "#331e00" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-lg": "1.5rem", "space-xs": "0.25rem", "space-sm": "0.5rem", "margin-mobile": "1.25rem", "margin": "3rem", "gutter-mobile": "1rem", "margin-tablet": "2rem", "gutter": "1.5rem", "space-xl": "2.5rem", "space-md": "1rem" }, "fontFamily": { "headline-lg": ["Plus Jakarta Sans"], "headline-xl": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "label-xs": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "headline-xl-mobile": ["Plus Jakarta Sans"] }, "fontSize": { "headline-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.025em", "fontWeight": "600" }], "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.03em", "fontWeight": "700" }], "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "headline-sm": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "label-xs": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }], "body-md": ["15px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }], "headline-lg-mobile": ["26px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "400" }], "body-sm": ["13px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }], "headline-xl-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.025em", "fontWeight": "700" }] } } } };</script>
 </head>
 
-<body class="bg-background font-body-md text-on-surface antialiased">
+'<body class="bg-background font-body-md text-on-surface antialiased">
     <!-- Menú lateral izquierdo persistente -->
     <aside
         class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest border-r border-outline-variant/30 z-50 flex flex-col justify-between py-space-lg">
@@ -58,7 +58,7 @@
                     <span
                         class="font-label-xs text-label-xs text-on-surface-variant uppercase tracking-wider">Administración</span>
                 </div>
-            </div>
+            </div>'
 
             <!-- Enlaces del menú lateral -->
             <nav class="flex flex-col gap-space-xs mt-space-md">
@@ -97,11 +97,11 @@
         </div>
 
         <div class="px-space-lg pt-space-md border-t border-outline-variant/30">
-            <a class="flex items-center gap-space-sm text-on-surface-variant font-label-sm text-label-sm hover:text-primary transition-colors"
-                href="index.html">
-                <span class="material-symbols-outlined text-sm">arrow_back</span>
-                Volver al Sitio
-            </a>
+        <a class="flex items-center gap-space-sm text-on-surface-variant font-label-sm text-label-sm hover:text-primary transition-colors"
+            href="../../index.html">
+            <span class="material-symbols-outlined text-sm">arrow_back</span>
+            Volver al Sitio
+        </a>
         </div>
     </aside>
 
