@@ -1,0 +1,57 @@
+/* src/css/layout/footer.css */
+.app-footer {
+    width: 100%;
+    background-color: var(--color-surface);
+    border-top: 1px solid var(--color-surface-border);
+    padding: 2.5rem 0;
+    margin-top: auto;
+}
+
+.footer-container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .footer-container {
+        flex-direction: row;
+        padding: 0 2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .footer-container {
+        padding: 0 3rem;
+    }
+}
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.footer-brand-title {
+    font-family: var(--font-family);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.footer-brand-subtitle {
+    font-family: var(--font-family);
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+}
+
+.footer-copy {
+    font-family: var(--font-family);
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+}
