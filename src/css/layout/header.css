@@ -22,6 +22,12 @@
     justify-content: space-between;
 }
 
+.header-nav-group {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
 .header-brand {
     display: flex;
     align-items: center;

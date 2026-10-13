@@ -1,15 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GymGes</title>
-    <script src="https://cdn.jsdelivr.net/npm/axios@1/dist/axios.min.js"></script>
-  </head>
-  <body></body>
-</html>
-<!DOCTYPE html>
-<html lang="es">
 
 <head>
   <meta charset="utf-8" />
@@ -22,6 +12,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
 
+  <!-- Axios para consumo de API -->
+  <script src="https://cdn.jsdelivr.net/npm/axios@1/dist/axios.min.js"></script>
+
   <!-- Única hoja de estilos central -->
   <link rel="stylesheet" href="src/css/styles.css" />
 </head>
@@ -30,32 +23,43 @@
   <!-- Header persistente -->
   <header class="app-header">
     <div class="header-container">
-      <div style="display: flex; align-items: center; gap: 2rem;">
-        <a class="header-brand" href="actividades.html">
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <div class="header-nav-group">
+        <a class="header-brand" href="index.html">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <rect width="32" height="32" rx="8" fill="#013C58" />
             <path d="M5 16H9L12 8L16 24L20 13L23 16H27" stroke="#F5A201" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
           <span class="header-brand-title">PulseGym</span>
         </a>
 
-        <nav class="header-nav">
-          <a class="nav-link active" href="actividades.html">Actividades</a>
+        <nav class="header-nav" aria-label="Navegación principal">
+          <a class="nav-link active" aria-current="page" href="index.html">Actividades</a>
           <a class="nav-link" href="pages/calendar.html">Horario Semanal</a>
           <a class="nav-link" href="pages/user.html">Mi Espacio</a>
         </nav>
       </div>
 
-      <div class="header-actions">
+      <nav class="header-actions" aria-label="Accesos directos">
         <a class="btn-pill btn-pill-gold" href="pages/user.html">Acceso Socio</a>
         <a class="btn-pill btn-pill-navy" href="pages/admin/index.html">Acceso Admin</a>
-      </div>
+      </nav>
     </div>
   </header>
 
-  <!-- Contenido principal que iremos rellenando bloque a bloque -->
+  <!-- Contenido principal -->
   <main class="main-content">
   </main>
+
+  <!-- Footer persistente -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <strong class="footer-brand-title">PulseGym</strong>
+        <span class="footer-brand-subtitle">— Boutique Movement &amp; Reformer Studio</span>
+      </div>
+      <small class="footer-copy">© 2025 PulseGym Studio. Todos los derechos reservados.</small>
+    </div>
+  </footer>
 </body>
 
 </html>
