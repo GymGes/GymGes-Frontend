@@ -236,33 +236,32 @@
                 </div>
               </div>
 
-              <!-- Listado de sesiones -->
+              <!-- Listado de sesiones (sin etiquetas redundantes) -->
               <div class="flex flex-col gap-space-md">
-                <!-- Reserva 1 -->
+                <!-- Reserva 1: Pilates Reformer -->
                 <div
                   class="group bg-surface-container-lowest rounded-xl p-space-lg shadow-sm ring-1 ring-outline-variant/30 transition-all hover:shadow-md relative overflow-hidden"
                   id="booking-res-8921">
                   <div class="absolute top-0 left-0 bottom-0 w-1.5 bg-secondary"></div>
                   <div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
-                    <div class="flex items-start gap-space-md">
+                    <div class="flex items-center gap-space-md">
                       <div
                         class="flex flex-col items-center justify-center w-16 h-16 rounded-xl bg-surface-container text-primary font-headline-sm text-headline-sm leading-tight flex-shrink-0">
                         <span class="text-[11px] font-bold uppercase tracking-wider text-secondary">HOY</span>
                         <span class="font-bold text-headline-sm">09:30</span>
                       </div>
-                      <div class="flex flex-col">
-                        <div class="flex items-center gap-2 flex-wrap">
-                          <span
-                            class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-secondary-fixed/50 text-on-secondary-fixed font-label-xs text-label-xs font-semibold">
-                            Pilates Reformer
+                      <div class="flex flex-col justify-center">
+                        <h3 class="font-headline-sm text-headline-sm text-primary font-bold tracking-tight">Pilates Reformer</h3>
+                        <div class="flex items-center gap-2.5 mt-1 text-on-surface-variant font-body-sm text-[13px]">
+                          <span class="flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px] text-secondary">person</span>
+                            <span>Elena Miralles</span>
                           </span>
-                          <span class="text-on-surface-variant text-label-xs font-label-xs">Sesión de 50 min</span>
-                        </div>
-                        <h3 class="font-headline-sm text-headline-sm text-primary font-semibold mt-1">Pilates Reformer</h3>
-                        <div
-                          class="flex items-center gap-1 mt-2 font-body-sm text-body-sm text-on-surface-variant">
-                          <span class="material-symbols-outlined text-[16px] text-secondary">person</span>
-                          <span>Elena Miralles</span>
+                          <span class="text-outline-variant">•</span>
+                          <span class="flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
+                            <span>50 min</span>
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -277,31 +276,30 @@
                   </div>
                 </div>
 
-                <!-- Reserva 2 -->
+                <!-- Reserva 2: Vinyasa Yoga -->
                 <div
                   class="group bg-surface-container-lowest rounded-xl p-space-lg shadow-sm ring-1 ring-outline-variant/30 transition-all hover:shadow-md relative overflow-hidden"
                   id="booking-res-8922">
                   <div class="absolute top-0 left-0 bottom-0 w-1.5 bg-tertiary-fixed-dim"></div>
                   <div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
-                    <div class="flex items-start gap-space-md">
+                    <div class="flex items-center gap-space-md">
                       <div
                         class="flex flex-col items-center justify-center w-16 h-16 rounded-xl bg-surface-container text-primary font-headline-sm text-headline-sm leading-tight flex-shrink-0">
                         <span class="text-[11px] font-bold uppercase tracking-wider text-secondary">MAÑANA</span>
                         <span class="font-bold text-headline-sm">18:00</span>
                       </div>
-                      <div class="flex flex-col">
-                        <div class="flex items-center gap-2 flex-wrap">
-                          <span
-                            class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-secondary-fixed/50 text-on-secondary-fixed font-label-xs text-label-xs font-semibold">
-                            Vinyasa Yoga
+                      <div class="flex flex-col justify-center">
+                        <h3 class="font-headline-sm text-headline-sm text-primary font-bold tracking-tight">Vinyasa Yoga</h3>
+                        <div class="flex items-center gap-2.5 mt-1 text-on-surface-variant font-body-sm text-[13px]">
+                          <span class="flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px] text-secondary">person</span>
+                            <span>Marc Soler</span>
                           </span>
-                          <span class="text-on-surface-variant text-label-xs font-label-xs">Sesión de 50 min</span>
-                        </div>
-                        <h3 class="font-headline-sm text-headline-sm text-primary font-semibold mt-1">Vinyasa Yoga</h3>
-                        <div
-                          class="flex items-center gap-1 mt-2 font-body-sm text-body-sm text-on-surface-variant">
-                          <span class="material-symbols-outlined text-[16px] text-secondary">person</span>
-                          <span>Marc Soler</span>
+                          <span class="text-outline-variant">•</span>
+                          <span class="flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
+                            <span>50 min</span>
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -356,7 +354,7 @@
       </div>
     </div>
 
-    <!-- Script exclusivamente para el modal de cancelación -->
+    <!-- Script para el modal de cancelación -->
     <script>
       let currentBookingTargetId = null;
 
