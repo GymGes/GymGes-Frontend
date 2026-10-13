@@ -47,10 +47,9 @@
 <body class="bg-background font-body-md text-on-surface antialiased">
     <!-- Menú lateral izquierdo persistente -->
     <aside
-        class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest border-r border-outline-variant/30 z-50 flex flex-col justify-between py-space-lg">
+        class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest border-r border-outline-variant/30 z-40 flex flex-col justify-between py-space-lg">
         <div class="px-space-lg flex flex-col gap-space-lg">
             <div class="flex items-center gap-space-sm">
-                <!-- Logo SVG vectorial integrado -->
                 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0">
                     <rect width="32" height="32" rx="8" fill="#013C58"/>
                     <path d="M5 16H9L12 8L16 24L20 13L23 16H27" stroke="#F5A201" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -65,34 +64,29 @@
 
             <!-- Enlaces del menú lateral -->
             <nav class="flex flex-col gap-space-xs mt-space-md">
-                <!-- 1. Tipos de actividades (Activo) -->
                 <a aria-current="page"
                     class="flex items-center px-space-md py-space-sm rounded-lg transition-colors bg-surface-container text-primary font-label-md font-semibold"
-                    href="#">
+                    href="index.html">
                     <span class="material-symbols-outlined mr-space-sm text-secondary">fitness_center</span>
                     Actividades
                 </a>
-                <!-- 2. Horarios -->
                 <a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-low hover:text-on-surface transition-colors"
-                    href="#">
+                    href="schedules.html">
                     <span class="material-symbols-outlined mr-space-sm text-secondary">calendar_month</span>
                     Horarios
                 </a>
-                <!-- 3. Profesores -->
                 <a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-low hover:text-on-surface transition-colors"
-                    href="#">
+                    href="teachers.html">
                     <span class="material-symbols-outlined mr-space-sm text-secondary">badge</span>
                     Profesores
                 </a>
-                <!-- 4. Socios -->
                 <a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-low hover:text-on-surface transition-colors"
-                    href="#">
+                    href="members.html">
                     <span class="material-symbols-outlined mr-space-sm text-secondary">groups</span>
                     Socios
                 </a>
-                <!-- 5. Reservas -->
                 <a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-low hover:text-on-surface transition-colors"
-                    href="#">
+                    href="bookings.html">
                     <span class="material-symbols-outlined mr-space-sm text-secondary">event_available</span>
                     Reservas
                 </a>
@@ -108,24 +102,23 @@
         </div>
     </aside>
 
-    <!-- Contenido principal (sin cabecera superior) -->
+    <!-- Contenido principal -->
     <div class="pl-64">
         <main class="relative bg-background min-h-screen px-space-lg py-space-xl">
             <div class="flex flex-col gap-space-lg w-full max-w-7xl mx-auto">
 
-                <!-- Encabezado de la página y botón de creación -->
+                <!-- Encabezado de la página -->
                 <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-space-md">
                     <div class="flex flex-col max-w-2xl">
                         <h1 class="font-headline-md text-headline-md text-primary font-bold tracking-tight">Gestión de
                             Tipos de Actividades</h1>
                         <p class="font-body-md text-body-md text-on-surface-variant mt-1">
-                            Configura las disciplinas del centro, su duración estándar y el aforo máximo de alumnos
-                            permitido.
+                            Configura las disciplinas del centro, su duración estándar, aforo de alumnos e imagen de portada[cite: 22].
                         </p>
                     </div>
-                    <button
+                    <button onclick="openActivityModal('create')"
                         class="inline-flex items-center justify-center gap-space-xs bg-primary-container text-on-primary font-label-md text-label-md px-space-lg py-3 rounded-lg shadow-sm hover:opacity-95 active:scale-[0.99] transition-all self-start sm:self-auto cursor-pointer"
-                        id="open-drawer-btn" type="button">
+                        type="button">
                         <span class="material-symbols-outlined text-[20px]">add</span>
                         <span>Añadir Tipo de Actividad</span>
                     </button>
@@ -145,25 +138,23 @@
                                     <th class="py-3.5 px-space-lg font-semibold text-right" scope="col">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-outline-variant/30 text-on-surface font-body-sm text-body-sm">
+                            <tbody id="activities-table-body" class="divide-y divide-outline-variant/30 text-on-surface font-body-sm text-body-sm">
                                 <!-- Fila 1 -->
-                                <tr class="hover:bg-surface-container-low/40 transition-colors">
+                                <tr class="hover:bg-surface-container-low/40 transition-colors" id="row-act-1">
                                     <td class="py-space-md px-space-lg">
                                         <div class="flex items-center gap-space-md">
-                                            <div
-                                                class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary-container shrink-0">
-                                                <span
-                                                    class="material-symbols-outlined text-[20px]">fitness_center</span>
+                                            <img class="w-12 h-12 rounded-lg object-cover shadow-sm shrink-0"
+                                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCbKlWkvNFcFZV6Uq59uuc6qEAlkyNXUsSfkZFTCAQfMLwYYjeSKbdGb9J7uEdvHKsPkcKVTt0s7_PNSRylpoS22kKZgQl1x_IYKYfyi-pZrO0R-CoED3AVCNyJTiuk4wHtrB4qu9ybiG2NXjCKMpwTNRMFN0waoAYTXlwnuwTbuzs9hj0fTc538UOhH_lTF45zBu4mbNUeS4teVRlTf_uedIzOowaLT3WqO42BFUoZAH8pMw2js_osw"
+                                                alt="Crossfit Studio" />
+                                            <div>
+                                                <span class="font-label-md text-label-md text-primary font-semibold block">Crossfit Studio</span>
+                                                <span class="text-[12px] text-on-surface-variant line-clamp-1">Entrenamiento funcional de alta cadencia combinando halterofilia y gimnásticos.</span>
                                             </div>
-                                            <span
-                                                class="font-label-md text-label-md text-primary font-semibold">Crossfit
-                                                Studio</span>
                                         </div>
                                     </td>
                                     <td class="py-space-md px-space-md whitespace-nowrap">
                                         <div class="flex items-center gap-1.5 text-on-surface">
-                                            <span
-                                                class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
+                                            <span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
                                             <span class="font-medium">50 min</span>
                                         </div>
                                     </td>
@@ -172,14 +163,12 @@
                                     </td>
                                     <td class="py-space-md px-space-lg text-right whitespace-nowrap">
                                         <div class="inline-flex items-center gap-space-xs justify-end">
-                                            <button aria-label="Editar"
-                                                class="p-2 rounded-lg text-primary hover:bg-surface-container transition-colors cursor-pointer"
-                                                type="button">
+                                            <button onclick="openActivityModal('edit', 'Crossfit Studio', 50, 16, 'Entrenamiento funcional de alta cadencia combinando halterofilia, ejercicios gimnásticos y acondicionamiento metabólico.')"
+                                                aria-label="Editar" class="p-2 rounded-lg text-primary hover:bg-surface-container transition-colors cursor-pointer" type="button">
                                                 <span class="material-symbols-outlined text-[18px]">edit</span>
                                             </button>
-                                            <button aria-label="Eliminar"
-                                                class="p-2 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/40 transition-colors cursor-pointer"
-                                                type="button">
+                                            <button onclick="openDeleteModal('row-act-1', 'Crossfit Studio')"
+                                                aria-label="Eliminar" class="p-2 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/40 transition-colors cursor-pointer" type="button">
                                                 <span class="material-symbols-outlined text-[18px]">delete</span>
                                             </button>
                                         </div>
@@ -187,21 +176,21 @@
                                 </tr>
 
                                 <!-- Fila 2 -->
-                                <tr class="hover:bg-surface-container-low/40 transition-colors">
+                                <tr class="hover:bg-surface-container-low/40 transition-colors" id="row-act-2">
                                     <td class="py-space-md px-space-lg">
                                         <div class="flex items-center gap-space-md">
-                                            <div
-                                                class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary-container shrink-0">
-                                                <span class="material-symbols-outlined text-[20px]">sprint</span>
+                                            <img class="w-12 h-12 rounded-lg object-cover shadow-sm shrink-0"
+                                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmnvv3hDgfaufGsKgGb1gkc9DhRk0Ojt4uh56G55qsJ_9kR1JIQ4tSaSKUNRl4vbekBmjAKGhwRv2KpxCm5LUzInEqxDuY1VO2xbSvEHLg0ur-qOWi3W06Uc8MpGipWE1BmqC6EwHKBGTWjApPcntbQk86aXTRyU1Wy5I37WgyKa-ZnoYks-LTgBkK980VapacREkhMR2-Y-YhgkNAqaR6ZyHBiFoTEJ6F_FAOS2REXF6Y8ccUF7R6Sg"
+                                                alt="Hyrox Conditioning" />
+                                            <div>
+                                                <span class="font-label-md text-label-md text-primary font-semibold block">Hyrox Conditioning</span>
+                                                <span class="text-[12px] text-on-surface-variant line-clamp-1">Preparación atlética integral que fusiona carrera y trineo de empuje.</span>
                                             </div>
-                                            <span class="font-label-md text-label-md text-primary font-semibold">Hyrox
-                                                Conditioning</span>
                                         </div>
                                     </td>
                                     <td class="py-space-md px-space-md whitespace-nowrap">
                                         <div class="flex items-center gap-1.5 text-on-surface">
-                                            <span
-                                                class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
+                                            <span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
                                             <span class="font-medium">50 min</span>
                                         </div>
                                     </td>
@@ -210,14 +199,12 @@
                                     </td>
                                     <td class="py-space-md px-space-lg text-right whitespace-nowrap">
                                         <div class="inline-flex items-center gap-space-xs justify-end">
-                                            <button aria-label="Editar"
-                                                class="p-2 rounded-lg text-primary hover:bg-surface-container transition-colors cursor-pointer"
-                                                type="button">
+                                            <button onclick="openActivityModal('edit', 'Hyrox Conditioning', 50, 20, 'Preparación atlética integral que fusiona tramos de carrera continua con estaciones de trineo de empuje, remo y resistencia.')"
+                                                aria-label="Editar" class="p-2 rounded-lg text-primary hover:bg-surface-container transition-colors cursor-pointer" type="button">
                                                 <span class="material-symbols-outlined text-[18px]">edit</span>
                                             </button>
-                                            <button aria-label="Eliminar"
-                                                class="p-2 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/40 transition-colors cursor-pointer"
-                                                type="button">
+                                            <button onclick="openDeleteModal('row-act-2', 'Hyrox Conditioning')"
+                                                aria-label="Eliminar" class="p-2 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/40 transition-colors cursor-pointer" type="button">
                                                 <span class="material-symbols-outlined text-[18px]">delete</span>
                                             </button>
                                         </div>
@@ -225,21 +212,21 @@
                                 </tr>
 
                                 <!-- Fila 3 -->
-                                <tr class="hover:bg-surface-container-low/40 transition-colors">
+                                <tr class="hover:bg-surface-container-low/40 transition-colors" id="row-act-3">
                                     <td class="py-space-md px-space-lg">
                                         <div class="flex items-center gap-space-md">
-                                            <div
-                                                class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary-container shrink-0">
-                                                <span class="material-symbols-outlined text-[20px]">timer</span>
+                                            <img class="w-12 h-12 rounded-lg object-cover shadow-sm shrink-0"
+                                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyUGoypimWzJIwc6qnHC5lwHfaWZwGTE1elGN7VpqtjDSQjM8dupED9_jMN2RnIWUFEEJmgnxjDK1j_RT7nHr2y_VroohgZFzGHbKIuJ_ThlcWEEYMdOnC5QfLaXKpX6ytHQvUapyUqq2U6u76CjUi_82kMznwNK4HE4ripXsuUgYYlLeEEF0zHS0zJbclriQ93KXWWJNhAQwID7IDgU4GFWbhP4UQtvPnVc9ZATAdxbhyj3ALvJVbrg"
+                                                alt="HIIT Circuit" />
+                                            <div>
+                                                <span class="font-label-md text-label-md text-primary font-semibold block">HIIT Circuit</span>
+                                                <span class="text-[12px] text-on-surface-variant line-clamp-1">Circuitos dinámicos por intervalos de alta intensidad metabólica.</span>
                                             </div>
-                                            <span class="font-label-md text-label-md text-primary font-semibold">HIIT
-                                                Circuit</span>
                                         </div>
                                     </td>
                                     <td class="py-space-md px-space-md whitespace-nowrap">
                                         <div class="flex items-center gap-1.5 text-on-surface">
-                                            <span
-                                                class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
+                                            <span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
                                             <span class="font-medium">50 min</span>
                                         </div>
                                     </td>
@@ -248,14 +235,12 @@
                                     </td>
                                     <td class="py-space-md px-space-lg text-right whitespace-nowrap">
                                         <div class="inline-flex items-center gap-space-xs justify-end">
-                                            <button aria-label="Editar"
-                                                class="p-2 rounded-lg text-primary hover:bg-surface-container transition-colors cursor-pointer"
-                                                type="button">
+                                            <button onclick="openActivityModal('edit', 'HIIT Circuit', 50, 18, 'Circuitos dinámicos por intervalos de alta intensidad diseñados para potenciar la agilidad y el consumo calórico.')"
+                                                aria-label="Editar" class="p-2 rounded-lg text-primary hover:bg-surface-container transition-colors cursor-pointer" type="button">
                                                 <span class="material-symbols-outlined text-[18px]">edit</span>
                                             </button>
-                                            <button aria-label="Eliminar"
-                                                class="p-2 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/40 transition-colors cursor-pointer"
-                                                type="button">
+                                            <button onclick="openDeleteModal('row-act-3', 'HIIT Circuit')"
+                                                aria-label="Eliminar" class="p-2 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/40 transition-colors cursor-pointer" type="button">
                                                 <span class="material-symbols-outlined text-[18px]">delete</span>
                                             </button>
                                         </div>
@@ -263,22 +248,21 @@
                                 </tr>
 
                                 <!-- Fila 4 -->
-                                <tr class="hover:bg-surface-container-low/40 transition-colors">
+                                <tr class="hover:bg-surface-container-low/40 transition-colors" id="row-act-4">
                                     <td class="py-space-md px-space-lg">
                                         <div class="flex items-center gap-space-md">
-                                            <div
-                                                class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary-container shrink-0">
-                                                <span
-                                                    class="material-symbols-outlined text-[20px]">self_improvement</span>
+                                            <img class="w-12 h-12 rounded-lg object-cover shadow-sm shrink-0"
+                                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIcYNQeYAUYurrzMAJB9Y_DfOUAyaAQfWYAI1Ec1A3AjmGG8-pP4NKcukujD5NoaIh_zH23IsEL-n2aT2VOlwkKvuA0TKGtdoEbo8ckyg_vqZsFKVGDyjlhKoDCClJb0DVS_9QslmcgeWg_aXsqZErbGVgJGqD3Hz1ROq957fY9LwtW0y1zsFehabsIJvm96NNJZMuVZ_MZ8Kz-m1RxVi62N6pzMj07uoV8yK4yufWeC4_9QzW95pjgw"
+                                                alt="Vinyasa Yoga" />
+                                            <div>
+                                                <span class="font-label-md text-label-md text-primary font-semibold block">Vinyasa Yoga</span>
+                                                <span class="text-[12px] text-on-surface-variant line-clamp-1">Fluidez postural consciente y control respiratorio guiado.</span>
                                             </div>
-                                            <span class="font-label-md text-label-md text-primary font-semibold">Vinyasa
-                                                Yoga</span>
                                         </div>
                                     </td>
                                     <td class="py-space-md px-space-md whitespace-nowrap">
                                         <div class="flex items-center gap-1.5 text-on-surface">
-                                            <span
-                                                class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
+                                            <span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
                                             <span class="font-medium">50 min</span>
                                         </div>
                                     </td>
@@ -287,14 +271,12 @@
                                     </td>
                                     <td class="py-space-md px-space-lg text-right whitespace-nowrap">
                                         <div class="inline-flex items-center gap-space-xs justify-end">
-                                            <button aria-label="Editar"
-                                                class="p-2 rounded-lg text-primary hover:bg-surface-container transition-colors cursor-pointer"
-                                                type="button">
+                                            <button onclick="openActivityModal('edit', 'Vinyasa Yoga', 50, 14, 'Fluidez postural consciente y control respiratorio guiado para desarrollar flexibilidad y estabilidad central.')"
+                                                aria-label="Editar" class="p-2 rounded-lg text-primary hover:bg-surface-container transition-colors cursor-pointer" type="button">
                                                 <span class="material-symbols-outlined text-[18px]">edit</span>
                                             </button>
-                                            <button aria-label="Eliminar"
-                                                class="p-2 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/40 transition-colors cursor-pointer"
-                                                type="button">
+                                            <button onclick="openDeleteModal('row-act-4', 'Vinyasa Yoga')"
+                                                aria-label="Eliminar" class="p-2 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/40 transition-colors cursor-pointer" type="button">
                                                 <span class="material-symbols-outlined text-[18px]">delete</span>
                                             </button>
                                         </div>
@@ -302,22 +284,21 @@
                                 </tr>
 
                                 <!-- Fila 5 -->
-                                <tr class="hover:bg-surface-container-low/40 transition-colors">
+                                <tr class="hover:bg-surface-container-low/40 transition-colors" id="row-act-5">
                                     <td class="py-space-md px-space-lg">
                                         <div class="flex items-center gap-space-md">
-                                            <div
-                                                class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary-container shrink-0">
-                                                <span
-                                                    class="material-symbols-outlined text-[20px]">accessibility_new</span>
+                                            <img class="w-12 h-12 rounded-lg object-cover shadow-sm shrink-0"
+                                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1bqNH9tL8RqMEgH0Y0nofwXOuMu3j-GbUP7A5KOG1-LxoTDI-Te_gESBbGleROmyES9AgAHLGrr-pQuUeMmhntqlb_Oo8YdcTFhpGUbsqCTktd4LfOc3lF23hv7Ii4ONML8yg2uzlHxTSCcVP1J2whvA3MSKGfFz5uGtJzCWA3PYUrSMZ2aY1qGVTjQCv7jbPbpzwvOMNisnaoT6MD3uwjBvWOhb4ECCbEq8M-sTnLgyAURrztLdiLQ"
+                                                alt="Pilates Reformer" />
+                                            <div>
+                                                <span class="font-label-md text-label-md text-primary font-semibold block">Pilates Reformer</span>
+                                                <span class="text-[12px] text-on-surface-variant line-clamp-1">Precisión biomecánica sobre camas de muelles.</span>
                                             </div>
-                                            <span class="font-label-md text-label-md text-primary font-semibold">Pilates
-                                                Reformer</span>
                                         </div>
                                     </td>
                                     <td class="py-space-md px-space-md whitespace-nowrap">
                                         <div class="flex items-center gap-1.5 text-on-surface">
-                                            <span
-                                                class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
+                                            <span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
                                             <span class="font-medium">50 min</span>
                                         </div>
                                     </td>
@@ -326,14 +307,12 @@
                                     </td>
                                     <td class="py-space-md px-space-lg text-right whitespace-nowrap">
                                         <div class="inline-flex items-center gap-space-xs justify-end">
-                                            <button aria-label="Editar"
-                                                class="p-2 rounded-lg text-primary hover:bg-surface-container transition-colors cursor-pointer"
-                                                type="button">
+                                            <button onclick="openActivityModal('edit', 'Pilates Reformer', 50, 12, 'Precisión biomecánica y tonificación muscular profunda sobre camas reformer con resistencia de muelles.')"
+                                                aria-label="Editar" class="p-2 rounded-lg text-primary hover:bg-surface-container transition-colors cursor-pointer" type="button">
                                                 <span class="material-symbols-outlined text-[18px]">edit</span>
                                             </button>
-                                            <button aria-label="Eliminar"
-                                                class="p-2 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/40 transition-colors cursor-pointer"
-                                                type="button">
+                                            <button onclick="openDeleteModal('row-act-5', 'Pilates Reformer')"
+                                                aria-label="Eliminar" class="p-2 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/40 transition-colors cursor-pointer" type="button">
                                                 <span class="material-symbols-outlined text-[18px]">delete</span>
                                             </button>
                                         </div>
@@ -345,107 +324,243 @@
                 </div>
             </div>
 
-            <!-- Drawer lateral para Crear / Editar -->
-            <div class="fixed inset-0 bg-primary/40 backdrop-blur-xs z-50 transition-opacity opacity-0 pointer-events-none duration-300"
-                id="drawer-backdrop">
-                <div class="absolute inset-0" id="drawer-overlay-close"></div>
-                <aside
-                    class="absolute top-0 right-0 h-full w-full max-w-md bg-surface-container-lowest shadow-2xl flex flex-col justify-between transform translate-x-full transition-transform duration-300 ease-out z-10"
-                    id="drawer-panel">
-                    <div class="p-space-lg flex items-start justify-between border-b border-outline-variant/20">
+            <!-- Modal Centrado: Crear / Editar Tipo de Actividad -->
+            <div id="activity-modal"
+                class="fixed inset-0 z-50 hidden bg-primary/40 backdrop-blur-sm flex items-center justify-center p-4">
+                <div
+                    class="bg-surface-container-lowest rounded-2xl max-w-lg w-full p-space-lg shadow-2xl border border-outline-variant/30 animate-in fade-in zoom-in duration-200 max-h-[92vh] overflow-y-auto">
+                    
+                    <!-- Header Modal -->
+                    <div class="flex items-center justify-between pb-3 border-b border-outline-variant/20">
                         <div>
-                            <h2 class="font-headline-sm text-headline-sm text-primary font-bold">Tipo de Actividad</h2>
-                            <p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Crear o modificar disciplina</p>
+                            <h3 id="modal-title" class="font-headline-sm text-primary font-bold">Añadir Tipo de Actividad</h3>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Parámetros técnicos de la disciplina</p>
                         </div>
-                        <button
-                            class="w-9 h-9 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface-variant flex items-center justify-center transition-colors cursor-pointer"
-                            id="close-drawer-btn" type="button">
-                            <span class="material-symbols-outlined text-[20px]">close</span>
+                        <button onclick="closeActivityModal()" class="text-outline hover:text-primary transition-colors cursor-pointer">
+                            <span class="material-symbols-outlined">close</span>
                         </button>
                     </div>
 
-                    <div class="flex-1 overflow-y-auto px-space-lg py-space-md flex flex-col gap-space-md">
+                    <!-- Form Body -->
+                    <form id="activity-form" onsubmit="handleSaveActivity(event)" class="py-space-md flex flex-col gap-space-md">
+                        
+                        <!-- 1. Nombre (nombre: string) -->
                         <div class="flex flex-col gap-1.5">
-                            <label class="font-label-md text-label-md text-primary font-semibold" for="act-name">Nombre de la actividad</label>
-                            <input
-                                class="w-full h-11 bg-surface-container-low px-space-md rounded-lg font-body-md text-body-md text-primary focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-secondary transition-all"
-                                id="act-name" placeholder="Ej. Crossfit, HIIT..." type="text" />
+                            <label class="font-label-md text-label-md text-primary font-semibold" for="modal-act-name">
+                                Nombre de la actividad <span class="text-error">*</span>
+                            </label>
+                            <input id="modal-act-name" required
+                                class="w-full h-11 bg-surface-container-low px-space-md rounded-lg font-body-md text-body-md text-primary placeholder:text-on-surface-variant/60 focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-secondary transition-all"
+                                placeholder="Ej. Pilates Reformer, Boxeo..." type="text" />
                         </div>
 
-                        <div class="flex flex-col gap-1.5">
-                            <label class="font-label-md text-label-md text-primary font-semibold" for="act-duration">Duración (minutos)</label>
-                            <input
-                                class="w-full h-11 bg-surface-container-low px-space-md rounded-lg font-body-md text-body-md text-primary focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-secondary transition-all"
-                                id="act-duration" min="15" step="5" type="number" value="50" />
+                        <!-- 2 & 3. Duración (duracion: int) y Aforo (max_alumnos: int) -->
+                        <div class="grid grid-cols-2 gap-space-md">
+                            <div class="flex flex-col gap-1.5">
+                                <label class="font-label-md text-label-md text-primary font-semibold" for="modal-act-duration">
+                                    Duración (min) <span class="text-error">*</span>
+                                </label>
+                                <div class="relative">
+                                    <input id="modal-act-duration" required min="15" max="180" step="5" value="50"
+                                        class="w-full h-11 bg-surface-container-low px-space-md pr-9 rounded-lg font-body-md text-body-md text-primary focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-secondary transition-all"
+                                        type="number" />
+                                    <span class="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px] pointer-events-none">schedule</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-1.5">
+                                <label class="font-label-md text-label-md text-primary font-semibold" for="modal-act-capacity">
+                                    Aforo máximo <span class="text-error">*</span>
+                                </label>
+                                <div class="relative">
+                                    <input id="modal-act-capacity" required min="1" max="50" value="16"
+                                        class="w-full h-11 bg-surface-container-low px-space-md pr-9 rounded-lg font-body-md text-body-md text-primary focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-secondary transition-all"
+                                        type="number" />
+                                    <span class="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px] pointer-events-none">groups</span>
+                                </div>
+                            </div>
                         </div>
 
+                        <!-- 4. Descripción (2-3 líneas) -->
                         <div class="flex flex-col gap-1.5">
-                            <label class="font-label-md text-label-md text-primary font-semibold" for="act-capacity">Aforo máximo de alumnos</label>
-                            <input
-                                class="w-full h-11 bg-surface-container-low px-space-md rounded-lg font-body-md text-body-md text-primary focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-secondary transition-all"
-                                id="act-capacity" min="1" type="number" value="16" />
+                            <label class="font-label-md text-label-md text-primary font-semibold" for="modal-act-desc">
+                                Descripción de la disciplina
+                            </label>
+                            <textarea id="modal-act-desc" rows="3"
+                                class="w-full bg-surface-container-low p-space-md rounded-lg font-body-md text-body-md text-primary placeholder:text-on-surface-variant/60 focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-secondary transition-all resize-none"
+                                placeholder="Describe el enfoque biomecánico, material empleado y beneficios principales de la sesión..."></textarea>
+                            <span class="text-[11px] text-on-surface-variant">Visible en el catálogo público para los socios.</span>
                         </div>
-                    </div>
 
-                    <div
-                        class="p-space-lg border-t border-outline-variant/20 flex items-center justify-end gap-space-sm">
-                        <button
-                            class="px-space-md py-2 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface-variant font-label-md text-label-md transition-colors cursor-pointer"
-                            id="cancel-drawer-btn" type="button">
-                            Cancelar
+                        <!-- 5. Subida de Imagen Simulada (Cloudinary Asset) -->
+                        <div class="flex flex-col gap-1.5">
+                            <label class="font-label-md text-label-md text-primary font-semibold">
+                                Imagen de portada (Cloudinary)
+                            </label>
+                            
+                            <!-- Dropzone interactiva con simulación -->
+                            <div id="dropzone-container"
+                                onclick="document.getElementById('simulated-file-input').click()"
+                                class="relative border-2 border-dashed border-outline-variant/60 hover:border-secondary hover:bg-surface-container-low/60 rounded-xl p-4 flex flex-col items-center justify-center gap-1.5 text-center cursor-pointer transition-all">
+                                
+                                <input type="file" id="simulated-file-input" accept="image/*" class="hidden" onchange="handleImageSelection(event)" />
+                                
+                                <div id="dropzone-default" class="flex flex-col items-center justify-center gap-1">
+                                    <div class="w-10 h-10 rounded-full bg-secondary-fixed/50 flex items-center justify-center text-primary">
+                                        <span class="material-symbols-outlined text-[22px]">cloud_upload</span>
+                                    </div>
+                                    <p class="font-label-sm text-primary font-semibold mt-1">Haz clic para subir imagen o arrastra el archivo</p>
+                                    <p class="text-[11px] text-on-surface-variant">JPG, PNG o WEBP (Auto-optimización vía CDN)</p>
+                                </div>
+
+                                <!-- Vista previa de subida simulada -->
+                                <div id="dropzone-preview" class="hidden w-full flex items-center justify-between p-2 rounded-lg bg-surface-container">
+                                    <div class="flex items-center gap-2 overflow-hidden">
+                                        <span class="material-symbols-outlined text-secondary">image</span>
+                                        <span id="preview-filename" class="font-body-sm text-[13px] text-primary truncate">imagen_portada.jpg</span>
+                                    </div>
+                                    <span class="text-[11px] font-semibold text-secondary px-2 py-0.5 rounded-full bg-secondary-fixed">Listo para Cloudinary</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal Actions Footer -->
+                        <div class="flex items-center justify-end gap-2 pt-3 border-t border-outline-variant/20 mt-1">
+                            <button type="button" onclick="closeActivityModal()"
+                                class="px-4 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low font-label-md transition-colors cursor-pointer">
+                                Cancelar
+                            </button>
+                            <button type="submit"
+                                class="px-5 py-2.5 rounded-lg bg-primary-container text-on-primary hover:opacity-95 font-label-md font-semibold transition-all shadow-sm cursor-pointer">
+                                Guardar Actividad
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Modal Centrado: Confirmación de Eliminación -->
+            <div id="delete-modal"
+                class="fixed inset-0 z-50 hidden bg-primary/40 backdrop-blur-sm flex items-center justify-center p-4">
+                <div
+                    class="bg-surface-container-lowest rounded-2xl max-w-md w-full p-space-lg shadow-2xl border border-outline-variant/30 animate-in fade-in zoom-in duration-200">
+                    <div class="flex items-center justify-between pb-3 border-b border-outline-variant/20">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-full bg-error-container text-on-error-container flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                            </div>
+                            <h3 class="font-headline-sm text-primary font-bold">Eliminar Actividad</h3>
+                        </div>
+                        <button onclick="closeDeleteModal()" class="text-outline hover:text-primary transition-colors cursor-pointer">
+                            <span class="material-symbols-outlined">close</span>
                         </button>
-                        <button
-                            class="px-space-lg py-2 rounded-lg bg-primary-container text-on-primary font-label-md text-label-md shadow-sm hover:opacity-95 transition-all cursor-pointer font-semibold"
-                            id="save-drawer-btn" type="button">
-                            Guardar
+                    </div>
+                    <div class="py-space-md text-on-surface-variant font-body-md">
+                        <p>¿Estás seguro de que deseas eliminar <strong class="text-primary" id="delete-activity-name">esta actividad</strong>?</p>
+                        <p class="text-body-sm text-[13px] text-outline mt-2">Esta acción suprimirá la disciplina del catálogo y cancelará las asignaciones horarias vinculadas.</p>
+                    </div>
+                    <div class="flex items-center justify-end gap-2 pt-3 border-t border-outline-variant/20">
+                        <button onclick="closeDeleteModal()" class="px-4 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low font-label-md transition-colors cursor-pointer">
+                            Volver
+                        </button>
+                        <button onclick="confirmDeleteActivity()" class="px-5 py-2 rounded-lg bg-error text-on-error hover:opacity-95 font-label-md font-semibold transition-all shadow-sm cursor-pointer">
+                            Confirmar Eliminación
                         </button>
                     </div>
-                </aside>
+                </div>
             </div>
 
             <script>
-                (function () {
-                    const openBtn = document.getElementById('open-drawer-btn');
-                    const closeBtn = document.getElementById('close-drawer-btn');
-                    const cancelBtn = document.getElementById('cancel-drawer-btn');
-                    const saveBtn = document.getElementById('save-drawer-btn');
-                    const backdrop = document.getElementById('drawer-backdrop');
-                    const panel = document.getElementById('drawer-panel');
-                    const overlayClose = document.getElementById('drawer-overlay-close');
+                let currentDeleteTargetId = null;
 
-                    function openDrawer() {
-                        backdrop.classList.remove('pointer-events-none', 'opacity-0');
-                        backdrop.classList.add('opacity-100');
-                        panel.classList.remove('translate-x-full');
-                        panel.classList.add('translate-x-0');
-                        document.body.style.overflow = 'hidden';
+                // Apertura y control del Modal de Actividad (Crear / Editar)
+                function openActivityModal(mode, name = '', duration = 50, capacity = 16, desc = '') {
+                    const title = document.getElementById('modal-title');
+                    const inputName = document.getElementById('modal-act-name');
+                    const inputDuration = document.getElementById('modal-act-duration');
+                    const inputCapacity = document.getElementById('modal-act-capacity');
+                    const inputDesc = document.getElementById('modal-act-desc');
+                    const defaultDropzone = document.getElementById('dropzone-default');
+                    const previewDropzone = document.getElementById('dropzone-preview');
+
+                    if (mode === 'edit') {
+                        title.textContent = 'Editar Tipo de Actividad';
+                        inputName.value = name;
+                        inputDuration.value = duration;
+                        inputCapacity.value = capacity;
+                        inputDesc.value = desc;
+                        // Simular que ya tiene imagen
+                        defaultDropzone.classList.add('hidden');
+                        previewDropzone.classList.remove('hidden');
+                        document.getElementById('preview-filename').textContent = `${name.toLowerCase().replace(/\\s+/g, '_')}_cover.jpg`;
+                    } else {
+                        title.textContent = 'Añadir Tipo de Actividad';
+                        document.getElementById('activity-form').reset();
+                        inputDuration.value = 50;
+                        inputCapacity.value = 16;
+                        defaultDropzone.classList.remove('hidden');
+                        previewDropzone.classList.add('hidden');
                     }
 
-                    function closeDrawer() {
-                        backdrop.classList.remove('opacity-100');
-                        backdrop.classList.add('opacity-0', 'pointer-events-none');
-                        panel.classList.remove('translate-x-0');
-                        panel.classList.add('translate-x-full');
-                        document.body.style.overflow = '';
+                    document.getElementById('activity-modal').classList.remove('hidden');
+                }
+
+                function closeActivityModal() {
+                    document.getElementById('activity-modal').classList.add('hidden');
+                }
+
+                // Simulación de carga de archivo
+                function handleImageSelection(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        document.getElementById('dropzone-default').classList.add('hidden');
+                        const preview = document.getElementById('dropzone-preview');
+                        preview.classList.remove('hidden');
+                        document.getElementById('preview-filename').textContent = file.name;
                     }
+                }
 
-                    if (openBtn) openBtn.addEventListener('click', openDrawer);
-                    if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
-                    if (cancelBtn) cancelBtn.addEventListener('click', closeDrawer);
-                    if (overlayClose) overlayClose.addEventListener('click', closeDrawer);
+                // Guardar actividad (Simulación Frontend)
+                function handleSaveActivity(e) {
+                    e.preventDefault();
+                    const name = document.getElementById('modal-act-name').value.trim();
+                    const duration = document.getElementById('modal-act-duration').value;
+                    const capacity = document.getElementById('modal-act-capacity').value;
 
-                    if (saveBtn) {
-                        saveBtn.addEventListener('click', function () {
-                            closeDrawer();
-                        });
-                    }
+                    closeActivityModal();
+                    alert(`¡Actividad "${name}" (${duration} min, aforo máx. ${capacity}) guardada correctamente en el sistema!`);
+                }
 
-                    document.addEventListener('keydown', function (e) {
-                        if (e.key === 'Escape' && !backdrop.classList.contains('pointer-events-none')) {
-                            closeDrawer();
+                // Control del Modal de Confirmación de Borrado
+                function openDeleteModal(rowId, activityName) {
+                    currentDeleteTargetId = rowId;
+                    document.getElementById('delete-activity-name').textContent = activityName;
+                    document.getElementById('delete-modal').classList.remove('hidden');
+                }
+
+                function closeDeleteModal() {
+                    document.getElementById('delete-modal').classList.add('hidden');
+                    currentDeleteTargetId = null;
+                }
+
+                function confirmDeleteActivity() {
+                    if (currentDeleteTargetId) {
+                        const row = document.getElementById(currentDeleteTargetId);
+                        if (row) {
+                            row.style.transition = 'all 0.3s ease';
+                            row.style.opacity = '0';
+                            setTimeout(() => row.remove(), 300);
                         }
-                    });
-                })();
+                    }
+                    closeDeleteModal();
+                }
+
+                // Cierre con la tecla ESC
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape') {
+                        closeActivityModal();
+                        closeDeleteModal();
+                    }
+                });
             </script>
         </main>
     </div>
