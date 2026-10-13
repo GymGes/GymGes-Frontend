@@ -44,21 +44,24 @@
         id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-secondary-fixed-variant": "#004b6f", "on-error": "#ffffff", "on-primary-fixed-variant": "#1a4b68", "secondary-fixed-dim": "#92cdfa", "on-background": "#0b1c30", "surface-container-low": "#eff4ff", "primary-container": "#013c58", "surface-dim": "#cbdbf5", "on-secondary-fixed": "#001e2f", "surface-container-highest": "#d3e4fe", "primary": "#002539", "on-error-container": "#93000a", "surface-container": "#e5eeff", "error": "#ba1a1a", "error-container": "#ffdad6", "surface-container-high": "#dce9ff", "surface-variant": "#d3e4fe", "tertiary-fixed": "#ffddb4", "secondary-fixed": "#cae6ff", "on-primary-container": "#7aa7c7", "on-tertiary": "#ffffff", "inverse-on-surface": "#eaf1ff", "secondary-container": "#95d0fd", "on-surface-variant": "#41474d", "on-tertiary-container": "#dd9200", "primary-fixed-dim": "#9fccee", "tertiary-fixed-dim": "#ffb955", "surface-container-lowest": "#ffffff", "surface-tint": "#366381", "tertiary-container": "#503200", "on-primary-fixed": "#001e2f", "secondary": "#21648c", "on-primary": "#ffffff", "primary-fixed": "#c8e6ff", "surface-bright": "#f8f9ff", "surface": "#f8f9ff", "on-tertiary-fixed-variant": "#633f00", "on-tertiary-fixed": "#291800", "inverse-surface": "#213145", "on-secondary": "#ffffff", "inverse-primary": "#9fccee", "outline": "#72787e", "on-secondary-container": "#105981", "on-surface": "#0b1c30", "outline-variant": "#c1c7ce", "background": "#f8f9ff", "tertiary": "#331e00" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-lg": "1.5rem", "space-xs": "0.25rem", "space-sm": "0.5rem", "margin-mobile": "1.25rem", "margin": "3rem", "gutter-mobile": "1rem", "margin-tablet": "2rem", "gutter": "1.5rem", "space-xl": "2.5rem", "space-md": "1rem" }, "fontFamily": { "headline-lg": ["Plus Jakarta Sans"], "headline-xl": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "label-xs": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "headline-xl-mobile": ["Plus Jakarta Sans"] }, "fontSize": { "headline-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.025em", "fontWeight": "600" }], "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.03em", "fontWeight": "700" }], "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "headline-sm": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "label-xs": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }], "body-md": ["15px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }], "headline-lg-mobile": ["26px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "400" }], "body-sm": ["13px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }], "headline-xl-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.025em", "fontWeight": "700" }] } } } };</script>
 </head>
 
-'<body class="bg-background font-body-md text-on-surface antialiased">
+<body class="bg-background font-body-md text-on-surface antialiased">
     <!-- Menú lateral izquierdo persistente -->
     <aside
         class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest border-r border-outline-variant/30 z-50 flex flex-col justify-between py-space-lg">
         <div class="px-space-lg flex flex-col gap-space-lg">
             <div class="flex items-center gap-space-sm">
-                <img alt="PulseGym Studio Logo" class="h-8 w-auto object-contain"
-                    src="https://lh3.googleusercontent.com/aida/AEtjO1VlvDeUgMK1aJ7EVgNZCYwQe-TpB2r654HWz1WiKX7Qvq_X7Y3v0uLlV-8nZkJzAntAr3KQoi_vPyp6TbjdqP_jOqxWgQc_fElMvLpA7tQc2Vd_MAjmabmOXvGnuqf8QzvEfVkfNWbJlZC3CcQtXTmYZqEg79UPBIPuQEna1MsDDhSA60c-Yz5dnE3mrzOtSZGm4dHx_r_Q8x1YrWbrsIMsWYJsZI7iAFF05g2o5BJdz4LVi8JuE1_H2z9K" />
+                <!-- Logo SVG vectorial integrado -->
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0">
+                    <rect width="32" height="32" rx="8" fill="#013C58"/>
+                    <path d="M5 16H9L12 8L16 24L20 13L23 16H27" stroke="#F5A201" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
                 <div class="flex flex-col">
                     <span
                         class="font-headline-sm text-headline-sm text-primary tracking-tight font-semibold leading-tight">PulseGym</span>
                     <span
                         class="font-label-xs text-label-xs text-on-surface-variant uppercase tracking-wider">Administración</span>
                 </div>
-            </div>'
+            </div>
 
             <!-- Enlaces del menú lateral -->
             <nav class="flex flex-col gap-space-xs mt-space-md">
@@ -97,11 +100,11 @@
         </div>
 
         <div class="px-space-lg pt-space-md border-t border-outline-variant/30">
-        <a class="flex items-center gap-space-sm text-on-surface-variant font-label-sm text-label-sm hover:text-primary transition-colors"
-            href="../../index.html">
-            <span class="material-symbols-outlined text-sm">arrow_back</span>
-            Volver al Sitio
-        </a>
+            <a class="flex items-center gap-space-sm text-on-surface-variant font-label-sm text-label-sm hover:text-primary transition-colors"
+                href="../../index.html">
+                <span class="material-symbols-outlined text-sm">arrow_back</span>
+                Volver al Sitio
+            </a>
         </div>
     </aside>
 
@@ -128,7 +131,7 @@
                     </button>
                 </div>
 
-                <!-- Tabla de datos (Limpia, sin buscador ni columnas de estado/intensidad) -->
+                <!-- Tabla de datos -->
                 <div
                     class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden border border-outline-variant/30">
                     <div class="overflow-x-auto">
@@ -342,7 +345,7 @@
                 </div>
             </div>
 
-            <!-- Drawer lateral para Crear / Editar (Alineado con el modelo de Tipos de Clase) -->
+            <!-- Drawer lateral para Crear / Editar -->
             <div class="fixed inset-0 bg-primary/40 backdrop-blur-xs z-50 transition-opacity opacity-0 pointer-events-none duration-300"
                 id="drawer-backdrop">
                 <div class="absolute inset-0" id="drawer-overlay-close"></div>
@@ -352,8 +355,7 @@
                     <div class="p-space-lg flex items-start justify-between border-b border-outline-variant/20">
                         <div>
                             <h2 class="font-headline-sm text-headline-sm text-primary font-bold">Tipo de Actividad</h2>
-                            <p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Crear o modificar
-                                disciplina</p>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Crear o modificar disciplina</p>
                         </div>
                         <button
                             class="w-9 h-9 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface-variant flex items-center justify-center transition-colors cursor-pointer"
@@ -363,28 +365,22 @@
                     </div>
 
                     <div class="flex-1 overflow-y-auto px-space-lg py-space-md flex flex-col gap-space-md">
-                        <!-- Nombre -->
                         <div class="flex flex-col gap-1.5">
-                            <label class="font-label-md text-label-md text-primary font-semibold" for="act-name">Nombre
-                                de la actividad</label>
+                            <label class="font-label-md text-label-md text-primary font-semibold" for="act-name">Nombre de la actividad</label>
                             <input
                                 class="w-full h-11 bg-surface-container-low px-space-md rounded-lg font-body-md text-body-md text-primary focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-secondary transition-all"
                                 id="act-name" placeholder="Ej. Crossfit, HIIT..." type="text" />
                         </div>
 
-                        <!-- Duración -->
                         <div class="flex flex-col gap-1.5">
-                            <label class="font-label-md text-label-md text-primary font-semibold"
-                                for="act-duration">Duración (minutos)</label>
+                            <label class="font-label-md text-label-md text-primary font-semibold" for="act-duration">Duración (minutos)</label>
                             <input
                                 class="w-full h-11 bg-surface-container-low px-space-md rounded-lg font-body-md text-body-md text-primary focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-secondary transition-all"
                                 id="act-duration" min="15" step="5" type="number" value="50" />
                         </div>
 
-                        <!-- Aforo máximo -->
                         <div class="flex flex-col gap-1.5">
-                            <label class="font-label-md text-label-md text-primary font-semibold"
-                                for="act-capacity">Aforo máximo de alumnos</label>
+                            <label class="font-label-md text-label-md text-primary font-semibold" for="act-capacity">Aforo máximo de alumnos</label>
                             <input
                                 class="w-full h-11 bg-surface-container-low px-space-md rounded-lg font-body-md text-body-md text-primary focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-secondary transition-all"
                                 id="act-capacity" min="1" type="number" value="16" />
