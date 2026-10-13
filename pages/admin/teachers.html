@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="web_dashboard" name="shell-type" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <style>
+        @layer base {
+
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                overscroll-behavior: none;
+            }
+
+            main>:first-child {
+                margin-top: 0 !important;
+            }
+
+            main>:last-child {
+                margin-bottom: 0 !important;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+        id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-secondary-fixed-variant": "#004b6f", "on-error": "#ffffff", "on-primary-fixed-variant": "#1a4b68", "secondary-fixed-dim": "#92cdfa", "on-background": "#0b1c30", "surface-container-low": "#eff4ff", "primary-container": "#013c58", "surface-dim": "#cbdbf5", "on-secondary-fixed": "#001e2f", "surface-container-highest": "#d3e4fe", "primary": "#002539", "on-error-container": "#93000a", "surface-container": "#e5eeff", "error": "#ba1a1a", "error-container": "#ffdad6", "surface-container-high": "#dce9ff", "surface-variant": "#d3e4fe", "tertiary-fixed": "#ffddb4", "secondary-fixed": "#cae6ff", "on-primary-container": "#7aa7c7", "on-tertiary": "#ffffff", "inverse-on-surface": "#eaf1ff", "secondary-container": "#95d0fd", "on-surface-variant": "#41474d", "on-tertiary-container": "#dd9200", "primary-fixed-dim": "#9fccee", "tertiary-fixed-dim": "#ffb955", "surface-container-lowest": "#ffffff", "surface-tint": "#366381", "tertiary-container": "#503200", "on-primary-fixed": "#001e2f", "secondary": "#21648c", "on-primary": "#ffffff", "primary-fixed": "#c8e6ff", "surface-bright": "#f8f9ff", "surface": "#f8f9ff", "on-tertiary-fixed-variant": "#633f00", "on-tertiary-fixed": "#291800", "inverse-surface": "#213145", "on-secondary": "#ffffff", "inverse-primary": "#9fccee", "outline": "#72787e", "on-secondary-container": "#105981", "on-surface": "#0b1c30", "outline-variant": "#c1c7ce", "background": "#f8f9ff", "tertiary": "#331e00" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-lg": "1.5rem", "space-xs": "0.25rem", "space-sm": "0.5rem", "margin-mobile": "1.25rem", "margin": "3rem", "gutter-mobile": "1rem", "margin-tablet": "2rem", "gutter": "1.5rem", "space-xl": "2.5rem", "space-md": "1rem" }, "fontFamily": { "headline-lg": ["Plus Jakarta Sans"], "headline-xl": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "label-xs": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "headline-xl-mobile": ["Plus Jakarta Sans"] }, "fontSize": { "headline-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.025em", "fontWeight": "600" }], "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.03em", "fontWeight": "700" }], "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "headline-sm": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "label-xs": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }], "body-md": ["15px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }], "headline-lg-mobile": ["26px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "400" }], "body-sm": ["13px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }], "headline-xl-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.025em", "fontWeight": "700" }] } } } };</script>
+</head>
+
+<body class="bg-background font-body-md text-on-surface antialiased">
+    <!-- Menú lateral izquierdo persistente -->
+    <aside
+        class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest border-r border-outline-variant/30 z-40 flex flex-col justify-between py-space-lg">
+        <div class="px-space-lg flex flex-col gap-space-lg">
+            <div class="flex items-center gap-space-sm">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0">
+                    <rect width="32" height="32" rx="8" fill="#013C58"/>
+                    <path d="M5 16H9L12 8L16 24L20 13L23 16H27" stroke="#F5A201" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div class="flex flex-col">
+                    <span
+                        class="font-headline-sm text-headline-sm text-primary tracking-tight font-semibold leading-tight">PulseGym</span>
+                    <span
+                        class="font-label-xs text-label-xs text-on-surface-variant uppercase tracking-wider">Administración</span>
+                </div>
+            </div>
+
+            <!-- Enlaces del menú lateral -->
+            <nav class="flex flex-col gap-space-xs mt-space-md">
+                <a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-low hover:text-on-surface transition-colors"
+                    href="index.html">
+                    <span class="material-symbols-outlined mr-space-sm text-secondary">fitness_center</span>
+                    Actividades
+                </a>
+                <a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-low hover:text-on-surface transition-colors"
+                    href="schedules.html">
+                    <span class="material-symbols-outlined mr-space-sm text-secondary">calendar_month</span>
+                    Horarios
+                </a>
+                <a aria-current="page"
+                    class="flex items-center px-space-md py-space-sm rounded-lg transition-colors bg-surface-container text-primary font-label-md font-semibold"
+                    href="teachers.html">
+                    <span class="material-symbols-outlined mr-space-sm text-secondary">badge</span>
+                    Profesores
+                </a>
+                <a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-low hover:text-on-surface transition-colors"
+                    href="members.html">
+                    <span class="material-symbols-outlined mr-space-sm text-secondary">groups</span>
+                    Socios
+                </a>
+                <a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-low hover:text-on-surface transition-colors"
+                    href="bookings.html">
+                    <span class="material-symbols-outlined mr-space-sm text-secondary">event_available</span>
+                    Reservas
+                </a>
+            </nav>
+        </div>
+
+        <div class="px-space-lg pt-space-md border-t border-outline-variant/30">
+            <a class="flex items-center gap-space-sm text-on-surface-variant font-label-sm text-label-sm hover:text-primary transition-colors"
+                href="../../index.html">
+                <span class="material-symbols-outlined text-sm">arrow_back</span>
+                Volver al Sitio
+            </a>
+        </div>
+    </aside>
+
+    <!-- Contenido principal -->
+    <div class="pl-64">
+        <main class="relative bg-background min-h-screen px-space-lg py-space-xl">
+            <div class="flex flex-col gap-space-lg w-full max-w-7xl mx-auto">
+
+                <!-- Encabezado de la página -->
+                <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-space-md">
+                    <div class="flex flex-col max-w-2xl">
+                        <h1 class="font-headline-md text-headline-md text-primary font-bold tracking-tight">Gestión de Profesores</h1>
+                        <p class="font-body-md text-body-md text-on-surface-variant mt-1">
+                            Alta y administración de entrenadores e instructores disponibles para impartir clases semanales.
+                        </p>
+                    </div>
+                    <button onclick="openTeacherModal('create')"
+                        class="inline-flex items-center justify-center gap-space-xs bg-primary-container text-on-primary font-label-md text-label-md px-space-lg py-3 rounded-lg shadow-sm hover:opacity-95 active:scale-[0.99] transition-all self-start sm:self-auto cursor-pointer"
+                        type="button">
+                        <span class="material-symbols-outlined text-[20px]">add</span>
+                        <span>Añadir Profesor</span>
+                    </button>
+                </div>
+
+                <!-- Tabla de datos (Profesores) -->
+                <div
+                    class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden border border-outline-variant/30">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr
+                                    class="bg-surface-container-low/60 text-on-surface-variant font-label-xs text-label-xs uppercase tracking-wider">
+                                    <th class="py-3.5 px-space-lg font-semibold w-24" scope="col">ID</th>
+                                    <th class="py-3.5 px-space-md font-semibold" scope="col">Nombre Completo</th>
+                                    <th class="py-3.5 px-space-lg font-semibold text-right" scope="col">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="teachers-table-body" class="divide-y divide-outline-variant/30 text-on-surface font-body-sm text-body-sm">
+                                <!-- Fila 1 -->
+                                <tr class="hover:bg-surface-container-low/40 transition-colors" id="row-teacher-1">
+                                    <td class="py-space-md px-space-lg whitespace-nowrap">
+                                        <span class="font-mono text-secondary font-semibold">#1</span>
+                                    </td>
+                                    <td class="py-space-md px-space-md whitespace-nowrap">
+                                        <span class="font-label-md text-primary font-semibold block">Marc Soler</span>
+                                    </td>
+                                    <td class="py-space-md px-space-lg text-right whitespace-nowrap">
+                                        <div class="inline-flex items-center gap-space-xs justify-end">
+                                            <button onclick="openTeacherModal('edit', 1, 'Marc Soler')"
+                                                aria-label="Editar" class="p-2 rounded-lg text-primary hover:bg-surface-container transition-colors cursor-pointer" type="button">
+                                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                                            </button>
+                                            <button onclick="openDeleteModal('row-teacher-1', 'Marc Soler')"
+                                                aria-label="Eliminar" class="p-2 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/40 transition-colors cursor-pointer" type="button">
+                                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Fila 2 -->
+                                <tr class="hover:bg-surface-container-low/40 transition-colors" id="row-teacher-2">
+                                    <td class="py-space-md px-space-lg whitespace-nowrap">
+                                        <span class="font-mono text-secondary font-semibold">#2</span>
+                                    </td>
+                                    <td class="py-space-md px-space-md whitespace-nowrap">
+                                        <span class="font-label-md text-primary font-semibold block">Elena Gómez</span>
+                                    </td>
+                                    <td class="py-space-md px-space-lg text-right whitespace-nowrap">
+                                        <div class="inline-flex items-center gap-space-xs justify-end">
+                                            <button onclick="openTeacherModal('edit', 2, 'Elena Gómez')"
+                                                aria-label="Editar" class="p-2 rounded-lg text-primary hover:bg-surface-container transition-colors cursor-pointer" type="button">
+                                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                                            </button>
+                                            <button onclick="openDeleteModal('row-teacher-2', 'Elena Gómez')"
+                                                aria-label="Eliminar" class="p-2 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/40 transition-colors cursor-pointer" type="button">
+                                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Fila 3 -->
+                                <tr class="hover:bg-surface-container-low/40 transition-colors" id="row-teacher-3">
+                                    <td class="py-space-md px-space-lg whitespace-nowrap">
+                                        <span class="font-mono text-secondary font-semibold">#3</span>
+                                    </td>
+                                    <td class="py-space-md px-space-md whitespace-nowrap">
+                                        <span class="font-label-md text-primary font-semibold block">Clara Vega</span>
+                                    </td>
+                                    <td class="py-space-md px-space-lg text-right whitespace-nowrap">
+                                        <div class="inline-flex items-center gap-space-xs justify-end">
+                                            <button onclick="openTeacherModal('edit', 3, 'Clara Vega')"
+                                                aria-label="Editar" class="p-2 rounded-lg text-primary hover:bg-surface-container transition-colors cursor-pointer" type="button">
+                                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                                            </button>
+                                            <button onclick="openDeleteModal('row-teacher-3', 'Clara Vega')"
+                                                aria-label="Eliminar" class="p-2 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/40 transition-colors cursor-pointer" type="button">
+                                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Fila 4 -->
+                                <tr class="hover:bg-surface-container-low/40 transition-colors" id="row-teacher-4">
+                                    <td class="py-space-md px-space-lg whitespace-nowrap">
+                                        <span class="font-mono text-secondary font-semibold">#4</span>
+                                    </td>
+                                    <td class="py-space-md px-space-md whitespace-nowrap">
+                                        <span class="font-label-md text-primary font-semibold block">David Rivas</span>
+                                    </td>
+                                    <td class="py-space-md px-space-lg text-right whitespace-nowrap">
+                                        <div class="inline-flex items-center gap-space-xs justify-end">
+                                            <button onclick="openTeacherModal('edit', 4, 'David Rivas')"
+                                                aria-label="Editar" class="p-2 rounded-lg text-primary hover:bg-surface-container transition-colors cursor-pointer" type="button">
+                                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                                            </button>
+                                            <button onclick="openDeleteModal('row-teacher-4', 'David Rivas')"
+                                                aria-label="Eliminar" class="p-2 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/40 transition-colors cursor-pointer" type="button">
+                                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Centrado: Crear / Editar Profesor -->
+            <div id="teacher-modal"
+                class="fixed inset-0 z-50 hidden bg-primary/40 backdrop-blur-sm flex items-center justify-center p-4">
+                <div
+                    class="bg-surface-container-lowest rounded-2xl max-w-md w-full p-space-lg shadow-2xl border border-outline-variant/30 animate-in fade-in zoom-in duration-200">
+                    
+                    <!-- Header Modal -->
+                    <div class="flex items-center justify-between pb-3 border-b border-outline-variant/20">
+                        <div>
+                            <h3 id="modal-title" class="font-headline-sm text-primary font-bold">Añadir Profesor</h3>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Ficha de instructor del centro</p>
+                        </div>
+                        <button onclick="closeTeacherModal()" class="text-outline hover:text-primary transition-colors cursor-pointer">
+                            <span class="material-symbols-outlined">close</span>
+                        </button>
+                    </div>
+
+                    <!-- Formulario del profesor (nombre: string) -->
+                    <form id="teacher-form" onsubmit="handleSaveTeacher(event)" class="py-space-md flex flex-col gap-space-md">
+                        <input type="hidden" id="modal-teacher-id" value="" />
+                        
+                        <div class="flex flex-col gap-1.5">
+                            <label class="font-label-md text-label-md text-primary font-semibold" for="modal-teacher-name">
+                                Nombre completo <span class="text-error">*</span>
+                            </label>
+                            <input id="modal-teacher-name" required
+                                class="w-full h-11 bg-surface-container-low px-space-md rounded-lg font-body-md text-body-md text-primary placeholder:text-on-surface-variant/60 focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-secondary transition-all"
+                                placeholder="Ej. Marc Soler" type="text" />
+                        </div>
+
+                        <!-- Modal Actions Footer -->
+                        <div class="flex items-center justify-end gap-2 pt-3 border-t border-outline-variant/20 mt-1">
+                            <button type="button" onclick="closeTeacherModal()"
+                                class="px-4 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low font-label-md transition-colors cursor-pointer">
+                                Cancelar
+                            </button>
+                            <button type="submit"
+                                class="px-5 py-2.5 rounded-lg bg-primary-container text-on-primary hover:opacity-95 font-label-md font-semibold transition-all shadow-sm cursor-pointer">
+                                Guardar Profesor
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Modal Centrado: Confirmación de Eliminación -->
+            <div id="delete-modal"
+                class="fixed inset-0 z-50 hidden bg-primary/40 backdrop-blur-sm flex items-center justify-center p-4">
+                <div
+                    class="bg-surface-container-lowest rounded-2xl max-w-md w-full p-space-lg shadow-2xl border border-outline-variant/30 animate-in fade-in zoom-in duration-200">
+                    <div class="flex items-center justify-between pb-3 border-b border-outline-variant/20">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-full bg-error-container text-on-error-container flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[18px]">person_remove</span>
+                            </div>
+                            <h3 class="font-headline-sm text-primary font-bold">Eliminar Profesor</h3>
+                        </div>
+                        <button onclick="closeDeleteModal()" class="text-outline hover:text-primary transition-colors cursor-pointer">
+                            <span class="material-symbols-outlined">close</span>
+                        </button>
+                    </div>
+                    <div class="py-space-md text-on-surface-variant font-body-md">
+                        <p>¿Estás seguro de que deseas eliminar a <strong class="text-primary" id="delete-teacher-name">este profesor</strong>?</p>
+                        <p class="text-body-sm text-[13px] text-outline mt-2">Si el profesor tiene clases asignadas, deberán ser reasignadas a otro instructor[cite: 14].</p>
+                    </div>
+                    <div class="flex items-center justify-end gap-2 pt-3 border-t border-outline-variant/20">
+                        <button onclick="closeDeleteModal()" class="px-4 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low font-label-md transition-colors cursor-pointer">
+                            Volver
+                        </button>
+                        <button onclick="confirmDeleteTeacher()" class="px-5 py-2 rounded-lg bg-error text-on-error hover:opacity-95 font-label-md font-semibold transition-all shadow-sm cursor-pointer">
+                            Confirmar Eliminación
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                let currentDeleteTargetId = null;
+
+                function openTeacherModal(mode, id = '', name = '') {
+                    const title = document.getElementById('modal-title');
+                    const inputId = document.getElementById('modal-teacher-id');
+                    const inputName = document.getElementById('modal-teacher-name');
+
+                    if (mode === 'edit') {
+                        title.textContent = 'Editar Profesor';
+                        inputId.value = id;
+                        inputName.value = name;
+                    } else {
+                        title.textContent = 'Añadir Profesor';
+                        document.getElementById('teacher-form').reset();
+                        inputId.value = '';
+                    }
+
+                    document.getElementById('teacher-modal').classList.remove('hidden');
+                }
+
+                function closeTeacherModal() {
+                    document.getElementById('teacher-modal').classList.add('hidden');
+                }
+
+                function handleSaveTeacher(e) {
+                    e.preventDefault();
+                    const name = document.getElementById('modal-teacher-name').value.trim();
+                    closeTeacherModal();
+                    alert(`¡Profesor "${name}" guardado con éxito en el sistema!`);
+                }
+
+                function openDeleteModal(rowId, teacherName) {
+                    currentDeleteTargetId = rowId;
+                    document.getElementById('delete-teacher-name').textContent = teacherName;
+                    document.getElementById('delete-modal').classList.remove('hidden');
+                }
+
+                function closeDeleteModal() {
+                    document.getElementById('delete-modal').classList.add('hidden');
+                    currentDeleteTargetId = null;
+                }
+
+                function confirmDeleteTeacher() {
+                    if (currentDeleteTargetId) {
+                        const row = document.getElementById(currentDeleteTargetId);
+                        if (row) {
+                            row.style.transition = 'all 0.3s ease';
+                            row.style.opacity = '0';
+                            setTimeout(() => row.remove(), 300);
+                        }
+                    }
+                    closeDeleteModal();
+                }
+
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape') {
+                        closeTeacherModal();
+                        closeDeleteModal();
+                    }
+                });
+            </script>
+        </main>
+    </div>
+</body>
+
+</html>
