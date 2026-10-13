@@ -45,7 +45,7 @@
 </head>
 
 <body class="bg-background font-body-md text-on-surface antialiased">
-<header
+  <header
     class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/90 backdrop-blur-md border-b border-outline-variant/30">
     <div
       class="h-20 max-w-[1440px] mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin flex items-center justify-between">
@@ -57,7 +57,8 @@
           </svg>
           <span class="font-headline-sm text-headline-sm text-primary tracking-tight font-semibold">PulseGym</span>
         </a>
-        <nav class="hidden md:flex items-center gap-space-lg ml-space-sm">
+        <nav class="hidden md:flex items-center gap-space-lg ml-space-sm"
+          data-active-classes="text-primary font-label-md underline underline-offset-8 decoration-2 decoration-on-tertiary-container">
           <a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors"
             href="../index.html">Actividades</a>
           <a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors"
@@ -76,7 +77,7 @@
       </div>
     </div>
   </header>
-  
+
   <main class="w-full pt-20 bg-background min-h-screen">
     <div class="flex flex-col w-full">
       <div
@@ -206,7 +207,7 @@
                 </div>
                 <div class="flex items-center gap-space-xs">
                   <a class="inline-flex items-center gap-space-xs px-space-md py-2 bg-primary text-on-primary font-label-md text-label-md rounded-lg hover:bg-primary-container transition-colors shadow-sm"
-                    data-path="horario-semanal" href="#">
+                    data-path="horario-semanal" href="calendar.html">
                     <span class="material-symbols-outlined text-[18px]">add_circle</span>
                     <span>Reservar Nueva Clase</span>
                   </a>
@@ -215,9 +216,10 @@
 
               <!-- Active Sessions Flow -->
               <div class="flex flex-col gap-space-md">
-                <!-- Card 1: Session Locked (< 2h before start) -->
+                <!-- Card 1: Session 1 -->
                 <div
-                  class="group bg-surface-container-lowest rounded-xl p-space-lg shadow-sm ring-1 ring-outline-variant/30 transition-all hover:shadow-md relative overflow-hidden">
+                  class="group bg-surface-container-lowest rounded-xl p-space-lg shadow-sm ring-1 ring-outline-variant/30 transition-all hover:shadow-md relative overflow-hidden"
+                  id="booking-res-8921">
                   <div class="absolute top-0 left-0 bottom-0 w-1.5 bg-secondary"></div>
                   <div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
                     <div class="flex items-start gap-space-md">
@@ -251,6 +253,7 @@
                     <!-- Right: Cancel Action Card 1 -->
                     <div class="flex flex-col items-start md:items-end justify-center pt-space-xs md:pt-0">
                       <button
+                        onclick="openCancelModal('booking-res-8921', 'Pilates Reformer', 'Hoy · 09:30 · Elena Miralles')"
                         class="group/btn inline-flex items-center gap-space-xs px-space-md py-2.5 rounded-lg border border-secondary text-secondary hover:bg-secondary/10 font-label-md text-label-md font-semibold transition-all duration-200 active:scale-95">
                         <span class="material-symbols-outlined text-[18px] group-hover/btn:text-error transition-colors">event_busy</span>
                         <span class="group-hover/btn:text-error transition-colors">Cancelar Reserva</span>
@@ -259,7 +262,7 @@
                   </div>
                 </div>
 
-                <!-- Card 2: Active Cancellable Session (> 2h remaining) -->
+                <!-- Card 2: Session 2 -->
                 <div
                   class="group bg-surface-container-lowest rounded-xl p-space-lg shadow-sm ring-1 ring-outline-variant/30 transition-all hover:shadow-md relative overflow-hidden"
                   id="booking-res-8922">
@@ -296,8 +299,8 @@
                     <!-- Right: Cancel Action Card 2 -->
                     <div class="flex flex-col items-start md:items-end justify-center pt-space-xs md:pt-0">
                       <button
-                        class="group/btn inline-flex items-center gap-space-xs px-space-md py-2.5 rounded-lg border border-secondary text-secondary hover:bg-secondary/10 font-label-md text-label-md font-semibold transition-all duration-200 active:scale-95"
-                        onclick="handleCancelBooking('booking-res-8922')">
+                        onclick="openCancelModal('booking-res-8922', 'Vinyasa Yoga', 'Mañana · 18:00 · Marc Soler')"
+                        class="group/btn inline-flex items-center gap-space-xs px-space-md py-2.5 rounded-lg border border-secondary text-secondary hover:bg-secondary/10 font-label-md text-label-md font-semibold transition-all duration-200 active:scale-95">
                         <span class="material-symbols-outlined text-[18px] group-hover/btn:text-error transition-colors">event_busy</span>
                         <span class="group-hover/btn:text-error transition-colors">Cancelar Reserva</span>
                       </button>
@@ -309,50 +312,108 @@
           </div>
         </div>
       </div>
-
-      <!-- Micro-interactions Script -->
-      <script>
-        function handleCancelBooking(elementId) {
-          if (confirm('¿Deseas confirmar la cancelación de tu reserva para mañana a las 18:00? El cupo se liberará automáticamente.')) {
-            const item = document.getElementById(elementId);
-            if (item) {
-              item.style.transition = 'all 0.4s ease';
-              item.style.opacity = '0';
-              item.style.transform = 'translateY(-10px)';
-              setTimeout(() => {
-                item.innerHTML = `
-                  <div class="p-space-md rounded-xl bg-surface-container flex items-center justify-between w-full">
-                    <div class="flex items-center gap-space-xs text-on-surface-variant">
-                      <span class="material-symbols-outlined text-secondary">check_circle</span>
-                      <span class="font-body-md text-body-md">Reserva cancelada con éxito. Has liberado tu plaza.</span>
-                    </div>
-                    <button onclick="location.reload()" class="font-label-sm text-label-sm text-secondary font-semibold hover:underline">Deshacer</button>
-                  </div>
-                `;
-                item.style.opacity = '1';
-                item.style.transform = 'translateY(0)';
-              }, 400);
-            }
-          }
-        }
-
-        document.getElementById('access-form').addEventListener('submit', function (e) {
-          e.preventDefault();
-          const dni = document.getElementById('dni-input').value.trim();
-          if (!dni) {
-            alert('Por favor, introduce un DNI o código de socio válido.');
-            return;
-          }
-          const banner = document.getElementById('auth-drawer');
-          banner.classList.add('ring-2', 'ring-secondary');
-          setTimeout(() => {
-            banner.classList.remove('ring-2', 'ring-secondary');
-            alert('Identificación exitosa para socio ' + dni + '. Tu panel ha sido actualizado.');
-          }, 300);
-        });
-      </script>
     </div>
+
+    <!-- Modal Personalizado de Confirmación de Cancelación -->
+    <div id="cancel-modal" class="fixed inset-0 z-50 hidden bg-primary/40 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-surface-container-lowest rounded-2xl max-w-md w-full p-space-lg shadow-2xl border border-outline-variant/30 animate-in fade-in zoom-in duration-200">
+        <div class="flex items-center justify-between pb-3 border-b border-outline-variant/20">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full bg-error-container text-on-error-container flex items-center justify-center">
+              <span class="material-symbols-outlined text-[18px]">event_busy</span>
+            </div>
+            <h3 class="font-headline-sm text-primary font-bold">Cancelar Reserva</h3>
+          </div>
+          <button onclick="closeCancelModal()" class="text-outline hover:text-primary transition-colors">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <div class="py-space-md flex flex-col gap-space-sm text-on-surface-variant font-body-md">
+          <div class="p-3 bg-surface-container-low rounded-xl">
+            <p class="font-headline-sm text-primary font-semibold" id="cancel-modal-activity">Actividad</p>
+            <p class="text-secondary font-label-sm mt-1" id="cancel-modal-time">Horario</p>
+          </div>
+          <p class="font-body-sm text-body-sm text-on-surface-variant">
+            ¿Confirmas que deseas cancelar tu asistencia? La plaza se liberará inmediatamente para otros socios.
+          </p>
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-outline-variant/20">
+          <button onclick="closeCancelModal()" class="px-4 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low font-label-md transition-colors">
+            Volver
+          </button>
+          <button onclick="confirmCancelBooking()" class="px-5 py-2 rounded-lg bg-error text-on-error hover:opacity-95 font-label-md font-semibold transition-all shadow-sm">
+            Confirmar Cancelación
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Micro-interactions Script -->
+    <script>
+      let currentBookingTargetId = null;
+
+      function openCancelModal(elementId, activityName, sessionDetails) {
+        currentBookingTargetId = elementId;
+        document.getElementById('cancel-modal-activity').textContent = activityName;
+        document.getElementById('cancel-modal-time').textContent = sessionDetails;
+        document.getElementById('cancel-modal').classList.remove('hidden');
+      }
+
+      function closeCancelModal() {
+        document.getElementById('cancel-modal').classList.add('hidden');
+        currentBookingTargetId = null;
+      }
+
+      function confirmCancelBooking() {
+        if (!currentBookingTargetId) return;
+        const item = document.getElementById(currentBookingTargetId);
+        closeCancelModal();
+
+        if (item) {
+          item.style.transition = 'all 0.4s ease';
+          item.style.opacity = '0';
+          item.style.transform = 'translateY(-10px)';
+          setTimeout(() => {
+            item.innerHTML = `
+              <div class="p-space-md rounded-xl bg-surface-container flex items-center justify-between w-full">
+                <div class="flex items-center gap-space-xs text-on-surface-variant">
+                  <span class="material-symbols-outlined text-secondary">check_circle</span>
+                  <span class="font-body-md text-body-md">Reserva cancelada con éxito. Has liberado tu plaza.</span>
+                </div>
+                <button onclick="location.reload()" class="font-label-sm text-label-sm text-secondary font-semibold hover:underline">Deshacer</button>
+              </div>
+            `;
+            item.style.opacity = '1';
+            item.style.transform = 'translateY(0)';
+          }, 400);
+        }
+      }
+
+      // Close modal on ESC key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeCancelModal();
+        }
+      });
+
+      // Login form simulation
+      document.getElementById('access-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const dni = document.getElementById('dni-input').value.trim();
+        if (!dni) {
+          alert('Por favor, introduce un DNI o código de socio válido.');
+          return;
+        }
+        const banner = document.getElementById('auth-drawer');
+        banner.classList.add('ring-2', 'ring-secondary');
+        setTimeout(() => {
+          banner.classList.remove('ring-2', 'ring-secondary');
+          alert('Identificación exitosa para socio ' + dni + '. Tu panel ha sido actualizado.');
+        }, 300);
+      });
+    </script>
   </main>
+
   <footer class="w-full bg-surface-container-lowest border-t border-outline-variant/30 py-space-xl">
     <div
       class="max-w-[1440px] mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin flex flex-col md:flex-row items-center justify-between gap-space-md">
