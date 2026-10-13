@@ -16,10 +16,22 @@
     max-width: 1440px;
     height: 100%;
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 0 1.25rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+@media (min-width: 768px) {
+    .header-container {
+        padding: 0 2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .header-container {
+        padding: 0 3rem;
+    }
 }
 
 .header-nav-group {

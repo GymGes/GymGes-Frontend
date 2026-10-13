@@ -10,7 +10,7 @@
 .footer-container {
     max-width: 1440px;
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 0 1.25rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -21,6 +21,13 @@
 @media (min-width: 768px) {
     .footer-container {
         flex-direction: row;
+        padding: 0 2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .footer-container {
+        padding: 0 3rem;
     }
 }
 
