@@ -29,64 +29,64 @@ const previewFilename = document.getElementById('preview-filename');
 async function loadActivities() {
     if (tableBody) {
         tableBody.innerHTML = `
-      <tr id="table-loading-row">
+        <tr id="table-loading-row">
         <td colspan="4" class="text-center table-state-row">
-          Cargando catálogo de actividades...
+            Cargando catálogo de actividades...
         </td>
-      </tr>
+        </tr>
     `;
     }
     activities = await activityService.getActivities();
     renderActivities();
-}
+    }
 
-// Renderizado dinámico de la tabla
-function renderActivities() {
+// 2. Renderizado dinámico de la tabla
+    function renderActivities() {
     if (!tableBody) return;
 
     if (activities.length === 0) {
-        tableBody.innerHTML = `
-      <tr>
+    tableBody.innerHTML = `
+        <tr>
         <td colspan="4" class="text-center table-state-row">
-          No hay actividades registradas en el catálogo.
+            No hay actividades registradas en el catálogo.
         </td>
-      </tr>
+        </tr>
     `;
-        return;
+    return;
     }
 
     tableBody.innerHTML = activities.map(act => `
     <tr id="activity-row-${act.id}">
-      <td>
+        <td>
         <div class="cell-activity">
-          <img class="cell-activity-img" src="${act.imageUrl}" alt="${act.name}" />
-          <div class="cell-activity-info">
+            <img class="cell-activity-img" src="${act.imageUrl}" alt="${act.name}" />
+            <div class="cell-activity-info">
             <span class="cell-activity-title">${act.name}</span>
             <span class="cell-activity-desc">${act.description || ''}</span>
-          </div>
+            </div>
         </div>
-      </td>
-      <td style="white-space: nowrap;">
+        </td>
+        <td style="white-space: nowrap;">
         <span style="display: inline-flex; align-items: center; gap: 0.35rem; color: var(--color-text-main);">
-          <span class="material-symbols-outlined" style="font-size: 16px; color: var(--color-secondary);">schedule</span>
-          ${act.duration} min
+            <span class="material-symbols-outlined" style="font-size: 16px; color: var(--color-secondary);">schedule</span>
+            ${act.duration} min
         </span>
-      </td>
-      <td style="white-space: nowrap;">
+        </td>
+        <td style="white-space: nowrap;">
         <strong style="color: var(--color-primary);">${act.capacity}</strong> plazas
-      </td>
-      <td class="text-right" style="white-space: nowrap;">
+        </td>
+        <td class="text-right" style="white-space: nowrap;">
         <div class="cell-actions">
-          <button class="btn-icon" type="button" aria-label="Editar" onclick="window.openEditModal(${act.id})">
+            <button class="btn-icon" type="button" aria-label="Editar" onclick="window.openEditModal(${act.id})">
             <span class="material-symbols-outlined" style="font-size: 18px;">edit</span>
-          </button>
-          <button class="btn-icon btn-icon-danger" type="button" aria-label="Eliminar" onclick="window.openDeleteModal(${act.id})">
+            </button>
+            <button class="btn-icon btn-icon-danger" type="button" aria-label="Eliminar" onclick="window.openDeleteModal(${act.id})">
             <span class="material-symbols-outlined" style="font-size: 18px;">delete</span>
-          </button>
+            </button>
         </div>
-      </td>
+        </td>
     </tr>
-  `).join('');
+    `).join('');
 }
 
 // Control del Modal de Crear / Editar
