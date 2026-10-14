@@ -156,3 +156,10 @@
     color: var(--color-text-muted);
     line-height: 1.5;
 }
+
+.admin-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+}
