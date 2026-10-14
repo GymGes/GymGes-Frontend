@@ -89,8 +89,32 @@
                 </button>
             </header>
         </main>
+
+        <!-- Tabla de actividades (Renderizada dinámicamente) -->
+        <section class="table-wrapper" aria-label="Listado de actividades registradas">
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Actividad</th>
+                            <th scope="col">Duración</th>
+                            <th scope="col">Aforo Máximo</th>
+                            <th scope="col" class="text-right">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="activities-table-body">
+                        <!-- Estado inicial de carga mientras Axios pide los datos al backend -->
+                        <tr id="table-loading-row">
+                            <td colspan="4" class="text-center table-state-row">
+                                Cargando catálogo de actividades...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
     </div>
-    
+
 </body>
 
 </html>
