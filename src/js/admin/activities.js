@@ -1,48 +1,10 @@
 /* src/js/admin/activities.js */
+import { activityService } from '../services/activityService.js';
 
-// 1. Datos simulados (Mock data con la estructura de la base de datos)
-let activities = [
-    {
-        id: 1,
-        name: 'Crossfit Studio',
-        duration: 50,
-        capacity: 16,
-        description: 'Entrenamiento funcional de alta cadencia combinando halterofilia y gimnásticos.',
-        imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDCbKlWkvNFcFZV6Uq59uuc6qEAlkyNXUsSfkZFTCAQfMLwYYjeSKbdGb9J7uEdvHKsPkcKVTt0s7_PNSRylpoS22kKZgQl1x_IYKYfyi-pZrO0R-CoED3AVCNyJTiuk4wHtrB4qu9ybiG2NXjCKMpwTNRMFN0waoAYTXlwnuwTbuzs9hj0fTc538UOhH_lTF45zBu4mbNUeS4teVRlTf_uedIzOowaLT3WqO42BFUoZAH8pMw2js_osw'
-    },
-    {
-        id: 2,
-        name: 'Hyrox Conditioning',
-        duration: 50,
-        capacity: 20,
-        description: 'Preparación atlética integral que fusiona carrera y trineo de empuje.',
-        imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCmnvv3hDgfaufGsKgGb1gkc9DhRk0Ojt4uh56G55qsJ_9kR1JIQ4tSaSKUNRl4vbekBmjAKGhwRv2KpxCm5LUzInEqxDuY1VO2xbSvEHLg0ur-qOWi3W06Uc8MpGipWE1BmqC6EwHKBGTWjApPcntbQk86aXTRyU1Wy5I37WgyKa-ZnoYks-LTgBkK980VapacREkhMR2-Y-YhgkNAqaR6ZyHBiFoTEJ6F_FAOS2REXF6Y8ccUF7R6Sg'
-    },
-    {
-        id: 3,
-        name: 'HIIT Circuit',
-        duration: 50,
-        capacity: 18,
-        description: 'Circuitos dinámicos por intervalos de alta intensidad metabólica.',
-        imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAyUGoypimWzJIwc6qnHC5lwHfaWZwGTE1elGN7VpqtjDSQjM8dupED9_jMN2RnIWUFEEJmgnxjDK1j_RT7nHr2y_VroohgZFzGHbKIuJ_ThlcWEEYMdOnC5QfLaXKpX6ytHQvUapyUqq2U6u76CjUi_82kMznwNK4HE4ripXsuUgYYlLeEEF0zHS0zJbclriQ93KXWWJNhAQwID7IDgU4GFWbhP4UQtvPnVc9ZATAdxbhyj3ALvJVbrg'
-    },
-    {
-        id: 4,
-        name: 'Vinyasa Yoga',
-        duration: 50,
-        capacity: 14,
-        description: 'Fluidez postural consciente y control respiratorio guiado.',
-        imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDIcYNQeYAUYurrzMAJB9Y_DfOUAyaAQfWYAI1Ec1A3AjmGG8-pP4NKcukujD5NoaIh_zH23IsEL-n2aT2VOlwkKvuA0TKGtdoEbo8ckyg_vqZsFKVGDyjlhKoDCClJb0DVS_9QslmcgeWg_aXsqZErbGVgJGqD3Hz1ROq957fY9LwtW0y1zsFehabsIJvm96NNJZMuVZ_MZ8Kz-m1RxVi62N6pzMj07uoV8yK4yufWeC4_9QzW95pjgw'
-    },
-    {
-        id: 5,
-        name: 'Pilates Reformer',
-        duration: 50,
-        capacity: 12,
-        description: 'Precisión biomecánica sobre camas de muelles.',
-        imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC1bqNH9tL8RqMEgH0Y0nofwXOuMu3j-GbUP7A5KOG1-LxoTDI-Te_gESBbGleROmyES9AgAHLGrr-pQuUeMmhntqlb_Oo8YdcTFhpGUbsqCTktd4LfOc3lF23hv7Ii4ONML8yg2uzlHxTSCcVP1J2whvA3MSKGfFz5uGtJzCWA3PYUrSMZ2aY1qGVTjQCv7jbPbpzwvOMNisnaoT6MD3uwjBvWOhb4ECCbEq8M-sTnLgyAURrztLdiLQ'
-    }
-];
+// Estado local de actividades en la vista
+let activities = [];
+let activityToDeleteId = null;
+let editingActivityId = null;
 
 // Referencias del DOM
 const tableBody = document.getElementById('activities-table-body');
@@ -63,10 +25,22 @@ const fileInput = document.getElementById('activity-file-input');
 const dropzonePreview = document.getElementById('dropzone-preview');
 const previewFilename = document.getElementById('preview-filename');
 
-let activityToDeleteId = null;
-let editingActivityId = null;
+// Cargar actividades desde el servicio (API o Fallback)
+async function loadActivities() {
+    if (tableBody) {
+        tableBody.innerHTML = `
+      <tr id="table-loading-row">
+        <td colspan="4" class="text-center table-state-row">
+          Cargando catálogo de actividades...
+        </td>
+      </tr>
+    `;
+    }
+    activities = await activityService.getActivities();
+    renderActivities();
+}
 
-// 2. Renderizado dinámico de la tabla
+// Renderizado dinámico de la tabla
 function renderActivities() {
     if (!tableBody) return;
 
@@ -88,7 +62,7 @@ function renderActivities() {
           <img class="cell-activity-img" src="${act.imageUrl}" alt="${act.name}" />
           <div class="cell-activity-info">
             <span class="cell-activity-title">${act.name}</span>
-            <span class="cell-activity-desc">${act.description}</span>
+            <span class="cell-activity-desc">${act.description || ''}</span>
           </div>
         </div>
       </td>
@@ -115,7 +89,7 @@ function renderActivities() {
   `).join('');
 }
 
-// 3. Control del Modal de Crear / Editar
+// Control del Modal de Crear / Editar
 function openModal(isEdit = false, activity = null) {
     const modalTitle = document.getElementById('modal-title');
     const inputName = document.getElementById('modal-act-name');
@@ -129,7 +103,7 @@ function openModal(isEdit = false, activity = null) {
         inputName.value = activity.name;
         inputDuration.value = activity.duration;
         inputCapacity.value = activity.capacity;
-        inputDesc.value = activity.description;
+        inputDesc.value = activity.description || '';
 
         dropzonePreview.classList.remove('hidden');
         previewFilename.textContent = `${activity.name.toLowerCase().replace(/\s+/g, '_')}_cover.jpg`;
@@ -150,7 +124,7 @@ function closeModal() {
     editingActivityId = null;
 }
 
-// 4. Control del Modal de Confirmación de Borrado
+// Control del Modal de Confirmación de Borrado
 window.openDeleteModal = function (id) {
     const target = activities.find(a => a.id === id);
     if (!target) return;
@@ -170,7 +144,7 @@ window.openEditModal = function (id) {
     if (target) openModal(true, target);
 };
 
-// 5. Event Listeners
+// Event Listeners
 btnOpenCreate?.addEventListener('click', () => openModal(false));
 btnCloseModal?.addEventListener('click', closeModal);
 btnCancelModal?.addEventListener('click', closeModal);
@@ -178,8 +152,9 @@ btnCancelModal?.addEventListener('click', closeModal);
 btnCloseDeleteModal?.addEventListener('click', closeDeleteModal);
 btnCancelDelete?.addEventListener('click', closeDeleteModal);
 
-btnConfirmDelete?.addEventListener('click', () => {
+btnConfirmDelete?.addEventListener('click', async () => {
     if (activityToDeleteId !== null) {
+        await activityService.deleteActivity(activityToDeleteId);
         activities = activities.filter(a => a.id !== activityToDeleteId);
         renderActivities();
         closeDeleteModal();
@@ -197,31 +172,23 @@ fileInput?.addEventListener('change', (e) => {
 });
 
 // Guardar formulario (Crear o Actualizar)
-activityForm?.addEventListener('submit', (e) => {
+activityForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const name = document.getElementById('modal-act-name').value.trim();
-    const duration = parseInt(document.getElementById('modal-act-duration').value, 10);
-    const capacity = parseInt(document.getElementById('modal-act-capacity').value, 10);
-    const description = document.getElementById('modal-act-desc').value.trim();
+    const activityData = {
+        name: document.getElementById('modal-act-name').value.trim(),
+        duration: parseInt(document.getElementById('modal-act-duration').value, 10),
+        capacity: parseInt(document.getElementById('modal-act-capacity').value, 10),
+        description: document.getElementById('modal-act-desc').value.trim()
+    };
 
     if (editingActivityId) {
-        const act = activities.find(a => a.id === editingActivityId);
-        if (act) {
-            act.name = name;
-            act.duration = duration;
-            act.capacity = capacity;
-            act.description = description;
-        }
+        const updated = await activityService.updateActivity(editingActivityId, activityData);
+        const index = activities.findIndex(a => a.id === editingActivityId);
+        if (index !== -1) activities[index] = updated;
     } else {
-        activities.unshift({
-            id: Date.now(),
-            name,
-            duration,
-            capacity,
-            description,
-            imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDCbKlWkvNFcFZV6Uq59uuc6qEAlkyNXUsSfkZFTCAQfMLwYYjeSKbdGb9J7uEdvHKsPkcKVTt0s7_PNSRylpoS22kKZgQl1x_IYKYfyi-pZrO0R-CoED3AVCNyJTiuk4wHtrB4qu9ybiG2NXjCKMpwTNRMFN0waoAYTXlwnuwTbuzs9hj0fTc538UOhH_lTF45zBu4mbNUeS4teVRlTf_uedIzOowaLT3WqO42BFUoZAH8pMw2js_osw'
-        });
+        const created = await activityService.createActivity(activityData);
+        activities.unshift(created);
     }
 
     renderActivities();
@@ -236,5 +203,5 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Inicializar tabla al cargar
-renderActivities();
+// Inicializar la carga al entrar a la página
+loadActivities();
