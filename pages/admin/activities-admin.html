@@ -40,7 +40,7 @@
             </div>
 
             <nav class="sidebar-nav" aria-label="Secciones de administración">
-                <a class="sidebar-link active" aria-current="page" href="index.html">
+                <a class="sidebar-link active" aria-current="page" href="activities-admin.html">
                     <span class="material-symbols-outlined" aria-hidden="true">fitness_center</span>
                     <span>Actividades</span>
                 </a>
@@ -71,50 +71,53 @@
         </footer>
     </aside>
 
-    <!-- Área de contenido -->
+    <!-- Área de contenido principal -->
     <div class="admin-layout">
         <main class="admin-main">
-            <!-- Encabezado de la vista -->
-            <header class="admin-header">
-                <div class="admin-header-info">
-                    <h1 class="admin-title">Gestión de Tipos de Actividades</h1>
-                    <p class="admin-subtitle">
-                        Configura las disciplinas del centro, su duración estándar, aforo de alumnos e imagen de
-                        portada.
-                    </p>
-                </div>
-                <button id="btn-open-create" class="btn btn-primary" type="button">
-                    <span class="material-symbols-outlined" aria-hidden="true">add</span>
-                    <span>Añadir Tipo de Actividad</span>
-                </button>
-            </header>
-        </main>
+            <div class="admin-container">
 
-        <!-- Tabla de actividades (Renderizada dinámicamente) -->
-        <section class="table-wrapper" aria-label="Listado de actividades registradas">
-            <div class="table-responsive">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th scope="col">Actividad</th>
-                            <th scope="col">Duración</th>
-                            <th scope="col">Aforo Máximo</th>
-                            <th scope="col" class="text-right">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="activities-table-body">
-                        <!-- Estado inicial de carga mientras Axios pide los datos al backend -->
-                        <tr id="table-loading-row">
-                            <td colspan="4" class="text-center table-state-row">
-                                Cargando catálogo de actividades...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <!-- Encabezado de la vista -->
+                <header class="admin-header">
+                    <div class="admin-header-info">
+                        <h1 class="admin-title">Gestión de Tipos de Actividades</h1>
+                        <p class="admin-subtitle">
+                            Configura las disciplinas del centro, su duración estándar, aforo de alumnos e imagen de
+                            portada.
+                        </p>
+                    </div>
+                    <button id="btn-open-create" class="btn btn-primary" type="button">
+                        <span class="material-symbols-outlined" aria-hidden="true">add</span>
+                        <span>Añadir Tipo de Actividad</span>
+                    </button>
+                </header>
+
+                <!-- Tabla de actividades (Renderizada dinámicamente) -->
+                <section class="table-wrapper" aria-label="Listado de actividades registradas">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Actividad</th>
+                                    <th scope="col">Duración</th>
+                                    <th scope="col">Aforo Máximo</th>
+                                    <th scope="col" class="text-right">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="activities-table-body">
+                                <!-- Estado inicial de espera para datos dinámicos vía Axios -->
+                                <tr id="table-loading-row">
+                                    <td colspan="4" class="text-center table-state-row">
+                                        Cargando catálogo de actividades...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
             </div>
-        </section>
+        </main>
     </div>
-
 </body>
 
 </html>
