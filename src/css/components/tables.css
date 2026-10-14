@@ -1,0 +1,114 @@
+/* src/css/components/tables.css */
+.table-wrapper {
+    background-color: var(--color-surface);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-surface-border);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    width: 100%;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-family: var(--font-family);
+    font-size: 0.875rem;
+}
+
+/* Cabecera de la tabla */
+.data-table th {
+    background-color: var(--color-surface-low);
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--color-surface-border);
+    white-space: nowrap;
+}
+
+/* Celdas de contenido */
+.data-table td {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--color-surface-border);
+    color: var(--color-text-main);
+    vertical-align: middle;
+}
+
+.data-table tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.data-table tbody tr:hover {
+    background-color: rgba(239, 244, 255, 0.4);
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Alineaciones y utilidades de celda */
+.text-right {
+    text-align: right;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.cell-actions {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.25rem;
+}
+
+/* Miniatura de la actividad en fila */
+.cell-activity {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.cell-activity-img {
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--radius-sm);
+    object-fit: cover;
+    flex-shrink: 0;
+    background-color: var(--color-surface-low);
+}
+
+.cell-activity-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.cell-activity-title {
+    font-weight: 600;
+    color: var(--color-primary);
+}
+
+.cell-activity-desc {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+    max-width: 24rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Estado de carga / vacío */
+.table-state-row {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    padding: 3rem 1.25rem !important;
+}

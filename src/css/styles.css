@@ -5,6 +5,9 @@
 @import './layout/grid.css';
 @import './components/cards.css';
 @import './components/banners.css';
+@import './layout/sidebar.css';
+@import './components/buttons.css';
+@import './components/tables.css';
 
 /* Reseteo y estructura base (Sticky Footer) */
 *,
