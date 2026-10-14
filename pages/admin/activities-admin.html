@@ -118,6 +118,125 @@
             </div>
         </main>
     </div>
+
+    <!-- Modal: Crear / Editar Tipo de Actividad -->
+    <div id="activity-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true"
+        aria-labelledby="modal-title">
+        <div class="modal-card">
+            <header class="modal-header">
+                <div class="modal-header-info">
+                    <h2 id="modal-title" class="modal-title">Añadir Tipo de Actividad</h2>
+                    <p class="modal-subtitle">Parámetros técnicos de la disciplina</p>
+                </div>
+                <button id="btn-close-modal" class="btn-icon" type="button" aria-label="Cerrar modal">
+                    <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                </button>
+            </header>
+
+            <form id="activity-form">
+                <!-- Nombre de la actividad -->
+                <div class="form-group">
+                    <label class="form-label" for="modal-act-name">
+                        Nombre de la actividad <span class="required">*</span>
+                    </label>
+                    <input id="modal-act-name" class="form-input" type="text" required
+                        placeholder="Ej. Pilates Reformer, Boxeo..." />
+                </div>
+
+                <!-- Duración y Aforo Máximo -->
+                <div class="form-row">
+                    <div class="form-group" style="margin-top: 0;">
+                        <label class="form-label" for="modal-act-duration">
+                            Duración (min) <span class="required">*</span>
+                        </label>
+                        <div class="input-with-icon">
+                            <input id="modal-act-duration" class="form-input" type="number" required min="15" max="180"
+                                step="5" value="50" />
+                            <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 0;">
+                        <label class="form-label" for="modal-act-capacity">
+                            Aforo máximo <span class="required">*</span>
+                        </label>
+                        <div class="input-with-icon">
+                            <input id="modal-act-capacity" class="form-input" type="number" required min="1" max="50"
+                                value="16" />
+                            <span class="material-symbols-outlined" aria-hidden="true">groups</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Descripción -->
+                <div class="form-group">
+                    <label class="form-label" for="modal-act-desc">Descripción de la disciplina</label>
+                    <textarea id="modal-act-desc" class="form-textarea" rows="3"
+                        placeholder="Describe el enfoque biomecánico, material empleado y objetivos..."></textarea>
+                    <span class="form-helper">Visible en el catálogo público para los socios.</span>
+                </div>
+
+                <!-- Portada (Cloudinary) -->
+                <div class="form-group">
+                    <label class="form-label">Imagen de portada</label>
+                    <input type="file" id="activity-file-input" accept="image/*" style="display: none;" />
+
+                    <div id="dropzone-box" class="dropzone" tabindex="0" role="button"
+                        aria-label="Subir imagen de portada">
+                        <div class="dropzone-icon">
+                            <span class="material-symbols-outlined" aria-hidden="true">cloud_upload</span>
+                        </div>
+                        <span class="dropzone-title">Haz clic para subir imagen o arrastra el archivo</span>
+                        <span class="form-helper">JPG, PNG o WEBP (Auto-optimización vía CDN)</span>
+                    </div>
+
+                    <div id="dropzone-preview" class="dropzone-preview hidden">
+                        <span id="preview-filename"
+                            style="font-size: 0.8125rem; font-weight: 600; color: var(--color-primary);">imagen.jpg</span>
+                        <span style="font-size: 0.75rem; color: var(--color-secondary); font-weight: 600;">Listo para
+                            subir</span>
+                    </div>
+                </div>
+
+                <!-- Botones de acción del formulario -->
+                <footer class="modal-footer">
+                    <button id="btn-cancel-modal" class="btn btn-secondary" type="button">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Actividad</button>
+                </footer>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Confirmación de Eliminación -->
+    <div id="delete-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true"
+        aria-labelledby="delete-modal-title">
+        <div class="modal-card modal-card-sm">
+            <header class="modal-header">
+                <div class="modal-title-with-icon">
+                    <div class="icon-badge-danger" aria-hidden="true">
+                        <span class="material-symbols-outlined">delete</span>
+                    </div>
+                    <h2 id="delete-modal-title" class="modal-title">Eliminar Actividad</h2>
+                </div>
+                <button id="btn-close-delete-modal" class="btn-icon" type="button" aria-label="Cerrar modal">
+                    <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                </button>
+            </header>
+
+            <div class="modal-body-text">
+                <p>¿Estás seguro de que deseas eliminar <strong id="delete-activity-name"
+                        style="color: var(--color-primary);">esta actividad</strong>?</p>
+                <p class="form-helper" style="margin-top: 0.5rem;">Esta acción suprimirá la disciplina del catálogo y
+                    cancelará las asignaciones horarias vinculadas.</p>
+            </div>
+
+            <footer class="modal-footer">
+                <button id="btn-cancel-delete" class="btn btn-secondary" type="button">Volver</button>
+                <button id="btn-confirm-delete" class="btn btn-danger" type="button">Confirmar Eliminación</button>
+            </footer>
+        </div>
+    </div>
+    
 </body>
 
 </html>
