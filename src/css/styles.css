@@ -6,6 +6,7 @@
 @import './components/cards.css';
 @import './components/banners.css';
 @import './layout/sidebar.css';
+@import './components/buttons.css';
 
 /* Reseteo y estructura base (Sticky Footer) */
 *,
