@@ -112,3 +112,39 @@
     font-size: 0.875rem;
     padding: 3rem 1.25rem !important;
 }
+
+/* Badges para el día semanal */
+.badge-day {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.625rem;
+    border-radius: var(--radius-full);
+    background-color: rgba(202, 230, 255, 0.6);
+    color: var(--color-primary);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.cell-subtext {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    display: block;
+    margin-top: 0.2rem;
+}
+
+.cell-time-indicator,
+.cell-teacher-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-weight: 600;
+}
+
+.cell-time-indicator {
+    color: var(--color-primary);
+}
+
+.cell-teacher-indicator {
+    color: var(--color-text-main);
+    font-weight: 500;
+}
