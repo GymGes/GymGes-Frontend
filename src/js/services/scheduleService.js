@@ -1,7 +1,5 @@
-/* src/js/services/scheduleService.js */
 import { api } from '../api/axiosClient.js';
 
-// Diccionario de actividades y profesores para enriquecer los datos mock
 export const ACTIVITIES_MAP = {
     1: { name: 'Crossfit Studio', meta: '50 min · Máx. 16 alumnos' },
     2: { name: 'Hyrox Conditioning', meta: '50 min · Máx. 20 alumnos' },
@@ -27,7 +25,6 @@ export const DAY_NAMES = {
     7: 'Domingo'
 };
 
-// Datos simulados iniciales (Mock data mientras el backend está en desarrollo)
 let mockSchedules = [
     {
         id: 1,
@@ -60,9 +57,6 @@ let mockSchedules = [
 ];
 
 export const scheduleService = {
-    /**
-     * Obtiene la lista de horarios semanales
-     */
     async getSchedules() {
         try {
             return await api.get('/schedules');
@@ -72,9 +66,7 @@ export const scheduleService = {
         }
     },
 
-    /**
-     * Crea una nueva asignación horaria
-     */
+
     async createSchedule(scheduleData) {
         try {
             return await api.post('/schedules', scheduleData);
@@ -92,9 +84,7 @@ export const scheduleService = {
         }
     },
 
-    /**
-     * Actualiza una asignación horaria existente
-     */
+
     async updateSchedule(id, scheduleData) {
         try {
             return await api.put(`/schedules/${id}`, scheduleData);
@@ -115,9 +105,7 @@ export const scheduleService = {
         }
     },
 
-    /**
-     * Elimina un horario por su ID
-     */
+
     async deleteSchedule(id) {
         try {
             await api.delete(`/schedules/${id}`);
