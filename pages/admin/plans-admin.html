@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PulseGym Admin - Gestión de Planes y Créditos</title>
+
+    <!-- Tipografía y Material Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@1/dist/axios.min.js"></script>
+
+    <!-- Hoja de estilos central -->
+    <link rel="stylesheet" href="../../src/css/styles.css" />
+</head>
+
+<body>
+    <!-- Barra lateral de navegación -->
+    <aside class="admin-sidebar" aria-label="Menú de administración">
+        <div class="sidebar-brand-group">
+            <div class="sidebar-brand">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <rect width="32" height="32" rx="8" fill="#013C58" />
+                    <path d="M5 16H9L12 8L16 24L20 13L23 16H27" stroke="#F5A201" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <div class="sidebar-brand-text">
+                    <span class="sidebar-title">PulseGym</span>
+                    <span class="sidebar-badge">Administración</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav" aria-label="Secciones de administración">
+                <a class="sidebar-link" href="activities-admin.html">
+                    <span class="material-symbols-outlined" aria-hidden="true">fitness_center</span>
+                    <span>Actividades</span>
+                </a>
+                <a class="sidebar-link" href="schedules-admin.html">
+                    <span class="material-symbols-outlined" aria-hidden="true">calendar_month</span>
+                    <span>Horarios</span>
+                </a>
+                <a class="sidebar-link" href="teachers-admin.html">
+                    <span class="material-symbols-outlined" aria-hidden="true">badge</span>
+                    <span>Profesores</span>
+                </a>
+                <a class="sidebar-link active" aria-current="page" href="plans-admin.html">
+                    <span class="material-symbols-outlined" aria-hidden="true">loyalty</span>
+                    <span>Planes</span>
+                </a>
+                <a class="sidebar-link" href="members-admin.html">
+                    <span class="material-symbols-outlined" aria-hidden="true">groups</span>
+                    <span>Socios</span>
+                </a>
+                <a class="sidebar-link" href="bookings-admin.html">
+                    <span class="material-symbols-outlined" aria-hidden="true">event_available</span>
+                    <span>Reservas</span>
+                </a>
+            </nav>
+        </div>
+
+        <footer class="sidebar-footer">
+            <a class="sidebar-back-link" href="../../index.html">
+                <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+                <span>Volver al Sitio</span>
+            </a>
+        </footer>
+    </aside>
+
+    <!-- Área de contenido principal -->
+    <div class="admin-layout">
+        <main class="admin-main">
+            <div class="admin-container">
+
+                <!-- Encabezado de la vista -->
+                <header class="admin-header">
+                    <div class="admin-header-info">
+                        <h1 class="admin-title">Gestión de Planes de Socios</h1>
+                        <p class="admin-subtitle">
+                            Configura las modalidades de suscripción y los créditos disponibles para reservar clases.
+                        </p>
+                    </div>
+                    <button id="btn-open-create-plan" class="btn btn-primary" type="button">
+                        <span class="material-symbols-outlined" aria-hidden="true">add</span>
+                        <span>Añadir Plan</span>
+                    </button>
+                </header>
+
+                <!-- Tabla de planes (Renderizada dinámicamente) -->
+                <section class="table-wrapper" aria-label="Listado de planes de suscripción">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col" style="width: 5rem;">ID</th>
+                                    <th scope="col">Nombre del Plan</th>
+                                    <th scope="col">Créditos de Clase</th>
+                                    <th scope="col" class="text-right">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="plans-table-body">
+                                <tr id="table-loading-row">
+                                    <td colspan="4" class="text-center table-state-row">
+                                        Cargando catálogo de planes...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal: Crear / Editar Plan -->
+    <div id="plan-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modal-plan-title">
+        <div class="modal-card modal-card-sm">
+            <header class="modal-header">
+                <div class="modal-header-info">
+                    <h2 id="modal-plan-title" class="modal-title">Añadir Plan</h2>
+                    <p class="modal-subtitle">Definición de tarifa y paquete de créditos</p>
+                </div>
+                <button id="btn-close-plan-modal" class="btn-icon" type="button" aria-label="Cerrar modal">
+                    <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                </button>
+            </header>
+
+            <form id="plan-form">
+                <input type="hidden" id="modal-plan-id" value="" />
+
+                <!-- Nombre del plan -->
+                <div class="form-group">
+                    <label class="form-label" for="modal-plan-name">
+                        Nombre del plan <span class="required">*</span>
+                    </label>
+                    <input id="modal-plan-name" class="form-input" type="text" required placeholder="Ej. Plan Pro 12 Clases, Ilimitado..." />
+                </div>
+
+                <!-- Créditos incluidos -->
+                <div class="form-group">
+                    <label class="form-label" for="modal-plan-credits">
+                        Créditos para clases <span class="required">*</span>
+                    </label>
+                    <div class="input-with-icon">
+                        <input id="modal-plan-credits" class="form-input" type="number" required min="1" max="100" value="8" />
+                        <span class="material-symbols-outlined" aria-hidden="true">token</span>
+                    </div>
+                    <span class="form-helper">Número de reservas semanales o mensuales que consume el socio.</span>
+                </div>
+
+                <footer class="modal-footer">
+                    <button id="btn-cancel-plan-modal" class="btn btn-secondary" type="button">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Plan</button>
+                </footer>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Confirmación de Eliminación -->
+    <div id="delete-plan-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="delete-plan-title">
+        <div class="modal-card modal-card-sm">
+            <header class="modal-header">
+                <div class="modal-title-with-icon">
+                    <div class="icon-badge-danger" aria-hidden="true">
+                        <span class="material-symbols-outlined">delete</span>
+                    </div>
+                    <h2 id="delete-plan-title" class="modal-title">Eliminar Plan</h2>
+                </div>
+                <button id="btn-close-delete-plan-modal" class="btn-icon" type="button" aria-label="Cerrar modal">
+                    <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                </button>
+            </header>
+
+            <div class="modal-body-text">
+                <p>¿Estás seguro de que deseas eliminar <strong id="delete-plan-name" style="color: var(--color-primary);">este plan</strong>?</p>
+                <p class="form-helper" style="margin-top: 0.5rem;">Los socios vinculados a este plan deberán ser reasignados a otra modalidad de suscripción.</p>
+            </div>
+
+            <footer class="modal-footer">
+                <button id="btn-cancel-delete-plan" class="btn btn-secondary" type="button">Volver</button>
+                <button id="btn-confirm-delete-plan" class="btn btn-danger" type="button">Confirmar Eliminación</button>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Script de lógica de administración de planes -->
+    <script type="module" src="../../src/js/admin/plans.js"></script>
+</body>
+
+</html>
