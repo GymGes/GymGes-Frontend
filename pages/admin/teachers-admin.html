@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PulseGym Admin - Gestión de Profesores</title>
+
+    <!-- Tipografía y Material Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@1/dist/axios.min.js"></script>
+
+    <!-- Hoja de estilos central -->
+    <link rel="stylesheet" href="../../src/css/styles.css" />
+</head>
+
+<body>
+    <!-- Barra lateral de navegación -->
+    <aside class="admin-sidebar" aria-label="Menú de administración">
+        <div class="sidebar-brand-group">
+            <div class="sidebar-brand">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <rect width="32" height="32" rx="8" fill="#013C58" />
+                    <path d="M5 16H9L12 8L16 24L20 13L23 16H27" stroke="#F5A201" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <div class="sidebar-brand-text">
+                    <span class="sidebar-title">PulseGym</span>
+                    <span class="sidebar-badge">Administración</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav" aria-label="Secciones de administración">
+                <a class="sidebar-link" href="activities-admin.html">
+                    <span class="material-symbols-outlined" aria-hidden="true">fitness_center</span>
+                    <span>Actividades</span>
+                </a>
+                <a class="sidebar-link" href="schedules-admin.html">
+                    <span class="material-symbols-outlined" aria-hidden="true">calendar_month</span>
+                    <span>Horarios</span>
+                </a>
+                <a class="sidebar-link active" aria-current="page" href="teachers-admin.html">
+                    <span class="material-symbols-outlined" aria-hidden="true">badge</span>
+                    <span>Profesores</span>
+                </a>
+                <a class="sidebar-link" href="members-admin.html">
+                    <span class="material-symbols-outlined" aria-hidden="true">groups</span>
+                    <span>Socios</span>
+                </a>
+                <a class="sidebar-link" href="bookings-admin.html">
+                    <span class="material-symbols-outlined" aria-hidden="true">event_available</span>
+                    <span>Reservas</span>
+                </a>
+            </nav>
+        </div>
+
+        <footer class="sidebar-footer">
+            <a class="sidebar-back-link" href="../../index.html">
+                <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+                <span>Volver al Sitio</span>
+            </a>
+        </footer>
+    </aside>
+
+    <!-- Área de contenido principal -->
+    <div class="admin-layout">
+        <main class="admin-main">
+            <div class="admin-container">
+
+                <!-- Encabezado de la vista -->
+                <header class="admin-header">
+                    <div class="admin-header-info">
+                        <h1 class="admin-title">Gestión de Profesores</h1>
+                        <p class="admin-subtitle">
+                            Alta y administración de entrenadores e instructores disponibles para impartir clases semanales.
+                        </p>
+                    </div>
+                    <button id="btn-open-create-teacher" class="btn btn-primary" type="button">
+                        <span class="material-symbols-outlined" aria-hidden="true">add</span>
+                        <span>Añadir Profesor</span>
+                    </button>
+                </header>
+
+                <!-- Tabla de profesores (Renderizada dinámicamente) -->
+                <section class="table-wrapper" aria-label="Listado de profesores registrados">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col" style="width: 5rem;">ID</th>
+                                    <th scope="col">Nombre Completo</th>
+                                    <th scope="col" class="text-right">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="teachers-table-body">
+                                <tr id="table-loading-row">
+                                    <td colspan="3" class="text-center table-state-row">
+                                        Cargando listado de profesores...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal: Crear / Editar Profesor -->
+    <div id="teacher-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modal-teacher-title">
+        <div class="modal-card modal-card-sm">
+            <header class="modal-header">
+                <div class="modal-header-info">
+                    <h2 id="modal-teacher-title" class="modal-title">Añadir Profesor</h2>
+                    <p class="modal-subtitle">Ficha de instructor del centro</p>
+                </div>
+                <button id="btn-close-teacher-modal" class="btn-icon" type="button" aria-label="Cerrar modal">
+                    <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                </button>
+            </header>
+
+            <form id="teacher-form">
+                <input type="hidden" id="modal-teacher-id" value="" />
+
+                <div class="form-group">
+                    <label class="form-label" for="modal-teacher-name">
+                        Nombre completo <span class="required">*</span>
+                    </label>
+                    <input id="modal-teacher-name" class="form-input" type="text" required placeholder="Ej. Marc Soler" />
+                </div>
+
+                <footer class="modal-footer">
+                    <button id="btn-cancel-teacher-modal" class="btn btn-secondary" type="button">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Profesor</button>
+                </footer>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Confirmación de Eliminación -->
+    <div id="delete-teacher-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="delete-teacher-title">
+        <div class="modal-card modal-card-sm">
+            <header class="modal-header">
+                <div class="modal-title-with-icon">
+                    <div class="icon-badge-danger" aria-hidden="true">
+                        <span class="material-symbols-outlined">person_remove</span>
+                    </div>
+                    <h2 id="delete-teacher-title" class="modal-title">Eliminar Profesor</h2>
+                </div>
+                <button id="btn-close-delete-teacher-modal" class="btn-icon" type="button" aria-label="Cerrar modal">
+                    <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                </button>
+            </header>
+
+            <div class="modal-body-text">
+                <p>¿Estás seguro de que deseas eliminar a <strong id="delete-teacher-name" style="color: var(--color-primary);">este profesor</strong>?</p>
+                <p class="form-helper" style="margin-top: 0.5rem;">Si el profesor tiene clases asignadas, deberán ser reasignadas a otro instructor.</p>
+            </div>
+
+            <footer class="modal-footer">
+                <button id="btn-cancel-delete-teacher" class="btn btn-secondary" type="button">Volver</button>
+                <button id="btn-confirm-delete-teacher" class="btn btn-danger" type="button">Confirmar Eliminación</button>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Script de lógica de administración de profesores -->
+    <script type="module" src="../../src/js/admin/teachers.js"></script>
+</body>
+
+</html>
