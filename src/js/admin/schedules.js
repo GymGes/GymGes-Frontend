@@ -1,9 +1,6 @@
 /* src/js/admin/schedules.js */
 import {
-    scheduleService,
-    ACTIVITIES_MAP,
-    TEACHERS_MAP,
-    DAY_NAMES
+    scheduleService
 } from '../services/scheduleService.js';
 
 // Estado local
@@ -156,10 +153,10 @@ function closeModal() {
     editingScheduleId = null;
 }
 
-window.openEditScheduleModal = function (id) {
-    const target = schedules.find(s => s.id === id);
-    if (target) openModal(true, target);
-};
+// window.openEditScheduleModal = function (id) {
+//     const target = schedules.find(s => s.id === id);
+//     if (target) openModal(true, target);
+// };
 
 window.openDeleteScheduleModal = function (id) {
     const target = schedules.find(s => s.id === id);

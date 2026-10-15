@@ -1,131 +1,77 @@
 /* src/js/services/scheduleService.js */
 import { api } from '../api/axiosClient.js';
 
-// Diccionario de actividades y profesores para enriquecer los datos mock
-export const ACTIVITIES_MAP = {
-    1: { name: 'Crossfit Studio', meta: '50 min · Máx. 16 alumnos' },
-    2: { name: 'Hyrox Conditioning', meta: '50 min · Máx. 20 alumnos' },
-    3: { name: 'HIIT Circuit', meta: '50 min · Máx. 18 alumnos' },
-    4: { name: 'Vinyasa Yoga', meta: '50 min · Máx. 14 alumnos' },
-    5: { name: 'Pilates Reformer', meta: '50 min · Máx. 12 alumnos' }
-};
+function mapWeeklyClass(item) {
 
-export const TEACHERS_MAP = {
-    1: 'Marc Soler',
-    2: 'Elena Gómez',
-    3: 'Clara Vega',
-    4: 'David Rivas'
-};
+    const [activityDate, timePart] = item.activity_date.split('T');
 
-export const DAY_NAMES = {
-    1: 'Lunes',
-    2: 'Martes',
-    3: 'Miércoles',
-    4: 'Jueves',
-    5: 'Viernes',
-    6: 'Sábado',
-    7: 'Domingo'
-};
-
-// Datos simulados iniciales (Mock data mientras el backend está en desarrollo)
-let mockSchedules = [
-    {
-        id: 1,
-        activityId: 2,
-        dayOfWeek: 3,
-        startTime: '07:30',
-        teacherId: 1
-    },
-    {
-        id: 2,
-        activityId: 1,
-        dayOfWeek: 3,
-        startTime: '09:00',
-        teacherId: 2
-    },
-    {
-        id: 3,
-        activityId: 5,
-        dayOfWeek: 3,
-        startTime: '18:00',
-        teacherId: 3
-    },
-    {
-        id: 4,
-        activityId: 4,
-        dayOfWeek: 4,
-        startTime: '18:00',
-        teacherId: 1
-    }
-];
-
+    return {
+        id: item.id,
+        activityId: item.activity_type_id,
+        teacherId: item.teacher_id,
+        activityDate,
+        startTime: timePart.slice(0, 5),
+        availableSpots: item.available_spots,
+    };
+}
+// Convierte los datos del formulario al formato de FastAPI
+function mapPayload(data) {
+    return {
+        activity_type_id: Number(data.activityId),
+        teacher_id: Number(data.teacherId),
+        activity_date: `${data.activityDate}T${data.startTime}:00`,
+    };
+}
 export const scheduleService = {
     /**
      * Obtiene la lista de horarios semanales
      */
     async getSchedules() {
-        try {
-            return await api.get('/schedules');
-        } catch (error) {
-            console.warn('Backend API no disponible (usando mock data de horarios):', error.message);
-            return [...mockSchedules];
-        }
+        const response = await api.get('/weekly-classes/');
+        return response.data.map(mapWeeklyClass);
     },
 
     /**
      * Crea una nueva asignación horaria
      */
     async createSchedule(scheduleData) {
-        try {
-            return await api.post('/schedules', scheduleData);
-        } catch (error) {
-            console.warn('Backend API no disponible (creando en mock data):', error.message);
-            const newSchedule = {
-                id: Date.now(),
-                activityId: Number(scheduleData.activityId),
-                dayOfWeek: Number(scheduleData.dayOfWeek),
-                startTime: scheduleData.startTime,
-                teacherId: Number(scheduleData.teacherId)
-            };
-            mockSchedules.unshift(newSchedule);
-            return newSchedule;
-        }
+        const response = await api.post(
+            '/weekly-classes/',
+            mapPayload(scheduleData)
+        );
+
+        return mapWeeklyClass(response.data);
     },
 
     /**
      * Actualiza una asignación horaria existente
      */
-    async updateSchedule(id, scheduleData) {
-        try {
-            return await api.put(`/schedules/${id}`, scheduleData);
-        } catch (error) {
-            console.warn('Backend API no disponible (actualizando en mock data):', error.message);
-            const index = mockSchedules.findIndex(s => s.id === id);
-            if (index !== -1) {
-                mockSchedules[index] = {
-                    ...mockSchedules[index],
-                    activityId: Number(scheduleData.activityId),
-                    dayOfWeek: Number(scheduleData.dayOfWeek),
-                    startTime: scheduleData.startTime,
-                    teacherId: Number(scheduleData.teacherId)
-                };
-                return mockSchedules[index];
-            }
-            throw error;
-        }
-    },
+    // async updateSchedule(id, scheduleData) {
+    //     try {
+    //         return await api.put(`/schedules/${id}`, scheduleData);
+    //     } catch (error) {
+    //         console.warn('Backend API no disponible (actualizando en mock data):', error.message);
+    //         const index = mockSchedules.findIndex(s => s.id === id);
+    //         if (index !== -1) {
+    //             mockSchedules[index] = {
+    //                 ...mockSchedules[index],
+    //                 activityId: Number(scheduleData.activityId),
+    //                 dayOfWeek: Number(scheduleData.dayOfWeek),
+    //                 startTime: scheduleData.startTime,
+    //                 teacherId: Number(scheduleData.teacherId)
+    //             };
+    //             return mockSchedules[index];
+    //         }
+    //         throw error;
+    //     }
+    // },
 
     /**
      * Elimina un horario por su ID
      */
-    async deleteSchedule(id) {
-        try {
-            await api.delete(`/schedules/${id}`);
-            return true;
-        } catch (error) {
-            console.warn('Backend API no disponible (eliminando de mock data):', error.message);
-            mockSchedules = mockSchedules.filter(s => s.id !== id);
-            return true;
-        }
-    }
+      async deleteSchedule(id) {
+        await api.delete(`/weekly-classes/${id}`);
+        return true;
+    },
+    
 };
