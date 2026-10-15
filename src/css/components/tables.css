@@ -156,3 +156,30 @@
     font-weight: 700;
     color: var(--color-secondary);
 }
+
+/* Badge para códigos de socio / DNI */
+.badge-code {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.625rem;
+    border-radius: var(--radius-full);
+    background-color: rgba(202, 230, 255, 0.6);
+    color: var(--color-primary);
+    font-family: monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+/* Badge para saldo de créditos de socio */
+.badge-credits {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.625rem;
+    border-radius: var(--radius-full);
+    background-color: var(--color-surface-low);
+    color: var(--color-secondary);
+    font-size: 0.75rem;
+    font-weight: 700;
+}
