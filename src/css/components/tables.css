@@ -148,3 +148,11 @@
     color: var(--color-text-main);
     font-weight: 500;
 }
+
+/* Estilo para identificadores numéricos en tablas */
+.cell-id {
+    font-family: monospace;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-secondary);
+}
