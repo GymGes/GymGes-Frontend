@@ -1,3 +1,4 @@
+/* src/js/admin/bookings.js */
 import { bookingService } from '../services/bookingService.js';
 import { memberService } from '../services/memberService.js';
 import {
