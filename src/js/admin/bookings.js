@@ -209,7 +209,13 @@ btnCancelDelete?.addEventListener('click', closeDeleteModal);
 btnConfirmDelete?.addEventListener('click', async () => {
     if (bookingToDeleteId !== null) {
         const target = bookings.find(b => b.id === bookingToDeleteId);
-        await bookingService.deleteBooking(bookingToDeleteId);
+        try {
+            await bookingService.deleteBooking(bookingToDeleteId);
+        } catch (error) {
+            // El backend rechaza con 400 si faltan menos de 2h para la clase
+            alert(error?.message || 'No se pudo cancelar la reserva.');
+            return;
+        }
 
         // Reembolsar 1 crédito en la sesión local al cancelar
         if (target) {
@@ -245,10 +251,17 @@ bookingForm?.addEventListener('submit', async (e) => {
         return;
     }
 
-    const newBooking = await bookingService.createBooking({
-        socio_codigo: socioCodigo,
-        clase_id: claseId
-    });
+    let newBooking;
+    try {
+        newBooking = await bookingService.createBooking({
+            socio_codigo: socioCodigo,
+            clase_id: claseId
+        });
+    } catch (error) {
+        // El backend informa del motivo: duplicada, cupo lleno, solape, sin créditos...
+        alert(error?.message || 'No se pudo registrar la reserva.');
+        return;
+    }
 
     // Descontar 1 crédito en la sesión local
     if (member) member.creditos_restantes -= 1;
