@@ -85,6 +85,54 @@
 
                 <!-- Tabla de socios (Renderizada dinámicamente) -->
                 <section class="table-wrapper" aria-label="Listado de socios registrados">
+
+                    <section
+                        class="member-search-toolbar"
+                        aria-label="Búsqueda de socios"
+                        style="display: flex; align-items: flex-end; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1rem;"
+                    >
+                        <form
+                            id="member-search-form"
+                            role="search"
+                            style="display: flex; align-items: flex-end; gap: 0.75rem; flex: 1; flex-wrap: wrap;"
+                        >
+                            <div class="form-group" style="margin: 0; flex: 1; min-width: 220px;">
+                                <label class="form-label" for="member-search-code">
+                                    Buscar socio por código
+                                </label>
+                                <input
+                                    id="member-search-code"
+                                    class="form-input"
+                                    type="search"
+                                    maxlength="9"
+                                    autocomplete="off"
+                                    placeholder="Ej. 48291034X"
+                                    style="font-family: monospace;"
+                                />
+                            </div>
+
+                            <button class="btn btn-primary" type="submit">
+                                <span class="material-symbols-outlined" aria-hidden="true">search</span>
+                                <span>Buscar</span>
+                            </button>
+                        </form>
+
+                        <button
+                            id="btn-show-all-members"
+                            class="btn btn-secondary"
+                            type="button"
+                        >
+                            Mostrar todos
+                        </button>
+
+                        <p
+                            id="member-search-feedback"
+                            role="status"
+                            aria-live="polite"
+                            style="width: 100%; margin: 0;"
+                        ></p>
+                    </section>
+
                     <div class="table-responsive">
                         <table class="data-table">
                             <thead>
