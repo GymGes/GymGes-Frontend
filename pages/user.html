@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PulseGym - Mi Espacio</title>
+
+    <!-- Axios para consumo de API -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@1/dist/axios.min.js"></script>
+
+    <!-- Única hoja de estilos central -->
+    <link rel="stylesheet" href="../src/css/styles.css" />
+</head>
+
+<body>
+    <!-- Header persistente -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="header-nav-group">
+                <a class="header-brand" href="../index.html">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <rect width="32" height="32" rx="8" fill="#013C58" />
+                        <path d="M5 16H9L12 8L16 24L20 13L23 16H27" stroke="#F5A201" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <span class="header-brand-title">PulseGym</span>
+                </a>
+
+                <nav class="header-nav" aria-label="Navegación principal">
+                    <a class="nav-link" href="../index.html">Actividades</a>
+                    <a class="nav-link" href="calendar.html">Horario Semanal</a>
+                    <a class="nav-link active" aria-current="page" href="user.html">Mi Espacio</a>
+                </nav>
+            </div>
+
+            <nav class="header-actions" aria-label="Accesos directos">
+                <a class="btn-pill btn-pill-gold" href="user.html">Acceso Socio</a>
+                <a class="btn-pill btn-pill-navy" href="admin/activities-admin.html">Acceso Admin</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="section-container" aria-labelledby="user-heading">
+            <header class="section-header">
+                <span class="section-tag">Zona de Socios</span>
+                <h1 id="user-heading" class="section-title">Mi Espacio</h1>
+                <p class="section-subtitle">
+                    Identifícate con tu código de socio para ver tus datos, reservar clases y gestionar tus reservas.
+                </p>
+            </header>
+
+            <!-- 1. Identificación del socio -->
+            <section id="login-section" class="table-wrapper" aria-label="Identificación del socio">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label class="form-label" for="input-member-code">
+                            Código de socio (DNI) <span class="required">*</span>
+                        </label>
+                        <input id="input-member-code" class="form-input" type="text" minlength="9" maxlength="9"
+                            placeholder="Ej.: 12345678Z" required autocomplete="off" />
+                        <span class="form-helper">Introduce únicamente tu código, sin contraseña.</span>
+                    </div>
+                    <p id="login-error" class="form-helper hidden" style="color: var(--color-error, #ba1a1a);"></p>
+                    <footer class="modal-footer" style="padding-left: 0; padding-right: 0;">
+                        <button type="submit" class="btn btn-primary">Acceder</button>
+                    </footer>
+                </form>
+            </section>
+
+            <!-- 2. Espacio personal (visible tras identificarse) -->
+            <div id="member-area" class="hidden">
+                <!-- Datos personales -->
+                <section class="table-wrapper" aria-label="Datos personales">
+                    <header class="admin-header">
+                        <div class="admin-header-info">
+                            <h2 class="admin-title" id="member-name">Socio</h2>
+                            <p class="admin-subtitle" id="member-detail"></p>
+                        </div>
+                        <button id="btn-logout" class="btn btn-secondary" type="button">Cambiar de socio</button>
+                    </header>
+                    <p class="banner-text" id="member-credits"></p>
+                </section>
+
+                <!-- Clases disponibles -->
+                <section class="table-wrapper" aria-label="Clases disponibles">
+                    <header class="admin-header">
+                        <div class="admin-header-info">
+                            <h2 class="admin-title">Clases disponibles</h2>
+                            <p class="admin-subtitle">Cada reserva descuenta 1 crédito de tu saldo.</p>
+                        </div>
+                    </header>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Actividad</th>
+                                    <th scope="col">Fecha y hora</th>
+                                    <th scope="col">Profesor</th>
+                                    <th scope="col">Plazas libres</th>
+                                    <th scope="col" class="text-right">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="classes-table-body">
+                                <tr>
+                                    <td colspan="5" class="text-center table-state-row">Cargando clases...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Mis reservas -->
+                <section class="table-wrapper" aria-label="Mis reservas">
+                    <header class="admin-header">
+                        <div class="admin-header-info">
+                            <h2 class="admin-title">Mis reservas</h2>
+                            <p class="admin-subtitle">Puedes cancelar hasta 2 horas antes de la clase.</p>
+                        </div>
+                    </header>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Actividad</th>
+                                    <th scope="col">Fecha y hora</th>
+                                    <th scope="col">Profesor</th>
+                                    <th scope="col" class="text-right">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookings-table-body">
+                                <tr>
+                                    <td colspan="4" class="text-center table-state-row">Cargando reservas...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer persistente -->
+    <footer class="app-footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <strong class="footer-brand-title">PulseGym</strong>
+                <span class="footer-brand-subtitle">— Boutique Movement &amp; Reformer Studio</span>
+            </div>
+            <small class="footer-copy">© 2025 PulseGym Studio. Todos los derechos reservados.</small>
+        </div>
+    </footer>
+
+    <!-- Lógica del espacio del socio (conectada al backend) -->
+    <script type="module" src="../src/js/user.js"></script>
+</body>
+
+</html>
