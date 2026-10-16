@@ -24,6 +24,7 @@ const dropzoneBox = document.getElementById('dropzone-box');
 const fileInput = document.getElementById('activity-file-input');
 const dropzonePreview = document.getElementById('dropzone-preview');
 const previewFilename = document.getElementById('preview-filename');
+const previewImage = document.getElementById('preview-image');
 
 // Cargar actividades desde el servicio (API o Fallback)
 async function loadActivities() {
@@ -105,17 +106,21 @@ function openModal(isEdit = false, activity = null) {
         inputCapacity.value = activity.capacity;
         inputDesc.value = activity.description || '';
 
+        previewImage.src = activity.imageUrl;
+        previewFilename.textContent = 'Portada actual';
         dropzonePreview.classList.remove('hidden');
-        previewFilename.textContent = `${activity.name.toLowerCase().replace(/\s+/g, '_')}_cover.jpg`;
     } else {
         editingActivityId = null;
         modalTitle.textContent = 'Añadir Tipo de Actividad';
         activityForm.reset();
         inputDuration.value = 50;
         inputCapacity.value = 16;
+        previewImage.removeAttribute('src');
+        previewFilename.textContent = 'imagen.jpg';
         dropzonePreview.classList.add('hidden');
     }
 
+    if (fileInput) fileInput.value = '';
     activityModal.classList.remove('hidden');
 }
 
@@ -166,6 +171,7 @@ dropzoneBox?.addEventListener('click', () => fileInput?.click());
 fileInput?.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (file) {
+        previewImage.src = URL.createObjectURL(file);
         previewFilename.textContent = file.name;
         dropzonePreview.classList.remove('hidden');
     }
@@ -179,7 +185,8 @@ activityForm?.addEventListener('submit', async (e) => {
         name: document.getElementById('modal-act-name').value.trim(),
         duration: parseInt(document.getElementById('modal-act-duration').value, 10),
         capacity: parseInt(document.getElementById('modal-act-capacity').value, 10),
-        description: document.getElementById('modal-act-desc').value.trim()
+        description: document.getElementById('modal-act-desc').value.trim(),
+        image: fileInput?.files[0] || null
     };
 
     if (editingActivityId) {
