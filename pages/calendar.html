@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PulseGym - Horario Semanal</title>
+
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@1/dist/axios.min.js"></script>
+
+    <!-- Hoja de estilos central -->
+    <link rel="stylesheet" href="../src/css/styles.css" />
+</head>
+
+<body>
+    <!-- Encabezado público -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="header-nav-group">
+                <a class="header-brand" href="../index.html" aria-label="PulseGym Inicio">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <rect width="32" height="32" rx="8" fill="#013C58" />
+                        <path d="M5 16H9L12 8L16 24L20 13L23 16H27" stroke="#F5A201" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <span class="header-brand-title">PulseGym</span>
+                </a>
+                <nav class="header-nav" aria-label="Navegación principal">
+                    <a class="nav-link" href="../index.html">Actividades</a>
+                    <a class="nav-link active" href="calendar.html" aria-current="page">Horario Semanal</a>
+                    <a class="nav-link" href="user.html">Mi Espacio</a>
+                </nav>
+            </div>
+
+            <div class="header-actions">
+                <a class="btn-pill btn-pill-gold" href="user.html">Acceso Socio</a>
+                <a class="btn-pill btn-pill-navy" href="admin/activities-admin.html">Acceso Admin</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+        <div class="section-container">
+
+            <!-- Encabezado de la cartelera y leyenda de estados -->
+            <header class="schedule-header">
+                <div class="schedule-header-info">
+                    <span class="section-tag">Cartelera de Sesiones</span>
+                    <h1 class="section-title">Horario Semanal</h1>
+                    <p class="section-subtitle">
+                        Elige tu disciplina y pulsa sobre la hora disponible para reservar tu plaza.
+                    </p>
+                </div>
+
+                <div class="schedule-legend" aria-label="Leyenda de disponibilidad">
+                    <span class="legend-item">
+                        <span class="legend-dot dot-available" aria-hidden="true"></span>
+                        <span>Disponible</span>
+                    </span>
+                    <span class="legend-item">
+                        <span class="legend-dot dot-reserved" aria-hidden="true"></span>
+                        <span>Reservado</span>
+                    </span>
+                    <span class="legend-item">
+                        <span class="legend-dot dot-full" aria-hidden="true"></span>
+                        <span>Completo</span>
+                    </span>
+                </div>
+            </header>
+
+            <!-- Selector Semanal (Renderizado dinámico de fechas por JS) -->
+            <nav id="schedule-week-bar" class="schedule-week-bar" aria-label="Selector de días de la semana">
+                <!-- Se inyecta dinámicamente con los días de la semana actual -->
+            </nav>
+
+            <!-- Listado de Actividades y Clases (Renderizado dinámico por JS) -->
+            <section id="schedule-list" class="schedule-list" aria-label="Sesiones programadas" aria-live="polite">
+                <div id="schedule-loading" class="schedule-state">
+                    Cargando cartelera de sesiones...
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Modal: Confirmar Reserva de Plaza -->
+    <div id="booking-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modal-booking-title">
+        <div class="modal-card">
+            <header class="modal-header">
+                <div class="modal-header-info">
+                    <h2 id="modal-booking-title" class="modal-title">Confirmar Reserva</h2>
+                    <p class="modal-subtitle">Asignación de plaza en clase grupal</p>
+                </div>
+                <button id="btn-close-booking-modal" class="btn-icon" type="button" aria-label="Cerrar modal">
+                    <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                </button>
+            </header>
+
+            <form id="client-booking-form">
+                <input type="hidden" id="modal-class-id" />
+
+                <div class="form-group">
+                    <div style="background-color: var(--color-surface-low); padding: 0.875rem 1rem; border-radius: var(--radius-sm);">
+                        <p id="modal-activity-name" style="font-weight: 700; color: var(--color-primary); font-size: 1rem;">-</p>
+                        <p id="modal-activity-details" style="font-size: 0.8125rem; color: var(--color-secondary); margin-top: 0.25rem;">-</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="modal-socio-code">
+                        Tu Código de Socio (DNI) <span class="required">*</span>
+                    </label>
+                    <input id="modal-socio-code" class="form-input" type="text" placeholder="ej. 12345678A" maxlength="9" required />
+                    <span class="form-helper">Se descontará 1 crédito de tu saldo al confirmar.</span>
+                </div>
+
+                <footer class="modal-footer">
+                    <button id="btn-cancel-booking-modal" class="btn btn-secondary" type="button">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Reservar Plaza</button>
+                </footer>
+            </form>
+        </div>
+    </div>
+
+    <!-- Pie de página público -->
+    <footer class="app-footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <span class="footer-brand-title">PulseGym</span>
+                <span class="footer-brand-subtitle">— Boutique Movement &amp; Reformer Studio</span>
+            </div>
+            <p class="footer-copy">© 2025 PulseGym Studio. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Script del controlador cliente -->
+    <script type="module" src="../src/js/client/calendar.js"></script>
+</body>
+
+</html>

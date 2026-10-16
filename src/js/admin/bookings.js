@@ -1,12 +1,24 @@
 /* src/js/admin/bookings.js */
 import { bookingService } from '../services/bookingService.js';
 import { memberService } from '../services/memberService.js';
-import {
-    scheduleService,
-    ACTIVITIES_MAP,
-    TEACHERS_MAP,
-    DAY_NAMES
-} from '../services/scheduleService.js';
+import { scheduleService } from '../services/scheduleService.js';
+import { activityService } from '../services/activityService.js';
+import { teacherService } from '../services/teacherService.js';
+
+// Días de la semana para los nombres de turnos
+const DAY_NAMES = {
+    1: 'Lunes',
+    2: 'Martes',
+    3: 'Miércoles',
+    4: 'Jueves',
+    5: 'Viernes',
+    6: 'Sábado',
+    7: 'Domingo'
+};
+
+// Diccionarios en memoria cargados dinámicamente desde el backend
+let ACTIVITIES_MAP = {};
+let TEACHERS_MAP = {};
 
 // Estado local
 let bookings = [];
@@ -32,6 +44,49 @@ const deleteBookingName = document.getElementById('delete-booking-name');
 const btnCloseDeleteModal = document.getElementById('btn-close-delete-booking-modal');
 const btnCancelDelete = document.getElementById('btn-cancel-delete-booking');
 const btnConfirmDelete = document.getElementById('btn-confirm-delete-booking');
+
+// Normalizador defensivo de sesiones (unifica camelCase y snake_case del backend)
+function normalizeSchedule(s) {
+    let dayOfWeek = s.dayOfWeek ?? s.day_of_week;
+    let startTime = s.startTime ?? s.start_time;
+    const actId = Number(s.activityId ?? s.activity_type_id ?? s.activity_id ?? 0);
+    const teachId = Number(s.teacherId ?? s.teacher_id ?? 0);
+
+    const rawDate = s.activity_date || s.activityDate || s.date;
+    if (rawDate) {
+        const d = new Date(rawDate);
+        if (!isNaN(d.getTime())) {
+            if (dayOfWeek === undefined) {
+                dayOfWeek = d.getDay() === 0 ? 7 : d.getDay();
+            }
+            if (!startTime) {
+                const hours = String(d.getHours()).padStart(2, '0');
+                const minutes = String(d.getMinutes()).padStart(2, '0');
+                startTime = `${hours}:${minutes}`;
+            }
+        }
+    }
+
+    return {
+        ...s,
+        id: s.id,
+        activityId: actId,
+        teacherId: teachId,
+        dayOfWeek: dayOfWeek || 1,
+        startTime: startTime || '00:00'
+    };
+}
+
+// Normalizador defensivo de socios
+function normalizeMember(m) {
+    return {
+        ...m,
+        codigo: m.codigo || m.code || '',
+        nombre: m.nombre || m.first_name || '',
+        apellido: m.apellido || m.last_name || '',
+        creditos_restantes: m.creditos_restantes ?? m.remaining_credits ?? 0
+    };
+}
 
 // 1. Cargar desplegables del modal (Socios y Clases disponibles)
 function populateSelects() {
@@ -82,7 +137,7 @@ selectMember?.addEventListener('change', () => {
     }
 });
 
-// 2. Carga inicial de datos
+// 2. Carga inicial de datos desde FastAPI
 async function loadData() {
     if (tableBody) {
         tableBody.innerHTML = `
@@ -94,18 +149,44 @@ async function loadData() {
     `;
     }
 
-    const [loadedBookings, loadedMembers, loadedSchedules] = await Promise.all([
-        bookingService.getBookings(),
-        memberService.getMembers(),
-        scheduleService.getSchedules()
-    ]);
+    try {
+        const [loadedBookings, loadedMembers, loadedSchedules, loadedActivities, loadedTeachers] = await Promise.all([
+            bookingService.getBookings(),
+            memberService.getMembers(),
+            scheduleService.getSchedules(),
+            activityService.getActivities(),
+            teacherService.getTeachers()
+        ]);
 
-    bookings = loadedBookings;
-    members = loadedMembers;
-    schedules = loadedSchedules;
+        // Construir mapas en memoria
+        ACTIVITIES_MAP = (loadedActivities || []).reduce((acc, a) => {
+            acc[a.id] = a;
+            return acc;
+        }, {});
 
-    populateSelects();
-    renderBookings();
+        TEACHERS_MAP = (loadedTeachers || []).reduce((acc, t) => {
+            acc[t.id] = t.name || t.nombre;
+            return acc;
+        }, {});
+
+        bookings = loadedBookings || [];
+        members = (loadedMembers || []).map(normalizeMember);
+        schedules = (loadedSchedules || []).map(normalizeSchedule);
+
+        populateSelects();
+        renderBookings();
+    } catch (error) {
+        console.error('Error cargando los datos de reservas:', error);
+        if (tableBody) {
+            tableBody.innerHTML = `
+            <tr>
+            <td colspan="6" class="text-center table-state-row" style="color: var(--color-error, #ba1a1a);">
+                Error al conectar con la API del servidor.
+            </td>
+            </tr>
+        `;
+        }
+    }
 }
 
 // 3. Renderizado de la tabla de reservas
@@ -129,7 +210,7 @@ function renderBookings() {
 
         const schedule = schedules.find(s => s.id === b.clase_id);
         const activity = schedule ? ACTIVITIES_MAP[schedule.activityId] : null;
-        const activityName = activity ? activity.name : 'Clase no encontrada';
+        const activityName = activity ? (activity.name || activity.nombre) : 'Clase no encontrada';
         const dayName = schedule ? (DAY_NAMES[schedule.dayOfWeek] || `Día ${schedule.dayOfWeek}`) : '-';
         const time = schedule ? schedule.startTime : '-';
         const teacherName = schedule ? (TEACHERS_MAP[schedule.teacherId] || 'Sin asignar') : '-';
@@ -212,7 +293,6 @@ btnConfirmDelete?.addEventListener('click', async () => {
         try {
             await bookingService.deleteBooking(bookingToDeleteId);
         } catch (error) {
-            // El backend rechaza con 400 si faltan menos de 2h para la clase
             alert(error?.message || 'No se pudo cancelar la reserva.');
             return;
         }
@@ -244,7 +324,6 @@ bookingForm?.addEventListener('submit', async (e) => {
         return;
     }
 
-    // Comprobar si ya tiene una reserva para la misma clase
     const duplicate = bookings.some(b => b.socio_codigo === socioCodigo && b.clase_id === claseId);
     if (duplicate) {
         alert('Este socio ya cuenta con una reserva activa para esta misma sesión.');
@@ -258,12 +337,10 @@ bookingForm?.addEventListener('submit', async (e) => {
             clase_id: claseId
         });
     } catch (error) {
-        // El backend informa del motivo: duplicada, cupo lleno, solape, sin créditos...
         alert(error?.message || 'No se pudo registrar la reserva.');
         return;
     }
 
-    // Descontar 1 crédito en la sesión local
     if (member) member.creditos_restantes -= 1;
 
     bookings.unshift(newBooking);
