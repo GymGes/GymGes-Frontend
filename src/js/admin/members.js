@@ -7,9 +7,14 @@ let members = [];
 let plans = [];
 let memberToDeleteCode = null;
 let editingMemberCode = null;
+let displayedMembers = null;
 
 // Elementos del DOM
 const tableBody = document.getElementById('members-table-body');
+const memberSearchForm = document.getElementById('member-search-form');
+const memberSearchCodeInput = document.getElementById('member-search-code');
+const btnShowAllMembers = document.getElementById('btn-show-all-members');
+const memberSearchFeedback = document.getElementById('member-search-feedback');
 const memberModal = document.getElementById('member-modal');
 const deleteModal = document.getElementById('delete-member-modal');
 const memberForm = document.getElementById('member-form');
@@ -73,21 +78,25 @@ async function loadMembers() {
     }
 
 // 3. Renderizado de la tabla de socios
-function renderMembers() {
+function renderMembers(membersToRender = displayedMembers ?? members) {
     if (!tableBody) return;
 
-    if (members.length === 0) {
-        tableBody.innerHTML = `
+    if (membersToRender.length === 0) {
+    const emptyMessage = displayedMembers !== null
+        ? 'No se ha encontrado ningún socio para ese código.'
+        : 'No hay socios dados de alta en el sistema.';
+
+    tableBody.innerHTML = `
         <tr>
-        <td colspan="7" class="text-center table-state-row">
-            No hay socios dados de alta en el sistema.
-        </td>
+            <td colspan="7" class="text-center table-state-row">
+                ${emptyMessage}
+            </td>
         </tr>
     `;
-        return;
-    }
+    return;
+}
 
-    tableBody.innerHTML = members.map(member => {
+    tableBody.innerHTML = membersToRender.map(member => {
         const plan = plans.find(p => p.id === member.plan_id);
         const planName = plan ? plan.name : 'Plan General';
 
@@ -195,6 +204,72 @@ function closeDeleteModal() {
     memberToDeleteCode = null;
 }
 
+memberSearchForm?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const code = memberSearchCodeInput.value.trim().toUpperCase();
+    memberSearchFeedback.textContent = '';
+
+    if (!code) {
+        memberSearchFeedback.textContent = 'Introduce el código del socio.';
+        return;
+    }
+
+    if (code.length !== 9) {
+        memberSearchFeedback.textContent =
+            'El código del socio debe tener 9 caracteres.';
+        return;
+    }
+
+    memberSearchFeedback.textContent = 'Buscando socio...';
+
+    try {
+        const member = await memberService.getMemberByCode(code);
+
+        const existingIndex = members.findIndex(
+            currentMember => currentMember.codigo === member.codigo
+        );
+
+        if (existingIndex !== -1) {
+            members[existingIndex] = member;
+        } else {
+            members.push(member);
+        }
+
+        displayedMembers = [member];
+        renderMembers();
+
+        memberSearchFeedback.textContent =
+            `Socio encontrado: ${member.nombre} ${member.apellido}.`;
+    } catch (error) {
+        if (error?.type === 'not_found') {
+            displayedMembers = [];
+            renderMembers();
+
+            memberSearchFeedback.textContent =
+                'No se ha encontrado ningún socio con ese código.';
+        } else {
+            memberSearchFeedback.textContent =
+                error?.message || 'No se pudo realizar la búsqueda.';
+        }
+    }
+});
+
+btnShowAllMembers?.addEventListener('click', async () => {
+    memberSearchCodeInput.value = '';
+    displayedMembers = null;
+    memberSearchFeedback.textContent = 'Cargando listado de socios...';
+
+    try {
+        members = await memberService.getMembers();
+        renderMembers();
+        memberSearchFeedback.textContent = 'Mostrando todos los socios.';
+    } catch (error) {
+        memberSearchFeedback.textContent =
+            error?.message || 'No se pudo cargar el listado de socios.';
+    }
+});
+
 // 5. Asignación de eventos
 btnOpenCreate?.addEventListener('click', () => openModal(false));
 btnCloseModal?.addEventListener('click', closeModal);
@@ -207,6 +282,7 @@ btnConfirmDelete?.addEventListener('click', async () => {
     if (memberToDeleteCode) {
         await memberService.deleteMember(memberToDeleteCode);
         members = members.filter(m => m.codigo !== memberToDeleteCode);
+        displayedMembers = null;
         renderMembers();
         closeDeleteModal();
     }
@@ -242,6 +318,7 @@ memberForm?.addEventListener('submit', async (e) => {
         members.unshift(created);
     }
 
+    displayedMembers = null;
     renderMembers();
     closeModal();
 });
