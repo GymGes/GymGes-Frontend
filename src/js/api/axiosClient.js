@@ -6,6 +6,13 @@ export const api = axios.create({
   timeout: 10000,
 });
 
+api.interceptors.request.use((config) => {
+  if (config.data instanceof FormData) {
+    delete config.headers["Content-Type"];
+  }
+  return config;
+});
+
 api.interceptors.response.use(
   (res) => (res.status === 204 ? true : res.data),
   (error) => Promise.reject(normalizeApiError(error))
