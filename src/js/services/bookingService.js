@@ -6,6 +6,16 @@ const toFrontend = (b) => ({
     clase_id: b.class_id
 });
 
+// El backend habla { id, member_code, class_id } y el front { id, socio_codigo, clase_id }.
+// La traducción se hace aquí, en la frontera, para no tocar el resto del front.
+const toFrontend = (b) => ({
+    id: b.id,
+    socio_codigo: b.member_code,
+    clase_id: b.class_id
+});
+
+const isNetworkError = (error) => error?.type === 'network';
+
 export const bookingService = {
 
     async getBookings() {
