@@ -6,153 +6,221 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PulseGym - Mi Espacio</title>
 
-    <!-- Axios para consumo de API -->
+    <!-- Axios -->
     <script src="https://cdn.jsdelivr.net/npm/axios@1/dist/axios.min.js"></script>
 
-    <!-- Única hoja de estilos central -->
+    <!-- Hoja de estilos central -->
     <link rel="stylesheet" href="../src/css/styles.css" />
 </head>
 
 <body>
-    <!-- Header persistente -->
+    <!-- Encabezado público -->
     <header class="app-header">
         <div class="header-container">
             <div class="header-nav-group">
-                <a class="header-brand" href="../index.html">
+                <a class="header-brand" href="../index.html" aria-label="PulseGym Inicio">
                     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                         <rect width="32" height="32" rx="8" fill="#013C58" />
                         <path d="M5 16H9L12 8L16 24L20 13L23 16H27" stroke="#F5A201" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                     <span class="header-brand-title">PulseGym</span>
                 </a>
-
                 <nav class="header-nav" aria-label="Navegación principal">
                     <a class="nav-link" href="../index.html">Actividades</a>
                     <a class="nav-link" href="calendar.html">Horario Semanal</a>
-                    <a class="nav-link active" aria-current="page" href="user.html">Mi Espacio</a>
+                    <a class="nav-link active" href="user.html" aria-current="page">Mi Espacio</a>
                 </nav>
             </div>
 
-            <nav class="header-actions" aria-label="Accesos directos">
+            <div class="header-actions">
                 <a class="btn-pill btn-pill-gold" href="user.html">Acceso Socio</a>
                 <a class="btn-pill btn-pill-navy" href="admin/activities-admin.html">Acceso Admin</a>
-            </nav>
+            </div>
         </div>
     </header>
 
+    <!-- Contenido Principal -->
     <main class="main-content">
-        <section class="section-container" aria-labelledby="user-heading">
-            <header class="section-header">
-                <span class="section-tag">Zona de Socios</span>
-                <h1 id="user-heading" class="section-title">Mi Espacio</h1>
-                <p class="section-subtitle">
-                    Identifícate con tu código de socio para ver tus datos, reservar clases y gestionar tus reservas.
-                </p>
-            </header>
+        <div class="user-container">
 
-            <!-- 1. Identificación del socio -->
-            <section id="login-section" class="table-wrapper" aria-label="Identificación del socio">
-                <form id="login-form">
-                    <div class="form-group">
-                        <label class="form-label" for="input-member-code">
-                            Código de socio (DNI) <span class="required">*</span>
-                        </label>
-                        <input id="input-member-code" class="form-input" type="text" minlength="9" maxlength="9"
-                            placeholder="Ej.: 12345678Z" required autocomplete="off" />
-                        <span class="form-helper">Introduce únicamente tu código, sin contraseña.</span>
+            <!-- Banner Hero de Identificación -->
+            <section class="auth-hero-banner" id="auth-drawer" aria-labelledby="auth-hero-title">
+                <div class="blur-circle blur-circle-blue" aria-hidden="true"></div>
+                <div class="blur-circle blur-circle-gold" aria-hidden="true"></div>
+
+                <div class="auth-hero-content">
+                    <div class="auth-hero-info">
+                        <div class="auth-badge">
+                            <span class="material-symbols-outlined" aria-hidden="true">verified_user</span>
+                            <span>Identificación Rápida</span>
+                        </div>
+                        <h1 id="auth-hero-title" class="auth-hero-title">Acceso Socio PulseGym</h1>
+                        <p class="auth-hero-desc">
+                            Introduce tu documento oficial para consultar tu ficha y gestionar tus clases activas. Sin contraseñas ni demoras.
+                        </p>
                     </div>
-                    <p id="login-error" class="form-helper hidden" style="color: var(--color-error, #ba1a1a);"></p>
-                    <footer class="modal-footer" style="padding-left: 0; padding-right: 0;">
-                        <button type="submit" class="btn btn-primary">Acceder</button>
-                    </footer>
-                </form>
+
+                    <!-- Tarjeta con campo de entrada -->
+                    <form id="auth-form" class="auth-hero-card" onsubmit="event.preventDefault(); return false;" novalidate>
+                      <div class="auth-input-row">
+                          <div class="auth-input-wrapper">
+                              <label for="dni-input" class="sr-only">Código de Socio o DNI</label>
+                              <span class="material-symbols-outlined" aria-hidden="true">badge</span>
+                              <input
+                                  type="text"
+                                  id="dni-input"
+                                  class="auth-text-input"
+                                  placeholder="ej. 12345678Z"
+                                  maxlength="9"
+                                  required
+                                  autocomplete="off"
+                              />
+                          </div>
+                          <!-- Cambiado a type="button" para que jamás recargue la página -->
+                          <button type="button" id="btn-enter-space" class="btn-auth-enter">
+                              <span>Entrar a mi espacio</span>
+                              <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+                          </button>
+                      </div>
+                      <div class="auth-micro-hint">
+                          <span class="auth-micro-dot" aria-hidden="true"></span>
+                          <span>Acceso instantáneo por código oficial</span>
+                      </div>
+                      <p id="login-error" class="auth-error-text hidden" role="alert"></p>
+                  </form>
+                </div>
             </section>
 
-            <!-- 2. Espacio personal (visible tras identificarse) -->
-            <div id="member-area" class="hidden">
-                <!-- Datos personales -->
-                <section class="table-wrapper" aria-label="Datos personales">
-                    <header class="admin-header">
-                        <div class="admin-header-info">
-                            <h2 class="admin-title" id="member-name">Socio</h2>
-                            <p class="admin-subtitle" id="member-detail"></p>
-                        </div>
-                        <button id="btn-logout" class="btn btn-secondary" type="button">Cambiar de socio</button>
-                    </header>
-                    <p class="banner-text" id="member-credits"></p>
-                </section>
+            <!-- Dashboard del Socio (Oculto inicialmente hasta autenticar) -->
+            <div id="member-dashboard" class="member-dashboard-grid hidden" aria-live="polite">
 
-                <!-- Clases disponibles -->
-                <section class="table-wrapper" aria-label="Clases disponibles">
-                    <header class="admin-header">
-                        <div class="admin-header-info">
-                            <h2 class="admin-title">Clases disponibles</h2>
-                            <p class="admin-subtitle">Cada reserva descuenta 1 crédito de tu saldo.</p>
+                <!-- Columna Izquierda: Ficha de Perfil -->
+                <aside class="member-profile-card" aria-labelledby="member-name">
+                    <header class="profile-card-header">
+                        <div>
+                            <h2 id="member-name" class="profile-card-name">-</h2>
+                            <span class="badge-active-status">
+                                <span class="badge-dot-green" aria-hidden="true"></span>
+                                <span>Socio Activo</span>
+                            </span>
                         </div>
+                        <button id="btn-logout" class="btn-profile-logout" type="button" title="Cerrar sesión">
+                            <span class="material-symbols-outlined" aria-hidden="true">logout</span>
+                            <span>Salir</span>
+                        </button>
                     </header>
-                    <div class="table-responsive">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Actividad</th>
-                                    <th scope="col">Fecha y hora</th>
-                                    <th scope="col">Profesor</th>
-                                    <th scope="col">Plazas libres</th>
-                                    <th scope="col" class="text-right">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="classes-table-body">
-                                <tr>
-                                    <td colspan="5" class="text-center table-state-row">Cargando clases...</td>
-                                </tr>
-                            </tbody>
-                        </table>
+
+                    <dl class="profile-card-fields">
+                        <div class="profile-field-row">
+                            <dt class="profile-field-label">
+                                <span class="material-symbols-outlined" aria-hidden="true">badge</span>
+                                <span>Código / DNI</span>
+                            </dt>
+                            <dd id="member-code" class="profile-field-value mono">-</dd>
+                        </div>
+                        <div class="profile-field-row">
+                            <dt class="profile-field-label">
+                                <span class="material-symbols-outlined" aria-hidden="true">cake</span>
+                                <span>Edad</span>
+                            </dt>
+                            <dd id="member-age" class="profile-field-value">-</dd>
+                        </div>
+                        <div class="profile-field-row">
+                            <dt class="profile-field-label">
+                                <span class="material-symbols-outlined" aria-hidden="true">location_city</span>
+                                <span>Ciudad</span>
+                            </dt>
+                            <dd id="member-city" class="profile-field-value">-</dd>
+                        </div>
+                        <div class="profile-field-row">
+                            <dt class="profile-field-label">
+                                <span class="material-symbols-outlined" aria-hidden="true">home</span>
+                                <span>Dirección</span>
+                            </dt>
+                            <dd id="member-address" class="profile-field-value">-</dd>
+                        </div>
+                        <div class="profile-field-row">
+                            <dt class="profile-field-label">
+                                <span class="material-symbols-outlined" aria-hidden="true">stars</span>
+                                <span>Créditos</span>
+                            </dt>
+                            <dd id="member-credits" class="profile-field-value credits">-</dd>
+                        </div>
+                    </dl>
+                </aside>
+
+                <!-- Columna Derecha: Reservas Activas -->
+                <section class="member-bookings-column" aria-labelledby="bookings-heading">
+                    <header class="bookings-top-card">
+                        <div>
+                            <div class="bookings-title-group">
+                                <h2 id="bookings-heading" class="bookings-title">Mis Reservas</h2>
+                                <span id="bookings-count" class="badge-active-count">0 Activas</span>
+                            </div>
+                            <p class="bookings-subtitle">Consulta tus próximas sesiones y gestiona tus reservas.</p>
+                        </div>
+                        <a class="btn-book-new" href="calendar.html">
+                            <span class="material-symbols-outlined" aria-hidden="true">add_circle</span>
+                            <span>Reservar Nueva Clase</span>
+                        </a>
+                    </header>
+
+                    <!-- Lista de Tarjetas de Reserva -->
+                    <div id="bookings-list" class="bookings-items-list" aria-live="polite">
+                        <!-- Se inyecta dinámicamente con JS -->
                     </div>
                 </section>
 
-                <!-- Mis reservas -->
-                <section class="table-wrapper" aria-label="Mis reservas">
-                    <header class="admin-header">
-                        <div class="admin-header-info">
-                            <h2 class="admin-title">Mis reservas</h2>
-                            <p class="admin-subtitle">Puedes cancelar hasta 2 horas antes de la clase.</p>
-                        </div>
-                    </header>
-                    <div class="table-responsive">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Actividad</th>
-                                    <th scope="col">Fecha y hora</th>
-                                    <th scope="col">Profesor</th>
-                                    <th scope="col" class="text-right">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="bookings-table-body">
-                                <tr>
-                                    <td colspan="4" class="text-center table-state-row">Cargando reservas...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
             </div>
-        </section>
+
+        </div>
     </main>
 
-    <!-- Footer persistente -->
+    <!-- Modal de Cancelación -->
+    <div id="cancel-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="cancel-modal-title">
+        <div class="modal-card modal-card-sm">
+            <header class="modal-header">
+                <div class="modal-title-with-icon">
+                    <div class="icon-badge-danger" aria-hidden="true">
+                        <span class="material-symbols-outlined">event_busy</span>
+                    </div>
+                    <h3 id="cancel-modal-title" class="modal-title">Cancelar Reserva</h3>
+                </div>
+                <button id="btn-close-cancel-modal" class="btn-icon" type="button" aria-label="Cerrar modal">
+                    <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                </button>
+            </header>
+
+            <div class="modal-body-content">
+                <div class="cancel-modal-summary">
+                    <p id="cancel-modal-activity" class="cancel-summary-title">-</p>
+                    <p id="cancel-modal-time" class="cancel-summary-subtitle">-</p>
+                </div>
+                <p class="modal-body-text">
+                    ¿Confirmas que deseas cancelar tu asistencia? La plaza se liberará inmediatamente para otros socios y recuperarás tu crédito.
+                </p>
+            </div>
+
+            <footer class="modal-footer">
+                <button id="btn-cancel-modal-back" class="btn btn-secondary" type="button">Volver</button>
+                <button id="btn-confirm-cancel-booking" class="btn btn-danger" type="button">Confirmar Cancelación</button>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Pie de página público -->
     <footer class="app-footer">
         <div class="footer-container">
             <div class="footer-brand">
-                <strong class="footer-brand-title">PulseGym</strong>
+                <span class="footer-brand-title">PulseGym</span>
                 <span class="footer-brand-subtitle">— Boutique Movement &amp; Reformer Studio</span>
             </div>
-            <small class="footer-copy">© 2025 PulseGym Studio. Todos los derechos reservados.</small>
+            <p class="footer-copy">© 2025 PulseGym Studio. Todos los derechos reservados.</p>
         </div>
     </footer>
 
-    <!-- Lógica del espacio del socio (conectada al backend) -->
-    <script type="module" src="../src/js/user.js"></script>
+    <!-- Controlador JS del cliente -->
+    <script type="module" src="../src/js/client/user.js"></script>
 </body>
 
 </html>

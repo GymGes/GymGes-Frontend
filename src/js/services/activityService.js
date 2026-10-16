@@ -1,7 +1,7 @@
 /* src/js/services/activityService.js */
 import { api } from '../api/axiosClient.js';
 
-// Imagen por defecto: el backend no gestiona imágenes de actividad
+// Imagen por defecto cuando la actividad no tiene portada en Cloudinary
 const ACTIVITY_PLACEHOLDER = 'https://lh3.googleusercontent.com/aida-public/AB6AXuDCbKlWkvNFcFZV6Uq59uuc6qEAlkyNXUsSfkZFTCAQfMLwYYjeSKbdGb9J7uEdvHKsPkcKVTt0s7_PNSRylpoS22kKZgQl1x_IYKYfyi-pZrO0R-CoED3AVCNyJTiuk4wHtrB4qu9ybiG2NXjCKMpwTNRMFN0waoAYTXlwnuwTbuzs9hj0fTc538UOhH_lTF45zBu4mbNUeS4teVRlTf_uedIzOowaLT3WqO42BFUoZAH8pMw2js_osw';
 
 // Traduce la respuesta del backend (max_students) al modelo de la vista (capacity)
@@ -12,18 +12,21 @@ function fromApi(activity) {
         duration: activity.duration,
         capacity: activity.max_students,
         description: activity.description,
-        imageUrl: ACTIVITY_PLACEHOLDER
+        imageUrl: activity.image_url || ACTIVITY_PLACEHOLDER
     };
 }
 
-// Traduce el modelo de la vista (capacity) al payload del backend (max_students)
+// Traduce el modelo de la vista al payload multipart del backend
 function toApi(activityData) {
-    return {
-        name: activityData.name,
-        duration: activityData.duration,
-        max_students: activityData.capacity,
-        description: activityData.description
-    };
+    const formData = new FormData();
+    formData.append('name', activityData.name);
+    formData.append('duration', activityData.duration);
+    formData.append('max_students', activityData.capacity);
+    formData.append('description', activityData.description ?? '');
+    if (activityData.image) {
+        formData.append('image', activityData.image);
+    }
+    return formData;
 }
 
 export const activityService = {
