@@ -4,7 +4,7 @@ import { activityService } from '../services/activityService.js';
 import { teacherService } from '../services/teacherService.js';
 import { bookingService } from '../services/bookingService.js';
 
-// Imágenes referenciales según el tipo de actividad (el backend no almacena URLs de fotos)
+// Catálogo de imágenes referenciales por tipo de actividad
 const ACTIVITY_IMAGES = {
     1: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDCbKlWkvNFcFZV6Uq59uuc6qEAlkyNXUsSfkZFTCAQfMLwYYjeSKbdGb9J7uEdvHKsPkcKVTt0s7_PNSRylpoS22kKZgQl1x_IYKYfyi-pZrO0R-CoED3AVCNyJTiuk4wHtrB4qu9ybiG2NXjCKMpwTNRMFN0waoAYTXlwnuwTbuzs9hj0fTc538UOhH_lTF45zBu4mbNUeS4teVRlTf_uedIzOowaLT3WqO42BFUoZAH8pMw2js_osw',
     2: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCmnvv3hDgfaufGsKgGb1gkc9DhRk0Ojt4uh56G55qsJ_9kR1JIQ4tSaSKUNRl4vbekBmjAKGhwRv2KpxCm5LUzInEqxDuY1VO2xbSvEHLg0ur-qOWi3W06Uc8MpGipWE1BmqC6EwHKBGTWjApPcntbQk86aXTRyU1Wy5I37WgyKa-ZnoYks-LTgBkK980VapacREkhMR2-Y-YhgkNAqaR6ZyHBiFoTEJ6F_FAOS2REXF6Y8ccUF7R6Sg',
@@ -23,7 +23,7 @@ const DAY_NAMES = {
     7: 'Domingo'
 };
 
-// Estado reactivo de la aplicación
+// Estado reactivo
 let schedules = [];
 let activitiesMap = new Map();
 let teachersMap = new Map();
@@ -44,7 +44,7 @@ const modalSocioCode = document.getElementById('modal-socio-code');
 const btnCloseModal = document.getElementById('btn-close-booking-modal');
 const btnCancelModal = document.getElementById('btn-cancel-booking-modal');
 
-// 1. Cálculo del rango semanal de fechas (Lunes a Domingo)
+// 1. Selector de fechas de la semana (Lunes a Domingo)
 function getWeekDays() {
     const now = new Date();
     const currentDayOfWeek = now.getDay() === 0 ? 7 : now.getDay();
@@ -67,7 +67,6 @@ function getWeekDays() {
     return { days, todayDayOfWeek: currentDayOfWeek };
 }
 
-// 2. Renderizado interactivo de la barra de días
 function renderWeekBar() {
     if (!weekBar) return;
 
@@ -100,20 +99,53 @@ function renderWeekBar() {
     });
 }
 
-// 3. Procesamiento de fechas provenientes de FastAPI (ISO 8601)
+// 2. Normalizadores defensivos de sesión
 function getScheduleDay(s) {
-    const dateObj = new Date(s.activity_date);
-    return dateObj.getDay() === 0 ? 7 : dateObj.getDay();
+    if (s.dayOfWeek !== undefined && s.dayOfWeek !== null) return Number(s.dayOfWeek);
+    if (s.day_of_week !== undefined && s.day_of_week !== null) return Number(s.day_of_week);
+
+    const rawDate = s.activity_date || s.activityDate || s.date;
+    if (rawDate) {
+        const d = new Date(rawDate);
+        if (!isNaN(d.getTime())) {
+            return d.getDay() === 0 ? 7 : d.getDay();
+        }
+    }
+    return null;
 }
 
 function getScheduleTime(s) {
-    const dateObj = new Date(s.activity_date);
-    const hours = String(dateObj.getHours()).padStart(2, '0');
-    const minutes = String(dateObj.getMinutes()).padStart(2, '0');
-    return `${hours}:${minutes}`;
+    if (s.startTime) return s.startTime;
+    if (s.start_time) return s.start_time;
+    if (s.time) return s.time;
+
+    const rawDate = s.activity_date || s.activityDate || s.date;
+    if (rawDate) {
+        const d = new Date(rawDate);
+        if (!isNaN(d.getTime())) {
+            const hours = String(d.getHours()).padStart(2, '0');
+            const minutes = String(d.getMinutes()).padStart(2, '0');
+            return `${hours}:${minutes}`;
+        }
+    }
+    return '00:00';
 }
 
-// 4. Renderizado dinámico de la cartelera
+function getScheduleActivityId(s) {
+    return Number(s.activity_type_id || s.activityTypeId || s.activityId || s.activity_id || 0);
+}
+
+function getScheduleTeacherId(s) {
+    return Number(s.teacher_id || s.teacherId || 0);
+}
+
+function getScheduleSpots(s) {
+    if (s.available_spots !== undefined && s.available_spots !== null) return Number(s.available_spots);
+    if (s.availableSpots !== undefined && s.availableSpots !== null) return Number(s.availableSpots);
+    return 0;
+}
+
+// 3. Renderizado de sesiones del día
 function renderScheduleForDay(day) {
     if (!scheduleList) return;
 
@@ -130,19 +162,19 @@ function renderScheduleForDay(day) {
         return;
     }
 
-    // Agrupar clases semanales por tipo de actividad
+    // Agrupar por actividad
     const groupedByActivity = {};
     dayClasses.forEach(s => {
-        const actId = s.activity_type_id;
+        const actId = getScheduleActivityId(s);
         if (!groupedByActivity[actId]) {
             groupedByActivity[actId] = [];
         }
         groupedByActivity[actId].push(s);
     });
 
-    // Ordenar cronológicamente
+    // Ordenar por hora de inicio
     Object.values(groupedByActivity).forEach(list => {
-        list.sort((a, b) => new Date(a.activity_date) - new Date(b.activity_date));
+        list.sort((a, b) => getScheduleTime(a).localeCompare(getScheduleTime(b)));
     });
 
     scheduleList.innerHTML = Object.entries(groupedByActivity).map(([actIdStr, classList]) => {
@@ -154,17 +186,20 @@ function renderScheduleForDay(day) {
         };
 
         const activityImg = ACTIVITY_IMAGES[actId] || DEFAULT_IMAGE;
+        const duration = activity.duration || activity.duracion || 50;
+        const maxStudents = activity.max_students || activity.maxStudents || 16;
 
         const slotsHtml = classList.map(s => {
             const time = getScheduleTime(s);
-            const teacher = teachersMap.get(s.teacher_id);
-            const teacherName = teacher ? teacher.name : 'Instructor';
-            const spots = Number(s.available_spots);
+            const teacher = teachersMap.get(getScheduleTeacherId(s));
+            const teacherName = teacher ? (teacher.name || teacher.nombre) : 'Instructor';
+            const spots = getScheduleSpots(s);
 
-            // Comprobar reserva previa del socio
+            // Comprobar si el socio ya tiene reservada esta sesión (contrato de toFrontend: b.socio_codigo y b.clase_id)
             const isReserved = bookings.some(b => {
-                const bCode = (b.member_code || '').toUpperCase();
-                return activeDni && bCode === activeDni && Number(b.class_id) === s.id;
+                const bCode = (b.socio_codigo || '').toUpperCase();
+                const bClassId = Number(b.clase_id);
+                return activeDni && bCode === activeDni && bClassId === s.id;
             });
 
             if (isReserved) {
@@ -204,14 +239,14 @@ function renderScheduleForDay(day) {
         <div class="activity-info-group">
             <img class="activity-thumb" src="${activityImg}" alt="${activity.name}" loading="lazy" />
             <div class="activity-details">
-            <h2 class="activity-title">${activity.name}</h2>
+            <h2 class="activity-title">${activity.name || activity.nombre || 'Actividad'}</h2>
             <div class="activity-meta">
                 <span class="meta-item">
                 <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
-                <span>${activity.duration} min</span>
+                <span>${duration} min</span>
                 </span>
                 <span class="meta-separator" aria-hidden="true">•</span>
-                <span class="meta-item">Aforo máx. ${activity.max_students}</span>
+                <span class="meta-item">Aforo máx. ${maxStudents}</span>
             </div>
             </div>
         </div>
@@ -224,20 +259,21 @@ function renderScheduleForDay(day) {
     }).join('');
 }
 
-// 5. Gestión del Modal de Reserva
+// 4. Modal de Reserva
 window.handleOpenBookingModal = function (scheduleId) {
     const schedule = schedules.find(s => s.id === scheduleId);
     if (!schedule) return;
 
     selectedSchedule = schedule;
-    const activity = activitiesMap.get(schedule.activity_type_id) || { name: 'Actividad' };
-    const teacher = teachersMap.get(schedule.teacher_id);
-    const teacherName = teacher ? teacher.name : 'Instructor';
+    const actId = getScheduleActivityId(schedule);
+    const activity = activitiesMap.get(actId) || { name: 'Actividad' };
+    const teacher = teachersMap.get(getScheduleTeacherId(schedule));
+    const teacherName = teacher ? (teacher.name || teacher.nombre) : 'Instructor';
     const time = getScheduleTime(schedule);
     const dayName = DAY_NAMES[getScheduleDay(schedule)] || 'Día';
 
     modalClassId.value = schedule.id;
-    modalActivityName.textContent = activity.name;
+    modalActivityName.textContent = activity.name || activity.nombre || 'Actividad';
     modalActivityDetails.textContent = `${dayName} a las ${time} · Impartido por ${teacherName}`;
 
     const savedDni = localStorage.getItem('pulse_member_dni') || '';
@@ -257,7 +293,7 @@ function closeBookingModal() {
 btnCloseModal?.addEventListener('click', closeBookingModal);
 btnCancelModal?.addEventListener('click', closeBookingModal);
 
-// Tramitar reserva contra FastAPI
+// Procesar Reserva contra bookingService
 bookingForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -266,7 +302,6 @@ bookingForm?.addEventListener('submit', async (e) => {
 
     if (!code || !classId) return;
 
-    // Validación reglamentaria DNI/NIE de Pydantic
     const dniRegex = /^[0-9XYZ][0-9]{7}[TRWAGMYFPDXBNJZSQVHLCKE]$/;
     if (!dniRegex.test(code)) {
         alert('Introduce un formato de DNI/NIE reglamentario (ej. 12345678Z).');
@@ -276,17 +311,21 @@ bookingForm?.addEventListener('submit', async (e) => {
     try {
         localStorage.setItem('pulse_member_dni', code);
 
-        const bookingPayload = {
-            member_code: code,
-            class_id: classId
-        };
+        // Contrato estricto según createBooking(bookingData) de bookingService.js
+        const newBooking = await bookingService.createBooking({
+            socio_codigo: code,
+            clase_id: classId
+        });
 
-        const newBooking = await bookingService.createBooking(bookingPayload);
         bookings.push(newBooking);
 
-        // Actualización local de plazas disponibles tras confirmar la reserva
-        if (selectedSchedule && typeof selectedSchedule.available_spots === 'number') {
-            selectedSchedule.available_spots = Math.max(0, selectedSchedule.available_spots - 1);
+        // Actualizar visualmente la plaza libre
+        if (selectedSchedule) {
+            if (typeof selectedSchedule.available_spots === 'number') {
+                selectedSchedule.available_spots = Math.max(0, selectedSchedule.available_spots - 1);
+            } else if (typeof selectedSchedule.availableSpots === 'number') {
+                selectedSchedule.availableSpots = Math.max(0, selectedSchedule.availableSpots - 1);
+            }
         }
 
         closeBookingModal();
@@ -296,7 +335,7 @@ bookingForm?.addEventListener('submit', async (e) => {
     } catch (error) {
         console.error('Error al registrar la reserva:', error);
         const detail = error.response?.data?.detail;
-        alert(detail ? `Error: ${detail}` : 'No se pudo completar la reserva. Comprueba tu saldo de créditos o si ya tienes una reserva activa.');
+        alert(detail ? `Error: ${detail}` : 'No se pudo completar la reserva.');
     }
 });
 
@@ -307,7 +346,7 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// 6. Carga inicial e hidratación de datos
+// 5. Carga inicial
 async function initCalendar() {
     renderWeekBar();
 
@@ -326,7 +365,7 @@ async function initCalendar() {
 
         renderScheduleForDay(selectedDay);
     } catch (err) {
-        console.error('Error al inicializar la cartelera con el backend:', err);
+        console.error('Error al inicializar la cartelera:', err);
         scheduleList.innerHTML = `
         <div class="schedule-state">
         <p style="color: var(--color-error); font-weight: 600;">No se pudo conectar con el servidor.</p>
