@@ -211,6 +211,13 @@
     border-radius: var(--radius-sm);
 }
 
+.dropzone-preview img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+}
+
 .dropzone-preview.hidden {
     display: none;
 }
