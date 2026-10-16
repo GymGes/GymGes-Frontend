@@ -395,35 +395,14 @@ scheduleForm?.addEventListener("submit", async (e) => {
     renderSchedules();
     closeModal();
   } catch (error) {
-   console.error("Error creando sesión:", error);
+    console.error("Error creando sesión:", error);
 
-    const detail = error.response?.data?.detail;
-
-    let message = "No se pudo crear la sesión.";
-
-    if (typeof detail === "string") {
-        // Errores personalizados de HTTPException
-        message = detail;
-    } else if (Array.isArray(detail)) {
-        // Errores de validación de Pydantic/FastAPI
-        message = detail
-            .map(err => {
-                const field = Array.isArray(err.loc)
-                    ? err.loc.filter(part => part !== "body").join(".")
-                    : "";
-
-                return field
-                    ? `${field}: ${err.msg}`
-                    : err.msg;
-            })
-            .join("\n");
-    } else if (error.response?.data?.message) {
-        message = error.response.data.message;
-    } else if (!error.response) {
-        message = "No se pudo conectar con el servidor.";
+    if (error.type === "conflict") {
+        alert(error.message);
+        return;
     }
 
-    alert(message);
+    alert(error.message || "No se pudo crear la sesión.");
   }
 });
 
