@@ -1,0 +1,332 @@
+/* src/js/client/user.js */
+import { bookingService } from '../services/bookingService.js';
+import { memberService } from '../services/memberService.js';
+import { scheduleService } from '../services/scheduleService.js';
+import { activityService } from '../services/activityService.js';
+import { teacherService } from '../services/teacherService.js';
+
+// Estado de la vista
+let currentMember = null;
+let schedules = [];
+let activitiesMap = new Map();
+let teachersMap = new Map();
+let memberBookings = [];
+let bookingToCancelId = null;
+
+// Elementos del DOM - Login y Contenedores
+const authForm = document.getElementById('auth-form');
+const dniInput = document.getElementById('dni-input');
+const btnEnterSpace = document.getElementById('btn-enter-space');
+const loginError = document.getElementById('login-error');
+const memberDashboard = document.getElementById('member-dashboard');
+const btnLogout = document.getElementById('btn-logout');
+
+// Elementos del DOM - Ficha del Socio
+const memberName = document.getElementById('member-name');
+const memberCode = document.getElementById('member-code');
+const memberAge = document.getElementById('member-age');
+const memberCity = document.getElementById('member-city');
+const memberAddress = document.getElementById('member-address');
+const memberCredits = document.getElementById('member-credits');
+
+// Elementos del DOM - Reservas
+const bookingsCount = document.getElementById('bookings-count');
+const bookingsList = document.getElementById('bookings-list');
+
+// Elementos del DOM - Modal de Cancelación
+const cancelModal = document.getElementById('cancel-modal');
+const cancelModalActivity = document.getElementById('cancel-modal-activity');
+const cancelModalTime = document.getElementById('cancel-modal-time');
+const btnCloseCancelModal = document.getElementById('btn-close-cancel-modal');
+const btnCancelModalBack = document.getElementById('btn-cancel-modal-back');
+const btnConfirmCancelBooking = document.getElementById('btn-confirm-cancel-booking');
+
+const DAY_NAMES = { 1: 'LUN', 2: 'MAR', 3: 'MIÉ', 4: 'JUE', 5: 'VIE', 6: 'SÁB', 7: 'DOM' };
+
+// 1. Notificaciones de error
+function showError(msg) {
+    if (!loginError) return;
+    loginError.textContent = msg;
+    loginError.classList.remove('hidden');
+}
+
+function hideError() {
+    if (!loginError) return;
+    loginError.textContent = '';
+    loginError.classList.add('hidden');
+}
+
+// 2. Normalización de fechas y horarios
+function getScheduleParts(schedule) {
+    if (!schedule) return { label: '-', time: '--:--', fullText: '-' };
+
+    const rawDate = schedule.activity_date || schedule.activityDate;
+    let time = schedule.startTime || schedule.start_time || '00:00';
+    let label = 'SESIÓN';
+    let fullText = 'Fecha no disponible';
+
+    if (rawDate) {
+        const d = new Date(rawDate);
+        if (!isNaN(d.getTime())) {
+            const today = new Date();
+            const tomorrow = new Date();
+            tomorrow.setDate(today.getDate() + 1);
+
+            const isSameDay = (d1, d2) =>
+                d1.getFullYear() === d2.getFullYear() &&
+                d1.getMonth() === d2.getMonth() &&
+                d1.getDate() === d2.getDate();
+
+            if (isSameDay(d, today)) {
+                label = 'HOY';
+            } else if (isSameDay(d, tomorrow)) {
+                label = 'MAÑANA';
+            } else {
+                const dayOfWeek = d.getDay() === 0 ? 7 : d.getDay();
+                label = DAY_NAMES[dayOfWeek] || 'DÍA';
+            }
+
+            const h = String(d.getHours()).padStart(2, '0');
+            const m = String(d.getMinutes()).padStart(2, '0');
+            time = `${h}:${m}`;
+
+            fullText = d.toLocaleDateString('es-ES', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long'
+            }) + ` a las ${time}`;
+        }
+    } else if (schedule.dayOfWeek || schedule.day_of_week) {
+        const dow = Number(schedule.dayOfWeek || schedule.day_of_week);
+        label = DAY_NAMES[dow] || 'DÍA';
+        fullText = `${label} a las ${time}`;
+    }
+
+    return { label, time, fullText };
+}
+
+// 3. Renderizado de la ficha del socio
+function renderProfile(member) {
+    const firstName = member.nombre || member.first_name || '';
+    const lastName = member.apellido || member.last_name || '';
+    memberName.textContent = `${firstName} ${lastName}`.trim() || 'Socio PulseGym';
+
+    memberCode.textContent = member.codigo || member.code || '-';
+
+    const age = member.edad ?? member.age;
+    memberAge.textContent = (typeof age === 'number' && age > 0) ? `${age} años` : '-';
+
+    memberCity.textContent = member.ciudad || member.city || '-';
+    memberAddress.textContent = member.direccion || member.address || '-';
+
+    const credits = member.creditos_restantes ?? member.remaining_credits ?? 0;
+    memberCredits.textContent = `${credits} crédito(s)`;
+}
+
+// 4. Renderizado de reservas activas
+function renderBookings() {
+    bookingsCount.textContent = `${memberBookings.length} Activas`;
+
+    if (memberBookings.length === 0) {
+        bookingsList.innerHTML = `
+            <div class="empty-bookings-box">
+                <p>No tienes reservas activas en este momento.</p>
+                <p style="font-size: 0.8125rem; margin-top: 0.35rem; color: #72787e;">
+                    Usa «Reservar Nueva Clase» para consultar el horario semanal.
+                </p>
+            </div>
+        `;
+        return;
+    }
+
+    bookingsList.innerHTML = memberBookings.map((b, index) => {
+        const schedule = schedules.find(s => s.id === b.clase_id);
+        const actId = Number(schedule?.activity_type_id || schedule?.activityId || 0);
+        const teachId = Number(schedule?.teacher_id || schedule?.teacherId || 0);
+
+        const activity = activitiesMap.get(actId) || { name: 'Clase Pulse', duration: 50 };
+        const teacher = teachersMap.get(teachId) || { name: 'Instructor' };
+        const { label, time } = getScheduleParts(schedule);
+        const stripeClass = index % 2 === 0 ? 'stripe-blue' : 'stripe-gold';
+
+        return `
+            <article class="booking-item-card" id="booking-card-${b.id}">
+                <div class="card-left-stripe ${stripeClass}"></div>
+                <div class="booking-main-info">
+                    <div class="booking-time-square">
+                        <span class="time-square-label">${label}</span>
+                        <span class="time-square-time">${time}</span>
+                    </div>
+                    <div class="booking-details-group">
+                        <h3 class="booking-activity-title">${activity.name}</h3>
+                        <div class="booking-meta-line">
+                            <span class="meta-icon-item">
+                                <span class="material-symbols-outlined" aria-hidden="true">person</span>
+                                <span>${teacher.name}</span>
+                            </span>
+                            <span class="meta-separator">•</span>
+                            <span class="meta-icon-item">
+                                <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
+                                <span>${activity.duration || 50} min</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <button class="btn-cancel-action" type="button" data-id="${b.id}">
+                        <span class="material-symbols-outlined" aria-hidden="true">event_busy</span>
+                        <span>Cancelar Reserva</span>
+                    </button>
+                </div>
+            </article>
+        `;
+    }).join('');
+
+    bookingsList.querySelectorAll('.btn-cancel-action').forEach(btn => {
+        btn.addEventListener('click', () => openCancelModal(Number(btn.dataset.id)));
+    });
+}
+
+// 5. Modal de Cancelación
+function openCancelModal(bookingId) {
+    const booking = memberBookings.find(b => b.id === bookingId);
+    if (!booking) return;
+
+    bookingToCancelId = bookingId;
+    const schedule = schedules.find(s => s.id === booking.clase_id);
+    const actId = Number(schedule?.activity_type_id || schedule?.activityId || 0);
+    const teachId = Number(schedule?.teacher_id || schedule?.teacherId || 0);
+
+    const activity = activitiesMap.get(actId) || { name: 'Clase' };
+    const teacher = teachersMap.get(teachId) || { name: 'Instructor' };
+    const { fullText } = getScheduleParts(schedule);
+
+    cancelModalActivity.textContent = activity.name;
+    cancelModalTime.textContent = `${fullText} · Impartido por ${teacher.name}`;
+    cancelModal.classList.remove('hidden');
+}
+
+function closeCancelModal() {
+    cancelModal.classList.add('hidden');
+    bookingToCancelId = null;
+}
+
+btnCloseCancelModal?.addEventListener('click', closeCancelModal);
+btnCancelModalBack?.addEventListener('click', closeCancelModal);
+
+btnConfirmCancelBooking?.addEventListener('click', async () => {
+    if (!bookingToCancelId) return;
+
+    try {
+        await bookingService.deleteBooking(bookingToCancelId);
+
+        if (currentMember) {
+            if (typeof currentMember.creditos_restantes === 'number') {
+                currentMember.creditos_restantes += 1;
+            } else if (typeof currentMember.remaining_credits === 'number') {
+                currentMember.remaining_credits += 1;
+            }
+            renderProfile(currentMember);
+        }
+
+        memberBookings = memberBookings.filter(b => b.id !== bookingToCancelId);
+        renderBookings();
+        closeCancelModal();
+    } catch (err) {
+        console.error('Error al cancelar la reserva:', err);
+        alert(err?.response?.data?.detail || err?.message || 'No se pudo cancelar la reserva.');
+    }
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !cancelModal.classList.contains('hidden')) {
+        closeCancelModal();
+    }
+});
+
+// 6. Proceso de autenticación
+async function authenticateMember(code) {
+    hideError();
+    if (btnEnterSpace) btnEnterSpace.disabled = true;
+
+    try {
+        const [membersList, loadedSchedules, loadedActivities, loadedTeachers] = await Promise.all([
+            memberService.getMembers(),
+            scheduleService.getSchedules(),
+            activityService.getActivities(),
+            teacherService.getTeachers()
+        ]);
+
+        // Búsqueda flexible que admite mayúsculas/minúsculas y ambos idiomas
+        const member = (membersList || []).find(m => {
+            const mCode = String(m.codigo || m.code || '').trim().toUpperCase();
+            return mCode === code;
+        });
+
+        if (!member) {
+            showError(`No existe ningún socio con el código "${code}".`);
+            return;
+        }
+
+        currentMember = member;
+        schedules = loadedSchedules || [];
+        activitiesMap = new Map((loadedActivities || []).map(a => [a.id, a]));
+        teachersMap = new Map((loadedTeachers || []).map(t => [t.id, t]));
+
+        localStorage.setItem('pulse_member_dni', code);
+        memberBookings = await bookingService.getBookingsByMember(code);
+
+        renderProfile(currentMember);
+        renderBookings();
+
+        memberDashboard.classList.remove('hidden');
+        if (dniInput) dniInput.value = code;
+    } catch (err) {
+        console.error('Error en el acceso del socio:', err);
+        showError('No se pudo conectar con el servidor para validar al socio.');
+    } finally {
+        if (btnEnterSpace) btnEnterSpace.disabled = false;
+    }
+}
+
+// Función unificada de envío
+function handleAuthSubmit() {
+    const code = dniInput?.value?.trim().toUpperCase();
+    if (!code) {
+        showError('Introduce tu código de socio o DNI.');
+        return;
+    }
+    authenticateMember(code);
+}
+
+// Listeners desacoplados (clic, submit y tecla Enter)
+btnEnterSpace?.addEventListener('click', handleAuthSubmit);
+
+authForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    handleAuthSubmit();
+});
+
+dniInput?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        handleAuthSubmit();
+    }
+});
+
+btnLogout?.addEventListener('click', () => {
+    localStorage.removeItem('pulse_member_dni');
+    currentMember = null;
+    memberBookings = [];
+    memberDashboard.classList.add('hidden');
+    if (dniInput) dniInput.value = '';
+    hideError();
+});
+
+// 7. Auto-login si ya existe DNI en la sesión del navegador
+const savedDni = (localStorage.getItem('pulse_member_dni') || '').trim().toUpperCase();
+if (savedDni) {
+    if (dniInput) dniInput.value = savedDni;
+    authenticateMember(savedDni);
+}

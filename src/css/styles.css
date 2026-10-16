@@ -13,6 +13,7 @@
 @import './components/tables.css';
 @import "./components/modals.css";
 @import './components/schedule.css';
+@import './components/user.css';
 
 /* Reseteo y estructura base (Sticky Footer) */
 *,
