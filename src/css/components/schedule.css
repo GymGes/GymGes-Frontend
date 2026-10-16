@@ -1,0 +1,330 @@
+/* src/css/components/schedule.css */
+
+/* Encabezado del calendario y leyenda */
+.schedule-header {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+@media (min-width: 1024px) {
+    .schedule-header {
+        flex-direction: row;
+        align-items: flex-end;
+        justify-content: space-between;
+    }
+}
+
+.schedule-legend {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.25rem;
+    background-color: var(--color-surface-low);
+    padding: 0.625rem 1.25rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-surface-border);
+    align-self: flex-start;
+}
+
+@media (min-width: 1024px) {
+    .schedule-legend {
+        align-self: auto;
+    }
+}
+
+.legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+}
+
+.legend-dot {
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: var(--radius-full);
+}
+
+.dot-available {
+    background-color: var(--color-primary-container);
+}
+
+.dot-reserved {
+    background-color: var(--color-accent-gold);
+}
+
+.dot-full {
+    background-color: var(--color-surface-border);
+}
+
+/* Selector semanal (Barra de días de la semana) */
+.schedule-week-bar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+    background-color: var(--color-surface);
+    padding: 0.5rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-surface-border);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 2rem;
+}
+
+.week-day-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 0.25rem;
+    border-radius: var(--radius-sm);
+    border: none;
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+    font-family: var(--font-family);
+}
+
+.week-day-btn:hover {
+    background-color: var(--color-surface-low);
+    color: var(--color-primary);
+}
+
+.week-day-btn.active {
+    background-color: var(--color-primary-container);
+    color: #ffffff;
+    box-shadow: var(--shadow-sm);
+}
+
+.week-day-btn .day-short {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1;
+}
+
+.week-day-btn.active .day-short {
+    color: var(--color-secondary-container, #cae6ff);
+}
+
+.week-day-btn .day-num {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-top: 0.35rem;
+    color: var(--color-primary);
+    line-height: 1;
+}
+
+.week-day-btn.active .day-num {
+    color: #ffffff;
+}
+
+/* Listado de actividades y sesiones */
+.schedule-list {
+    background-color: var(--color-surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-surface-border);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.schedule-activity-card {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    border-bottom: 1px solid var(--color-surface-border);
+    transition: background-color 0.2s ease;
+}
+
+.schedule-activity-card:last-child {
+    border-bottom: none;
+}
+
+.schedule-activity-card:hover {
+    background-color: rgba(239, 244, 255, 0.3);
+}
+
+@media (min-width: 768px) {
+    .schedule-activity-card {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+
+.activity-info-group {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    min-width: 280px;
+}
+
+.activity-thumb {
+    width: 5.5rem;
+    height: 5.5rem;
+    border-radius: var(--radius-md);
+    object-fit: cover;
+    box-shadow: var(--shadow-sm);
+    flex-shrink: 0;
+}
+
+.activity-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.activity-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    letter-spacing: -0.015em;
+}
+
+.activity-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+}
+
+.activity-meta .meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.activity-meta .material-symbols-outlined {
+    font-size: 16px;
+    color: var(--color-secondary);
+}
+
+.activity-meta .meta-separator {
+    opacity: 0.4;
+}
+
+/* Horarios / Turnos asociados */
+.slot-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+@media (min-width: 768px) {
+    .slot-list {
+        justify-content: flex-end;
+    }
+}
+
+.slot-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.625rem 1rem;
+    border-radius: var(--radius-md);
+    font-family: var(--font-family);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 6.5rem;
+    border: 1px solid transparent;
+}
+
+.slot-btn:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+/* Turno disponible */
+.slot-available {
+    background-color: var(--color-surface-low);
+    color: var(--color-primary);
+    border-color: var(--color-surface-border);
+    box-shadow: var(--shadow-sm);
+}
+
+.slot-available:hover {
+    background-color: var(--color-primary-container);
+    color: #ffffff;
+    border-color: transparent;
+}
+
+.slot-available:hover .slot-details {
+    color: var(--color-secondary-container, #cae6ff);
+}
+
+.slot-available .slot-details {
+    color: var(--color-secondary);
+}
+
+/* Turno reservado por el socio (#F5A201) */
+.slot-reserved {
+    background-color: var(--color-accent-gold);
+    color: var(--color-primary);
+    border-color: rgba(245, 162, 1, 0.4);
+    box-shadow: var(--shadow-sm);
+    cursor: default;
+}
+
+.slot-reserved .slot-time-group {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.slot-reserved .slot-icon {
+    font-size: 16px;
+    color: var(--color-primary);
+}
+
+.slot-reserved .slot-badge {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-top: 0.15rem;
+}
+
+/* Turno sin plazas (Completo) */
+.slot-full {
+    background-color: rgba(209, 213, 219, 0.3);
+    color: var(--color-text-muted);
+    border-color: var(--color-surface-border);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.slot-full .slot-time {
+    text-decoration: line-through;
+}
+
+/* Tipografía de los slots */
+.slot-time {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.slot-details {
+    font-size: 0.6875rem;
+    margin-top: 0.15rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* Estado de carga y mensajes vacíos en la cartelera */
+.schedule-state {
+    padding: 3.5rem 1.5rem;
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+}
