@@ -281,7 +281,7 @@ window.handleOpenBookingModal = function (scheduleId) {
 
     modalClassId.value = schedule.id;
     modalActivityName.textContent = activity.name || activity.nombre || 'Actividad';
-    modalActivityDetails.textContent = `${time} ${dayName} ${dateShort} · Impartido por ${teacherName}`;
+    modalActivityDetails.textContent = `${dateShort} ${dayName} ${time} · Impartido por ${teacherName}`;
 
     const savedDni = localStorage.getItem('pulse_member_dni') || '';
     if (savedDni) {
