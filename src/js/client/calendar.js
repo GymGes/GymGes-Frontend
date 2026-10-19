@@ -22,6 +22,11 @@ const DAY_NAMES = {
     6: 'Sábado',
     7: 'Domingo'
 };
+function formatDateShort(iso) {
+    if (!iso) return '';
+    const [y, m, d] = String(iso).slice(0, 10).split('-');
+    return d && m ? `${d}/${m}` : '';
+}
 
 // Estado reactivo
 let schedules = [];
@@ -202,22 +207,23 @@ function renderScheduleForDay(day) {
                 return activeDni && bCode === activeDni && bClassId === s.id;
             });
 
-            if (isReserved) {
-                return `
-            <button class="slot-btn slot-reserved" type="button" disabled aria-label="${time} - Reservado">
-            <div class="slot-time-group">
-                <span class="slot-time">${time}</span>
-                <span class="material-symbols-outlined slot-icon" aria-hidden="true">check_circle</span>
-            </div>
-            <span class="slot-badge">Reservado</span>
-            </button>
-        `;
-            }
+        const dateShort = formatDateShort(s.activityDate);
 
+        if (isReserved) {
+            return `
+             <button class="slot-btn slot-reserved" type="button" disabled aria-label="${time} - Reservado">
+               <div class="slot-time-group">
+                  <span class="slot-time">${dateShort} ${DAY_NAMES[getScheduleDay(s)]} ${time}</span>
+                  <span class="material-symbols-outlined slot-icon" aria-hidden="true">check_circle</span>
+              </div>
+              <span class="slot-badge">Reservado</span>
+          </button>
+         `;
+      }
             if (spots <= 0) {
                 return `
             <button class="slot-btn slot-full" type="button" disabled aria-label="${time} - Completo">
-            <span class="slot-time">${time}</span>
+            <span class="slot-time">${dateShort} ${DAY_NAMES[getScheduleDay(s)]} ${time}</span>
             <span class="slot-details">Completo</span>
             </button>
         `;
@@ -270,11 +276,12 @@ window.handleOpenBookingModal = function (scheduleId) {
     const teacher = teachersMap.get(getScheduleTeacherId(schedule));
     const teacherName = teacher ? (teacher.name || teacher.nombre) : 'Instructor';
     const time = getScheduleTime(schedule);
+    const dateShort = formatDateShort(schedule.activityDate);
     const dayName = DAY_NAMES[getScheduleDay(schedule)] || 'Día';
 
     modalClassId.value = schedule.id;
     modalActivityName.textContent = activity.name || activity.nombre || 'Actividad';
-    modalActivityDetails.textContent = `${dayName} a las ${time} · Impartido por ${teacherName}`;
+    modalActivityDetails.textContent = `${dateShort} ${dayName} ${time} · Impartido por ${teacherName}`;
 
     const savedDni = localStorage.getItem('pulse_member_dni') || '';
     if (savedDni) {

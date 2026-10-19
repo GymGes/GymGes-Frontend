@@ -58,15 +58,16 @@ function hideError() {
 
 // 2. Normalización de fechas y horarios
 function getScheduleParts(schedule) {
-    if (!schedule) return { label: '-', time: '--:--', fullText: '-' };
+    if (!schedule) return { label: '-', time: '--:--', long: '-', date: '' };
 
     const rawDate = schedule.activity_date || schedule.activityDate;
     let time = schedule.startTime || schedule.start_time || '00:00';
     let label = 'SESIÓN';
-    let fullText = 'Fecha no disponible';
+    let long = 'Fecha no disponible';
+    let date = '';
 
     if (rawDate) {
-        const d = new Date(rawDate);
+        const d = new Date(`${String(rawDate).slice(0, 10)}T00:00:00`);
         if (!isNaN(d.getTime())) {
             const today = new Date();
             const tomorrow = new Date();
@@ -86,23 +87,27 @@ function getScheduleParts(schedule) {
                 label = DAY_NAMES[dayOfWeek] || 'DÍA';
             }
 
-            const h = String(d.getHours()).padStart(2, '0');
-            const m = String(d.getMinutes()).padStart(2, '0');
-            time = `${h}:${m}`;
+            if (!schedule.startTime && !schedule.start_time) {
+                const h = String(d.getHours()).padStart(2, '0');
+                const m = String(d.getMinutes()).padStart(2, '0');
+                time = `${h}:${m}`;
+            }
 
-            fullText = d.toLocaleDateString('es-ES', {
+            long = d.toLocaleDateString('es-ES', {
                 weekday: 'long',
                 day: 'numeric',
                 month: 'long'
             }) + ` a las ${time}`;
+
+            date = d.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' });
         }
     } else if (schedule.dayOfWeek || schedule.day_of_week) {
         const dow = Number(schedule.dayOfWeek || schedule.day_of_week);
         label = DAY_NAMES[dow] || 'DÍA';
-        fullText = `${label} a las ${time}`;
+        long = `${label} a las ${time}`;
     }
 
-    return { label, time, fullText };
+    return { label, time, long, date };
 }
 
 // 3. Renderizado de la ficha del socio
@@ -146,7 +151,7 @@ function renderBookings() {
 
         const activity = activitiesMap.get(actId) || { name: 'Clase Pulse', duration: 50 };
         const teacher = teachersMap.get(teachId) || { name: 'Instructor' };
-        const { label, time } = getScheduleParts(schedule);
+        const { label, time, date } = getScheduleParts(schedule);
         const stripeClass = index % 2 === 0 ? 'stripe-blue' : 'stripe-gold';
 
         return `
@@ -154,7 +159,7 @@ function renderBookings() {
                 <div class="card-left-stripe ${stripeClass}"></div>
                 <div class="booking-main-info">
                     <div class="booking-time-square">
-                        <span class="time-square-label">${label}</span>
+                        <span class="time-square-label">${date} ${label}</span>
                         <span class="time-square-time">${time}</span>
                     </div>
                     <div class="booking-details-group">
@@ -200,10 +205,10 @@ function openCancelModal(bookingId) {
 
     const activity = activitiesMap.get(actId) || { name: 'Clase' };
     const teacher = teachersMap.get(teachId) || { name: 'Instructor' };
-    const { fullText } = getScheduleParts(schedule);
+    const { long } = getScheduleParts(schedule);
 
     cancelModalActivity.textContent = activity.name;
-    cancelModalTime.textContent = `${fullText} · Impartido por ${teacher.name}`;
+    cancelModalTime.textContent = `${long} · Impartido por ${teacher.name}`;
     cancelModal.classList.remove('hidden');
 }
 

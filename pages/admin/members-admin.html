@@ -86,8 +86,9 @@
                 <!-- Tabla de socios (Renderizada dinámicamente) -->
                 <section class="table-wrapper" aria-label="Listado de socios registrados">
 
-                    <!-- Toolbar de búsqueda dentro de la tarjeta de la tabla -->
+                    <!-- Toolbar de búsqueda integrado dentro de la tarjeta -->
                     <div class="table-toolbar">
+                        <!-- Izquierda: Formulario de búsqueda -->
                         <form id="member-search-form" class="table-search-form" role="search">
                             <div class="table-search-wrapper">
                                 <label for="member-search-code" class="sr-only">Buscar socio por código o DNI</label>
@@ -105,13 +106,17 @@
                             <button class="btn btn-primary" type="submit">
                                 <span>Buscar</span>
                             </button>
-
-                            <button id="btn-show-all-members" class="btn btn-secondary" type="button">
-                                <span>Mostrar todos</span>
-                            </button>
                         </form>
 
-                        <p id="member-search-feedback" class="table-search-feedback" role="status" aria-live="polite"></p>
+                        <!-- Derecha: Feedback de búsqueda y acción de restablecer -->
+                        <div class="table-toolbar-actions">
+                            <p id="member-search-feedback" class="table-search-feedback" role="status" aria-live="polite"></p>
+
+                            <button id="btn-show-all-members" class="btn btn-secondary" type="button">
+                                <span class="material-symbols-outlined" aria-hidden="true" style="font-size: 1.1rem;">filter_alt_off</span>
+                                <span>Mostrar todos</span>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="table-responsive">
