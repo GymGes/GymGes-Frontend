@@ -147,14 +147,8 @@ async function loadSchedules() {
 
     const endDate = new Date(today);
     endDate.setDate(endDate.getDate() + 14);
-
-    const minDate = formatInputDate(today);
-    const maxDate = formatInputDate(endDate);
-
-    schedules = loadedSchedules.filter(
-      (schedule) =>
-        schedule.activityDate >= minDate && schedule.activityDate <= maxDate,
-    );
+    schedules = loadedSchedules
+    
 
     renderSchedules();
   } catch (error) {
