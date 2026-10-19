@@ -44,6 +44,14 @@ export const memberService = {
         return members.map(mapMemberFromApi);
     },
 
+    async getMemberByCode(code) {
+        const member = await api.get(
+        `/members/${encodeURIComponent(code.trim().toUpperCase())}`
+        );
+
+        return mapMemberFromApi(member);
+    },
+
     async createMember(memberData) {
         const member = await api.post(
             '/members/',
