@@ -114,7 +114,7 @@ function populateSelects() {
             const activity = ACTIVITIES_MAP[s.activityId]?.name || 'Actividad';
             const day = DAY_NAMES[s.dayOfWeek] || `Día ${s.dayOfWeek}`;
             const teacher = TEACHERS_MAP[s.teacherId] || 'Sin profesor';
-            const dateShort = formatDateShort(s.activityDate);
+            const dateShort = formatDateShort(s.activityDate || s.activity_date || s.date);
             return `
             <option value="${s.id}">
             ${activity} ·${dateShort ? ` ${dateShort}` : ''} ${day} a las ${s.startTime} (${teacher})
@@ -220,7 +220,7 @@ function renderBookings() {
         const activityName = activity ? (activity.name || activity.nombre) : 'Clase no encontrada';
         const dayName = schedule ? (DAY_NAMES[schedule.dayOfWeek] || `Día ${schedule.dayOfWeek}`) : '-';
         const time = schedule ? schedule.startTime : '-';
-        const dateShort = formatDateShort(schedule?.activityDate);
+        const dateShort = formatDateShort(schedule?.activityDate || schedule?.activity_date || schedule?.date);
         const when = schedule ? `${dateShort ? `${dateShort} ` : ''}${dayName} · ${time}` : '-';
         const teacherName = schedule ? (TEACHERS_MAP[schedule.teacherId] || 'Sin asignar') : '-';
 
@@ -237,7 +237,7 @@ function renderBookings() {
             <span style="font-weight: 600; color: var(--color-primary);">${activityName}</span>
         </td>
         <td style="white-space: nowrap;">
-            <span class="badge-day">${dayName} · ${time}</span>
+            <span class="badge-day">${when}</span>
         </td>
         <td style="white-space: nowrap;">
             <div class="cell-teacher-indicator">
