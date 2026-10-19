@@ -16,6 +16,12 @@ const DAY_NAMES = {
     7: 'Domingo'
 };
 
+function formatDateShort(iso) {
+    if (!iso) return '';
+    const [y, m, d] = String(iso).slice(0, 10).split('-');
+    return d && m ? `${d}/${m}` : '';
+}
+
 // Diccionarios en memoria cargados dinámicamente desde el backend
 let ACTIVITIES_MAP = {};
 let TEACHERS_MAP = {};
@@ -108,9 +114,10 @@ function populateSelects() {
             const activity = ACTIVITIES_MAP[s.activityId]?.name || 'Actividad';
             const day = DAY_NAMES[s.dayOfWeek] || `Día ${s.dayOfWeek}`;
             const teacher = TEACHERS_MAP[s.teacherId] || 'Sin profesor';
+            const dateShort = formatDateShort(s.activityDate);
             return `
             <option value="${s.id}">
-            ${activity} ·${day} a las ${s.startTime} (${teacher})
+            ${activity} ·${dateShort ? ` ${dateShort}` : ''} ${day} a las ${s.startTime} (${teacher})
             </option>
         `;
         }).join('')}
@@ -213,6 +220,8 @@ function renderBookings() {
         const activityName = activity ? (activity.name || activity.nombre) : 'Clase no encontrada';
         const dayName = schedule ? (DAY_NAMES[schedule.dayOfWeek] || `Día ${schedule.dayOfWeek}`) : '-';
         const time = schedule ? schedule.startTime : '-';
+        const dateShort = formatDateShort(schedule?.activityDate);
+        const when = schedule ? `${dateShort ? `${dateShort} ` : ''}${dayName} · ${time}` : '-';
         const teacherName = schedule ? (TEACHERS_MAP[schedule.teacherId] || 'Sin asignar') : '-';
 
         return `
