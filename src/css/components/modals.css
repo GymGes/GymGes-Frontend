@@ -314,3 +314,37 @@
     margin-top: 0.25rem;
     line-height: 1;
 }
+
+/* Badge de aviso / tokens (hermano de .icon-badge-danger) */
+.icon-badge-warning {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--radius-full);
+    background-color: rgba(245, 162, 1, 0.15);
+    color: var(--color-accent-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Caja de resumen de sesión o actividad para modales */
+.modal-summary-box {
+    background-color: var(--color-surface-low);
+    border-radius: var(--radius-sm);
+    padding: 0.875rem 1rem;
+    margin-top: 0.75rem;
+}
+
+.modal-summary-title {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.modal-summary-subtitle {
+    font-size: 0.8125rem;
+    color: var(--color-secondary);
+    margin-top: 0.25rem;
+    font-weight: 500;
+}

@@ -31,12 +31,13 @@ let bookings = [];
 let selectedDay = 1;
 let selectedSchedule = null;
 
-// Referencias al DOM
+// Referencias al DOM - Selector y Cartelera
 const weekBar = document.getElementById('schedule-week-bar');
 const scheduleList = document.getElementById('schedule-list');
+
+// Referencias al DOM - Modal de Confirmación
 const bookingModal = document.getElementById('booking-modal');
 const bookingForm = document.getElementById('client-booking-form');
-
 const modalActivityName = document.getElementById('modal-activity-name');
 const modalActivityDetails = document.getElementById('modal-activity-details');
 const modalClassId = document.getElementById('modal-class-id');
@@ -55,6 +56,15 @@ function getCookie(name) {
         ? decodeURIComponent(cookie.slice(prefix.length))
         : null;
 }
+// Referencias al DOM - Modal de Aviso / Sin Créditos
+const noticeModal = document.getElementById('notice-modal');
+const noticeModalTitle = document.getElementById('notice-modal-title');
+const noticeModalActivity = document.getElementById('notice-modal-activity');
+const noticeModalDetails = document.getElementById('notice-modal-details');
+const noticeModalMessage = document.getElementById('notice-modal-message');
+const btnCloseNoticeModal = document.getElementById('btn-close-notice-modal');
+const btnNoticeModalBack = document.getElementById('btn-notice-modal-back');
+
 // 1. Selector de fechas de la semana (Lunes a Domingo)
 function getWeekDays() {
     const now = new Date();
@@ -269,7 +279,7 @@ function renderScheduleForDay(day) {
     }).join('');
 }
 
-// 4. Modal de Reserva
+// 4. Modales: Reserva y Aviso
 window.handleOpenBookingModal = function (scheduleId) {
     const schedule = schedules.find(s => s.id === scheduleId);
     if (!schedule) return;
@@ -305,8 +315,24 @@ function closeBookingModal() {
     selectedSchedule = null;
 }
 
+function openNoticeModal({ title, message, activityName, activityDetails }) {
+    if (noticeModalTitle && title) noticeModalTitle.textContent = title;
+    if (noticeModalActivity) noticeModalActivity.textContent = activityName || 'Sesión seleccionada';
+    if (noticeModalDetails) noticeModalDetails.textContent = activityDetails || '';
+    if (noticeModalMessage && message) noticeModalMessage.textContent = message;
+
+    if (noticeModal) noticeModal.classList.remove('hidden');
+}
+
+function closeNoticeModal() {
+    if (noticeModal) noticeModal.classList.add('hidden');
+}
+
+// Listeners de cierre
 btnCloseModal?.addEventListener('click', closeBookingModal);
 btnCancelModal?.addEventListener('click', closeBookingModal);
+btnCloseNoticeModal?.addEventListener('click', closeNoticeModal);
+btnNoticeModalBack?.addEventListener('click', closeNoticeModal);
 
 // Procesar Reserva contra bookingService
 bookingForm?.addEventListener('submit', async (e) => {
@@ -314,6 +340,8 @@ bookingForm?.addEventListener('submit', async (e) => {
 
     const code = (getCookie(COOKIE_NAME) || '').trim().toUpperCase();
     const classId = Number(modalClassId.value);
+    const currentActivityName = modalActivityName?.textContent || 'Clase Pulse';
+    const currentActivityDetails = modalActivityDetails?.textContent || '';
 
     if (!code) {
         window.location.href = '../index.html';
@@ -326,7 +354,12 @@ bookingForm?.addEventListener('submit', async (e) => {
 
     const dniRegex = /^[0-9XYZ][0-9]{7}[TRWAGMYFPDXBNJZSQVHLCKE]$/;
     if (!dniRegex.test(code)) {
-        alert('Introduce un formato de DNI/NIE reglamentario (ej. 12345678Z).');
+        openNoticeModal({
+            title: 'Documento no válido',
+            message: 'Por favor, introduce un formato de DNI/NIE reglamentario (ej. 12345678Z).',
+            activityName: currentActivityName,
+            activityDetails: currentActivityDetails
+        });
         return;
     }
 
@@ -353,15 +386,41 @@ bookingForm?.addEventListener('submit', async (e) => {
         alert(`¡Plaza reservada con éxito para el socio ${code}!`);
     } catch (error) {
         console.error('Error al registrar la reserva:', error);
-        const detail = error.response?.data?.detail;
-        alert(detail ? `Error: ${detail}` : 'No se pudo completar la reserva.');
+
+        closeBookingModal();
+
+        const resData = error.response?.data;
+        const detail = typeof resData?.detail === 'string' ? resData.detail : (resData?.message || '');
+
+        // Mensaje enfocado directamente en la falta de saldo/créditos
+        let title = 'Créditos Insuficientes';
+        let message = 'No te quedan créditos disponibles para realizar esta reserva. Puedes consultar tu saldo actual desde tu espacio de socio.';
+
+        if (detail.toLowerCase().includes('ya') && detail.toLowerCase().includes('reserva')) {
+            title = 'Ya tienes plaza';
+            message = 'Ya dispones de una reserva confirmada para esta misma sesión.';
+        } else if (detail && (detail.toLowerCase().includes('crédit') || detail.toLowerCase().includes('saldo'))) {
+            message = detail;
+        }
+
+        openNoticeModal({
+            title,
+            message,
+            activityName: currentActivityName,
+            activityDetails: currentActivityDetails
+        });
     }
 });
 
-// Cerrar con Escape
+// Cerrar con Escape cualquiera de los dos modales
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !bookingModal.classList.contains('hidden')) {
-        closeBookingModal();
+    if (e.key === 'Escape') {
+        if (bookingModal && !bookingModal.classList.contains('hidden')) {
+            closeBookingModal();
+        }
+        if (noticeModal && !noticeModal.classList.contains('hidden')) {
+            closeNoticeModal();
+        }
     }
 });
 
