@@ -158,11 +158,24 @@ btnCloseDeleteModal?.addEventListener('click', closeDeleteModal);
 btnCancelDelete?.addEventListener('click', closeDeleteModal);
 
 btnConfirmDelete?.addEventListener('click', async () => {
-    if (activityToDeleteId !== null) {
+    if (activityToDeleteId === null) return;
+
+    try {
         await activityService.deleteActivity(activityToDeleteId);
-        activities = activities.filter(a => a.id !== activityToDeleteId);
+
+        activities = activities.filter(
+            activity => activity.id !== activityToDeleteId
+        );
+
         renderActivities();
         closeDeleteModal();
+    } catch (error) {
+        console.error('Error deleting activity:', error);
+
+        alert(
+            error?.message ||
+            'No se pudo eliminar la actividad.'
+        );
     }
 });
 
