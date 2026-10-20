@@ -5,13 +5,7 @@ import { teacherService } from '../services/teacherService.js';
 import { bookingService } from '../services/bookingService.js';
 import { modalService } from '../services/modalService.js';
 
-// Catálogo de imágenes referenciales por tipo de actividad
-const ACTIVITY_IMAGES = {
-    1: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDCbKlWkvNFcFZV6Uq59uuc6qEAlkyNXUsSfkZFTCAQfMLwYYjeSKbdGb9J7uEdvHKsPkcKVTt0s7_PNSRylpoS22kKZgQl1x_IYKYfyi-pZrO0R-CoED3AVCNyJTiuk4wHtrB4qu9ybiG2NXjCKMpwTNRMFN0waoAYTXlwnuwTbuzs9hj0fTc538UOhH_lTF45zBu4mbNUeS4teVRlTf_uedIzOowaLT3WqO42BFUoZAH8pMw2js_osw',
-    2: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCmnvv3hDgfaufGsKgGb1gkc9DhRk0Ojt4uh56G55qsJ_9kR1JIQ4tSaSKUNRl4vbekBmjAKGhwRv2KpxCm5LUzInEqxDuY1VO2xbSvEHLg0ur-qOWi3W06Uc8MpGipWE1BmqC6EwHKBGTWjApPcntbQk86aXTRyU1Wy5I37WgyKa-ZnoYks-LTgBkK980VapacREkhMR2-Y-YhgkNAqaR6ZyHBiFoTEJ6F_FAOS2REXF6Y8ccUF7R6Sg',
-    3: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC1bqNH9tL8RqMEgH0Y0nofwXOuMu3j-GbUP7A5KOG1-LxoTDI-Te_gESBbGleROmyES9AgAHLGrr-pQuUeMmhntqlb_Oo8YdcTFhpGUbsqCTktd4LfOc3lF23hv7Ii4ONML8yg2uzlHxTSCcVP1J2whvA3MSKGfFz5uGtJzCWA3PYUrSMZ2aY1qGVTjQCv7jbPbpzwvOMNisnaoT6MD3uwjBvWOhb4ECCbEq8M-sTnLgyAURrztLdiLQ',
-    4: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAyUGoypimWzJIwc6qnHC5lwHfaWZwGTE1elGN7VpqtjDSQjM8dupED9_jMN2RnIWUFEEJmgnxjDK1j_RT7nHr2y_VroohgZFzGHbKIuJ_ThlcWEEYMdOnC5QfLaXKpX6ytHQvUapyUqq2U6u76CjUi_82kMznwNK4HE4ripXsuUgYYlLeEEF0zHS0zJbclriQ93KXWWJNhAQwID7IDgU4GFWbhP4UQtvPnVc9ZATAdxbhyj3ALvJVbrg'
-};
+// Imagen neutra de respaldo por si algún registro carece de foto
 const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=600&auto=format&fit=crop';
 
 const DAY_NAMES = {
@@ -204,12 +198,13 @@ function renderScheduleForDay(day) {
         const activity = activitiesMap.get(actId) || {
             name: 'Actividad Pulse',
             duration: 50,
-            max_students: 16
+            capacity: 16
         };
 
-        const activityImg = ACTIVITY_IMAGES[actId] || DEFAULT_IMAGE;
+        // Prioridad: imagen real de Cloudinary/API -> fallback de seguridad
+        const activityImg = activity.imageUrl || activity.image_url || DEFAULT_IMAGE;
         const duration = activity.duration || activity.duracion || 50;
-        const maxStudents = activity.max_students || activity.maxStudents || 16;
+        const maxStudents = activity.capacity || activity.max_students || activity.maxStudents || 16;
 
         const slotsHtml = classList.map(s => {
             const time = getScheduleTime(s);
