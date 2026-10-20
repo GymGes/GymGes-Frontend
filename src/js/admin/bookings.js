@@ -4,6 +4,7 @@ import { memberService } from '../services/memberService.js';
 import { scheduleService } from '../services/scheduleService.js';
 import { activityService } from '../services/activityService.js';
 import { teacherService } from '../services/teacherService.js';
+import { paginate, renderPagination } from '../utils/paginate.js';
 
 // Días de la semana para los nombres de turnos
 const DAY_NAMES = {
@@ -31,9 +32,11 @@ let bookings = [];
 let members = [];
 let schedules = [];
 let bookingToDeleteId = null;
+let currentPage = 1;
 
 // Elementos del DOM
 const tableBody = document.getElementById('bookings-table-body');
+const pagination = document.getElementById('bookings-pagination');
 const bookingModal = document.getElementById('booking-modal');
 const deleteModal = document.getElementById('delete-booking-modal');
 const bookingForm = document.getElementById('booking-form');
@@ -181,6 +184,7 @@ async function loadData() {
         schedules = (loadedSchedules || []).map(normalizeSchedule);
 
         populateSelects();
+        currentPage = 1;
         renderBookings();
     } catch (error) {
         console.error('Error cargando los datos de reservas:', error);
@@ -208,10 +212,14 @@ function renderBookings() {
         </td>
         </tr>
     `;
+        renderPagination(pagination, paginate([], currentPage), setPage);
         return;
     }
 
-    tableBody.innerHTML = bookings.map(b => {
+    const view = paginate(bookings, currentPage);
+    currentPage = view.page;
+
+    tableBody.innerHTML = view.items.map(b => {
         const member = members.find(m => m.codigo === b.socio_codigo);
         const memberName = member ? `${member.nombre} ${member.apellido}` : b.socio_codigo;
 
@@ -255,6 +263,13 @@ function renderBookings() {
         </tr>
     `;
     }).join('');
+
+    renderPagination(pagination, view, setPage);
+}
+
+function setPage(page) {
+    currentPage = page;
+    renderBookings();
 }
 
 // 4. Ciclo de vida de los modales
@@ -313,6 +328,7 @@ btnConfirmDelete?.addEventListener('click', async () => {
         }
 
         bookings = bookings.filter(b => b.id !== bookingToDeleteId);
+        currentPage = 1;
         renderBookings();
         closeDeleteModal();
     }
@@ -353,6 +369,7 @@ bookingForm?.addEventListener('submit', async (e) => {
     if (member) member.creditos_restantes -= 1;
 
     bookings.unshift(newBooking);
+    currentPage = 1;
     renderBookings();
     closeModal();
 });

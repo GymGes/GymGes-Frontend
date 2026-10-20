@@ -272,3 +272,57 @@
 .table-search-feedback:empty {
     display: none;
 }
+
+/* Paginación de tablas */
+.table-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--color-surface);
+    border-top: 1px solid var(--color-surface-border);
+}
+
+.table-pagination.hidden {
+    display: none;
+}
+
+.table-pagination-info {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+}
+
+.table-pagination-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.table-pagination-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--color-surface-border);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-surface-low);
+    color: var(--color-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.table-pagination-btn:hover:not(:disabled) {
+    background-color: var(--color-surface);
+    border-color: var(--color-secondary);
+}
+
+.table-pagination-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.table-pagination-btn .material-symbols-outlined {
+    font-size: 1.15rem;
+}
