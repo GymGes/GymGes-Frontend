@@ -123,6 +123,40 @@
         </div>
     </div>
 
+    <!-- Modal: Aviso / Créditos Insuficientes -->
+    <div id="notice-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="notice-modal-title">
+        <div class="modal-card modal-card-sm">
+            <header class="modal-header">
+                <div class="modal-title-with-icon">
+                    <div class="icon-badge-warning" aria-hidden="true">
+                        <span class="material-symbols-outlined">token</span>
+                    </div>
+                    <div class="modal-header-info">
+                        <h2 id="notice-modal-title" class="modal-title">Créditos Insuficientes</h2>
+                        <p class="modal-subtitle">No se ha podido confirmar la plaza</p>
+                    </div>
+                </div>
+                <button id="btn-close-notice-modal" class="btn-icon" type="button" aria-label="Cerrar modal">
+                    <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                </button>
+            </header>
+
+            <div class="modal-summary-box">
+                <p id="notice-modal-activity" class="modal-summary-title">-</p>
+                <p id="notice-modal-details" class="modal-summary-subtitle">-</p>
+            </div>
+
+            <p id="notice-modal-message" class="modal-body-text">
+                No dispones de créditos suficientes en tu cuota activa para confirmar esta sesión. Puedes consultar tu saldo o renovar tu plan desde tu espacio de socio.
+            </p>
+
+            <footer class="modal-footer">
+                <button id="btn-notice-modal-back" class="btn btn-secondary" type="button">Volver</button>
+                <a href="user.html" class="btn btn-primary">Ir a Mi Espacio</a>
+            </footer>
+        </div>
+    </div>
+
     <!-- Pie de página público -->
     <footer class="app-footer">
         <div class="footer-container">
