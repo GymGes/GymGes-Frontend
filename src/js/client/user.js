@@ -12,7 +12,6 @@ let activitiesMap = new Map();
 let teachersMap = new Map();
 let memberBookings = [];
 let bookingToCancelId = null;
-
 // Elementos del DOM - Login y Contenedores
 // const authForm = document.getElementById('auth-form');
 // const dniInput = document.getElementById('dni-input');
@@ -75,9 +74,10 @@ function hideError() {
 // 2. Normalización de fechas y horarios
 function getScheduleParts(schedule) {
     if (!schedule) return { label: '-', time: '--:--', long: '-', date: '' };
-
+    
     // const rawDate = schedule.activity_date || schedule.activityDate;
     const rawDate = schedule.activityDate;
+
     let time = schedule.startTime|| '00:00';
     let label = 'SESIÓN';
     let long = 'Fecha no disponible';
@@ -104,11 +104,11 @@ function getScheduleParts(schedule) {
                 label = DAY_NAMES[dayOfWeek] || 'DÍA';
             }
 
-            fullText = d.toLocaleDateString('es-ES', {
-                weekday: 'long',
-                day: 'numeric',
-                month: 'long'
-            }) + ` a las ${time}`;
+            // fullText = d.toLocaleDateString('es-ES', {
+            //     weekday: 'long',
+            //     day: 'numeric',
+            //     month: 'long'
+            // }) + ` a las ${time}`;
 
             date = d.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' });
         }
