@@ -4,7 +4,7 @@ import { memberService } from '../services/memberService.js';
 import { scheduleService } from '../services/scheduleService.js';
 import { activityService } from '../services/activityService.js';
 import { teacherService } from '../services/teacherService.js';
-
+import { modalService } from '../services/modalService.js';
 // Estado de la vista
 let currentMember = null;
 let schedules = [];
@@ -14,7 +14,6 @@ let memberBookings = [];
 let bookingToCancelId = null;
 
 // Elementos del DOM - Contenedores
-const loginError = document.getElementById('login-error');
 const memberDashboard = document.getElementById('member-dashboard');
 const btnLogout = document.getElementById('btn-logout');
 
@@ -56,18 +55,6 @@ function deleteMemberCookie() {
     document.cookie = `${COOKIE_NAME}=; Path=/; Max-Age=0; SameSite=Lax`;
 }
 
-// 1. Notificaciones de error
-function showError(msg) {
-    if (!loginError) return;
-    loginError.textContent = msg;
-    loginError.classList.remove('hidden');
-}
-
-function hideError() {
-    if (!loginError) return;
-    loginError.textContent = '';
-    loginError.classList.add('hidden');
-}
 
 // 2. Normalización de fechas y horarios
 function getScheduleParts(schedule) {
@@ -288,7 +275,10 @@ btnConfirmCancelBooking?.addEventListener('click', async () => {
         closeCancelModal();
     } catch (err) {
         console.error('Error al cancelar la reserva:', err);
-        alert(err?.response?.data?.detail || err?.message || 'No se pudo cancelar la reserva.');
+
+        modalService.error(
+            'No se pudo cancelar la reserva.'
+        );
     }
 });
 
@@ -357,7 +347,10 @@ async function loadMember(code) {
 
     } catch (err) {
         console.error('Error al cargar el espacio del socio:', err);
-        alert('No se han podido cargar tus datos. Comprueba tu conexión e inténtalo de nuevo.');
+
+        notificationService.error(
+            'No se han podido cargar tus datos. Comprueba tu conexión e inténtalo de nuevo.'
+        );
     }
 }
 
