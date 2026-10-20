@@ -2,6 +2,7 @@
 import { scheduleService } from "../services/scheduleService.js";
 import { activityService } from "../services/activityService.js";
 import { teacherService } from "../services/teacherService.js";
+import { paginate, renderPagination } from "../utils/paginate.js";
 import { modalService } from "../services/modalService.js";
 
 // Estado local
@@ -9,9 +10,11 @@ let schedules = [];
 let scheduleToDeleteId = null;
 let activitiesMap = {};
 let teachersMap = {};
+let currentPage = 1;
 
 // Referencias del DOM
 const tableBody = document.getElementById("schedules-table-body");
+const pagination = document.getElementById("schedules-pagination");
 const scheduleModal = document.getElementById("schedule-modal");
 const deleteModal = document.getElementById("delete-schedule-modal");
 const scheduleForm = document.getElementById("schedule-form");
@@ -157,6 +160,7 @@ async function loadSchedules() {
         schedule.activityDate >= minDate && schedule.activityDate <= maxDate,
     );
 
+    currentPage = 1;
     renderSchedules();
   } catch (error) {
     console.error("Error cargando sesiones:", error);
@@ -183,6 +187,7 @@ function renderSchedules() {
                 </td>
             </tr>
         `;
+    renderPagination(pagination, paginate([], currentPage), setPage);
     return;
   }
 
@@ -192,7 +197,10 @@ function renderSchedules() {
     ),
   );
 
-  tableBody.innerHTML = schedules
+  const view = paginate(schedules, currentPage);
+  currentPage = view.page;
+
+  tableBody.innerHTML = view.items
     .map((schedule) => {
       const activity = activitiesMap[schedule.activityId] || {
         name: `Actividad #${schedule.activityId}`,
@@ -250,6 +258,13 @@ function renderSchedules() {
         `;
     })
     .join("");
+
+  renderPagination(pagination, view, setPage);
+}
+
+function setPage(page) {
+  currentPage = page;
+  renderSchedules();
 }
 
 function formatDate(dateString) {
@@ -334,6 +349,7 @@ btnConfirmDelete?.addEventListener("click", async () => {
     try {
       await scheduleService.deleteSchedule(scheduleToDeleteId);
       schedules = schedules.filter((s) => s.id !== scheduleToDeleteId);
+      currentPage = 1;
       renderSchedules();
       closeDeleteModal();
     } catch (error) {
@@ -399,6 +415,7 @@ scheduleForm?.addEventListener("submit", async (e) => {
       schedules.push(created);
     }
 
+    currentPage = 1;
     renderSchedules();
     closeModal();
   } catch (error) {

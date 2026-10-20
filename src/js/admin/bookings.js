@@ -4,6 +4,7 @@ import { memberService } from '../services/memberService.js';
 import { scheduleService } from '../services/scheduleService.js';
 import { activityService } from '../services/activityService.js';
 import { teacherService } from '../services/teacherService.js';
+import { paginate, renderPagination } from '../utils/paginate.js';
 
 // Días de la semana para los nombres de turnos
 const DAY_NAMES = {
@@ -22,6 +23,12 @@ function formatDateShort(iso) {
     return d && m ? `${d}/${m}` : '';
 }
 
+function getScheduleSortKey(schedule) {
+    if (!schedule) return '';
+    const date = schedule.activityDate || schedule.activity_date || schedule.date || '';
+    return `${date}T${schedule.startTime || schedule.start_time || ''}`;
+}
+
 // Diccionarios en memoria cargados dinámicamente desde el backend
 let ACTIVITIES_MAP = {};
 let TEACHERS_MAP = {};
@@ -31,9 +38,11 @@ let bookings = [];
 let members = [];
 let schedules = [];
 let bookingToDeleteId = null;
+let currentPage = 1;
 
 // Elementos del DOM
 const tableBody = document.getElementById('bookings-table-body');
+const pagination = document.getElementById('bookings-pagination');
 const bookingModal = document.getElementById('booking-modal');
 const deleteModal = document.getElementById('delete-booking-modal');
 const bookingForm = document.getElementById('booking-form');
@@ -188,6 +197,7 @@ async function loadData() {
         schedules = (loadedSchedules || []).map(normalizeSchedule);
 
         populateSelects();
+        currentPage = 1;
         renderBookings();
     } catch (error) {
         console.error('Error cargando los datos de reservas:', error);
@@ -215,10 +225,20 @@ function renderBookings() {
         </td>
         </tr>
     `;
+        renderPagination(pagination, paginate([], currentPage), setPage);
         return;
     }
 
-    tableBody.innerHTML = bookings.map(b => {
+    const sortedBookings = [...bookings].sort((a, b) => {
+        const scheduleA = schedules.find(s => s.id === a.clase_id);
+        const scheduleB = schedules.find(s => s.id === b.clase_id);
+        return getScheduleSortKey(scheduleA).localeCompare(getScheduleSortKey(scheduleB));
+    });
+
+    const view = paginate(sortedBookings, currentPage);
+    currentPage = view.page;
+
+    tableBody.innerHTML = view.items.map(b => {
         const member = members.find(m => m.codigo === b.socio_codigo);
         const memberName = member ? `${member.nombre} ${member.apellido}` : b.socio_codigo;
 
@@ -262,6 +282,13 @@ function renderBookings() {
         </tr>
     `;
     }).join('');
+
+    renderPagination(pagination, view, setPage);
+}
+
+function setPage(page) {
+    currentPage = page;
+    renderBookings();
 }
 
 // 4. Ciclo de vida de los modales
@@ -320,6 +347,7 @@ btnConfirmDelete?.addEventListener('click', async () => {
         }
 
         bookings = bookings.filter(b => b.id !== bookingToDeleteId);
+        currentPage = 1;
         renderBookings();
         closeDeleteModal();
     }
@@ -360,6 +388,7 @@ bookingForm?.addEventListener('submit', async (e) => {
     if (member) member.creditos_restantes -= 1;
 
     bookings.unshift(newBooking);
+    currentPage = 1;
     renderBookings();
     closeModal();
 });
