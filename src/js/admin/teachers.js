@@ -1,13 +1,16 @@
 /* src/js/admin/teachers.js */
 import { teacherService } from '../services/teacherService.js';
+import { paginate, renderPagination } from '../utils/paginate.js';
 
 // Estado local
 let teachers = [];
 let teacherToDeleteId = null;
 let editingTeacherId = null;
+let currentPage = 1;
 
 // Elementos del DOM
 const tableBody = document.getElementById('teachers-table-body');
+const pagination = document.getElementById('teachers-pagination');
 const teacherModal = document.getElementById('teacher-modal');
 const deleteModal = document.getElementById('delete-teacher-modal');
 const teacherForm = document.getElementById('teacher-form');
@@ -37,6 +40,7 @@ async function loadTeachers() {
     `;
     }
     teachers = await teacherService.getTeachers();
+    currentPage = 1;
     renderTeachers();
     }
 
@@ -52,10 +56,14 @@ function renderTeachers() {
         </td>
         </tr>
     `;
+        renderPagination(pagination, paginate([], currentPage), setPage);
         return;
     }
 
-    tableBody.innerHTML = teachers.map(teacher => `
+    const view = paginate(teachers, currentPage);
+    currentPage = view.page;
+
+    tableBody.innerHTML = view.items.map(teacher => `
     <tr id="teacher-row-${teacher.id}">
         <td style="white-space: nowrap;">
         <span class="cell-id">#${teacher.id}</span>
@@ -75,6 +83,13 @@ function renderTeachers() {
         </td>
     </tr>
     `).join('');
+
+    renderPagination(pagination, view, setPage);
+}
+
+function setPage(page) {
+    currentPage = page;
+    renderTeachers();
 }
 
 // 3. Modales (Crear / Editar)
@@ -132,6 +147,7 @@ btnConfirmDelete?.addEventListener('click', async () => {
     if (teacherToDeleteId !== null) {
         await teacherService.deleteTeacher(teacherToDeleteId);
         teachers = teachers.filter(t => t.id !== teacherToDeleteId);
+        currentPage = 1;
         renderTeachers();
         closeDeleteModal();
     }
@@ -155,6 +171,7 @@ teacherForm?.addEventListener('submit', async (e) => {
         teachers.push(created);
     }
 
+    currentPage = 1;
     renderTeachers();
     closeModal();
 });
