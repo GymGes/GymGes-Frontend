@@ -1,6 +1,7 @@
 /* src/js/admin/members.js */
 import { memberService } from '../services/memberService.js';
 import { planService } from '../services/planService.js';
+import { paginate, renderPagination } from '../utils/paginate.js';
 
 // Estado local
 let members = [];
@@ -8,9 +9,11 @@ let plans = [];
 let memberToDeleteCode = null;
 let editingMemberCode = null;
 let displayedMembers = null;
+let currentPage = 1;
 
 // Elementos del DOM
 const tableBody = document.getElementById('members-table-body');
+const pagination = document.getElementById('members-pagination');
 const memberSearchForm = document.getElementById('member-search-form');
 const memberSearchCodeInput = document.getElementById('member-search-code');
 const btnShowAllMembers = document.getElementById('btn-show-all-members');
@@ -62,6 +65,7 @@ async function loadMembers() {
     }
     await loadPlansOptions();
     members = await memberService.getMembers();
+    currentPage = 1;
     renderMembers();
     }
 
@@ -81,10 +85,14 @@ function renderMembers(membersToRender = displayedMembers ?? members) {
             </td>
         </tr>
     `;
+    renderPagination(pagination, paginate([], currentPage), setPage);
     return;
 }
 
-    tableBody.innerHTML = membersToRender.map(member => {
+    const view = paginate(membersToRender, currentPage);
+    currentPage = view.page;
+
+    tableBody.innerHTML = view.items.map(member => {
         const plan = plans.find(p => p.id === member.plan_id);
         const planName = plan ? plan.name : 'Plan General';
 
@@ -127,6 +135,13 @@ function renderMembers(membersToRender = displayedMembers ?? members) {
         </tr>
     `;
     }).join('');
+
+    renderPagination(pagination, view, setPage);
+}
+
+function setPage(page) {
+    currentPage = page;
+    renderMembers();
 }
 
 // 4. Modales (Crear / Editar)
@@ -223,6 +238,7 @@ memberSearchForm?.addEventListener('submit', async (event) => {
         }
 
         displayedMembers = [member];
+        currentPage = 1;
         renderMembers();
 
         memberSearchFeedback.textContent =
@@ -230,6 +246,7 @@ memberSearchForm?.addEventListener('submit', async (event) => {
     } catch (error) {
         if (error?.type === 'not_found') {
             displayedMembers = [];
+            currentPage = 1;
             renderMembers();
 
             memberSearchFeedback.textContent =
@@ -248,6 +265,7 @@ btnShowAllMembers?.addEventListener('click', async () => {
 
     try {
         members = await memberService.getMembers();
+        currentPage = 1;
         renderMembers();
         memberSearchFeedback.textContent = 'Mostrando todos los socios.';
     } catch (error) {
@@ -269,6 +287,7 @@ btnConfirmDelete?.addEventListener('click', async () => {
         await memberService.deleteMember(memberToDeleteCode);
         members = members.filter(m => m.codigo !== memberToDeleteCode);
         displayedMembers = null;
+        currentPage = 1;
         renderMembers();
         closeDeleteModal();
     }
@@ -314,6 +333,7 @@ memberForm?.addEventListener('submit', async (e) => {
     }
 
     displayedMembers = null;
+    currentPage = 1;
     renderMembers();
     closeModal();
 });
