@@ -13,10 +13,7 @@ let teachersMap = new Map();
 let memberBookings = [];
 let bookingToCancelId = null;
 
-// Elementos del DOM - Login y Contenedores
-// const authForm = document.getElementById('auth-form');
-// const dniInput = document.getElementById('dni-input');
-// const btnEnterSpace = document.getElementById('btn-enter-space');
+// Elementos del DOM - Contenedores
 const loginError = document.getElementById('login-error');
 const memberDashboard = document.getElementById('member-dashboard');
 const btnLogout = document.getElementById('btn-logout');
@@ -45,20 +42,20 @@ const DAY_NAMES = { 1: 'LUN', 2: 'MAR', 3: 'MIÉ', 4: 'JUE', 5: 'VIE', 6: 'SÁB'
 const COOKIE_NAME = 'pulse_member_dni';
 
 function getCookie(name) {
-  const prefix = `${name}=`;
-  const cookie = document.cookie
-    .split('; ')
-    .find(item => item.startsWith(prefix));
+    const prefix = `${name}=`;
+    const cookie = document.cookie
+        .split('; ')
+        .find(item => item.startsWith(prefix));
 
-  return cookie
-    ? decodeURIComponent(cookie.slice(prefix.length))
-    : null;
+    return cookie
+        ? decodeURIComponent(cookie.slice(prefix.length))
+        : null;
 }
 
 function deleteMemberCookie() {
-  document.cookie =
-    `${COOKIE_NAME}=; Path=/; Max-Age=0; SameSite=Lax`;
+    document.cookie = `${COOKIE_NAME}=; Path=/; Max-Age=0; SameSite=Lax`;
 }
+
 // 1. Notificaciones de error
 function showError(msg) {
     if (!loginError) return;
@@ -76,9 +73,8 @@ function hideError() {
 function getScheduleParts(schedule) {
     if (!schedule) return { label: '-', time: '--:--', long: '-', date: '' };
 
-    // const rawDate = schedule.activity_date || schedule.activityDate;
-    const rawDate = schedule.activityDate;
-    let time = schedule.startTime|| '00:00';
+    const rawDate = schedule.activityDate || schedule.activity_date;
+    let time = schedule.startTime || schedule.start_time || '00:00';
     let label = 'SESIÓN';
     let long = 'Fecha no disponible';
     let date = '';
@@ -97,20 +93,21 @@ function getScheduleParts(schedule) {
 
             if (isSameDay(d, today)) {
                 label = 'HOY';
+                date = '';
             } else if (isSameDay(d, tomorrow)) {
                 label = 'MAÑANA';
+                date = '';
             } else {
                 const dayOfWeek = d.getDay() === 0 ? 7 : d.getDay();
                 label = DAY_NAMES[dayOfWeek] || 'DÍA';
+                date = d.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' });
             }
 
-            fullText = d.toLocaleDateString('es-ES', {
+            long = d.toLocaleDateString('es-ES', {
                 weekday: 'long',
                 day: 'numeric',
                 month: 'long'
             }) + ` a las ${time}`;
-
-            date = d.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' });
         }
     } else if (schedule.dayOfWeek || schedule.day_of_week) {
         const dow = Number(schedule.dayOfWeek || schedule.day_of_week);
@@ -123,27 +120,65 @@ function getScheduleParts(schedule) {
 
 // 3. Renderizado de la ficha del socio
 function renderProfile(member) {
+    if (!member) return;
+
     const firstName = member.nombre || member.first_name || '';
     const lastName = member.apellido || member.last_name || '';
-    memberName.textContent = `${firstName} ${lastName}`.trim() || 'Socio PulseGym';
+    if (memberName) {
+        memberName.textContent = `${firstName} ${lastName}`.trim() || 'Socio PulseGym';
+    }
 
-    memberCode.textContent = member.codigo || member.code || '-';
+    if (memberCode) memberCode.textContent = member.codigo || member.code || '-';
 
     const age = member.edad ?? member.age;
-    memberAge.textContent = (typeof age === 'number' && age > 0) ? `${age} años` : '-';
+    if (memberAge) {
+        memberAge.textContent = (typeof age === 'number' && age > 0) ? `${age} años` : '-';
+    }
 
-    memberCity.textContent = member.ciudad || member.city || '-';
-    memberAddress.textContent = member.direccion || member.address || '-';
+    if (memberCity) memberCity.textContent = member.ciudad || member.city || '-';
+    if (memberAddress) memberAddress.textContent = member.direccion || member.address || '-';
 
     const credits = member.creditos_restantes ?? member.remaining_credits ?? 0;
-    memberCredits.textContent = `${credits} crédito(s)`;
+    if (memberCredits) {
+        memberCredits.textContent = `${credits} crédito(s)`;
+    }
 }
 
-// 4. Renderizado de reservas activas
+// 4. Renderizado de reservas activas (solo hoy y días futuros)
 function renderBookings() {
-    bookingsCount.textContent = `${memberBookings.length} Activas`;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-    if (memberBookings.length === 0) {
+    // Filtra para descartar reservas de días pasados
+    const upcomingBookings = memberBookings.filter(b => {
+        const schedule = schedules.find(s => s.id === b.clase_id);
+        if (!schedule) return true;
+
+        const rawDate = schedule.activityDate || schedule.activity_date;
+        if (!rawDate) return true;
+
+        const sessionDate = new Date(`${String(rawDate).slice(0, 10)}T00:00:00`);
+        return isNaN(sessionDate.getTime()) || sessionDate >= today;
+    });
+
+    // Ordena de forma cronológica (más próximas primero)
+    upcomingBookings.sort((a, b) => {
+        const sA = schedules.find(s => s.id === a.clase_id);
+        const sB = schedules.find(s => s.id === b.clase_id);
+        const dateA = sA?.activityDate || sA?.activity_date || '';
+        const dateB = sB?.activityDate || sB?.activity_date || '';
+        const timeA = sA?.startTime || sA?.start_time || '00:00';
+        const timeB = sB?.startTime || sB?.start_time || '00:00';
+        return `${dateA}T${timeA}`.localeCompare(`${dateB}T${timeB}`);
+    });
+
+    if (bookingsCount) {
+        bookingsCount.textContent = `${upcomingBookings.length} Activas`;
+    }
+
+    if (!bookingsList) return;
+
+    if (upcomingBookings.length === 0) {
         bookingsList.innerHTML = `
             <div class="empty-bookings-box">
                 <p>No tienes reservas activas en este momento.</p>
@@ -155,7 +190,7 @@ function renderBookings() {
         return;
     }
 
-    bookingsList.innerHTML = memberBookings.map((b, index) => {
+    bookingsList.innerHTML = upcomingBookings.map((b, index) => {
         const schedule = schedules.find(s => s.id === b.clase_id);
         const actId = Number(schedule?.activity_type_id || schedule?.activityId || 0);
         const teachId = Number(schedule?.teacher_id || schedule?.teacherId || 0);
@@ -165,12 +200,14 @@ function renderBookings() {
         const { label, time, date } = getScheduleParts(schedule);
         const stripeClass = index % 2 === 0 ? 'stripe-blue' : 'stripe-gold';
 
+        const boxLabel = date ? `${date} ${label}` : label;
+
         return `
             <article class="booking-item-card" id="booking-card-${b.id}">
                 <div class="card-left-stripe ${stripeClass}"></div>
                 <div class="booking-main-info">
                     <div class="booking-time-square">
-                        <span class="time-square-label">${date} ${label}</span>
+                        <span class="time-square-label">${boxLabel}</span>
                         <span class="time-square-time">${time}</span>
                     </div>
                     <div class="booking-details-group">
@@ -218,13 +255,13 @@ function openCancelModal(bookingId) {
     const teacher = teachersMap.get(teachId) || { name: 'Instructor' };
     const { long } = getScheduleParts(schedule);
 
-    cancelModalActivity.textContent = activity.name;
-    cancelModalTime.textContent = `${long} · Impartido por ${teacher.name}`;
-    cancelModal.classList.remove('hidden');
+    if (cancelModalActivity) cancelModalActivity.textContent = activity.name;
+    if (cancelModalTime) cancelModalTime.textContent = `${long} · Impartido por ${teacher.name}`;
+    if (cancelModal) cancelModal.classList.remove('hidden');
 }
 
 function closeCancelModal() {
-    cancelModal.classList.add('hidden');
+    if (cancelModal) cancelModal.classList.add('hidden');
     bookingToCancelId = null;
 }
 
@@ -256,13 +293,12 @@ btnConfirmCancelBooking?.addEventListener('click', async () => {
 });
 
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !cancelModal.classList.contains('hidden')) {
+    if (e.key === 'Escape' && cancelModal && !cancelModal.classList.contains('hidden')) {
         closeCancelModal();
     }
 });
 
-// 6. Proceso de autenticación
-
+// 6. Proceso de autenticación y carga
 async function loadMember(code) {
     const normalizedCode = String(code).trim().toUpperCase();
 
@@ -305,13 +341,19 @@ async function loadMember(code) {
             (loadedTeachers || []).map(t => [t.id, t])
         );
 
-        memberBookings =
-            await bookingService.getBookingsByMember(normalizedCode);
+        try {
+            memberBookings = await bookingService.getBookingsByMember(normalizedCode) || [];
+        } catch {
+            memberBookings = [];
+        }
 
         renderProfile(currentMember);
         renderBookings();
 
         memberDashboard?.classList.remove('hidden');
+        document.querySelectorAll('.nav-link.hidden').forEach(link => {
+            link.classList.remove('hidden');
+        });
 
     } catch (err) {
         console.error('Error al cargar el espacio del socio:', err);
@@ -319,45 +361,18 @@ async function loadMember(code) {
     }
 }
 
-
-// Función unificada de envío
-// function handleAuthSubmit() {
-//     const code = dniInput?.value?.trim().toUpperCase();
-//     if (!code) {
-//         showError('Introduce tu código de socio o DNI.');
-//         return;
-//     }
-//     loadMember(code);
-// }
-
-// Listeners desacoplados (clic, submit y tecla Enter)
-// btnEnterSpace?.addEventListener('click', handleAuthSubmit);
-
-// authForm?.addEventListener('submit', (e) => {
-//     e.preventDefault();
-//     handleAuthSubmit();
-// });
-
-// dniInput?.addEventListener('keydown', (e) => {
-//     if (e.key === 'Enter') {
-//         e.preventDefault();
-//         handleAuthSubmit();
-//     }
-// });
-
 btnLogout?.addEventListener('click', () => {
-  deleteMemberCookie();
-  localStorage.removeItem('pulse_member_dni');
+    deleteMemberCookie();
+    localStorage.removeItem(COOKIE_NAME);
 
-  currentMember = null;
-  memberBookings = [];
+    currentMember = null;
+    memberBookings = [];
 
-  window.location.href = '../index.html';
+    window.location.href = '../index.html';
 });
 
 // 7. Auto-login si ya existe DNI en la sesión del navegador
-// Restaurar la sesión desde la cookie
-const savedDni = (getCookie(COOKIE_NAME) || '')
+const savedDni = (getCookie(COOKIE_NAME) || localStorage.getItem(COOKIE_NAME) || '')
     .trim()
     .toUpperCase();
 

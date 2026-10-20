@@ -23,6 +23,12 @@ function formatDateShort(iso) {
     return d && m ? `${d}/${m}` : '';
 }
 
+function getScheduleSortKey(schedule) {
+    if (!schedule) return '';
+    const date = schedule.activityDate || schedule.activity_date || schedule.date || '';
+    return `${date}T${schedule.startTime || schedule.start_time || ''}`;
+}
+
 // Diccionarios en memoria cargados dinámicamente desde el backend
 let ACTIVITIES_MAP = {};
 let TEACHERS_MAP = {};
@@ -111,9 +117,16 @@ function populateSelects() {
     }
 
     if (selectClass) {
+        const sortedSchedules = [...schedules].sort((a, b) => {
+            const aDate = a.activityDate || a.activity_date || a.date || '';
+            const bDate = b.activityDate || b.activity_date || b.date || '';
+            return `${aDate}T${a.startTime || a.start_time || ''}`
+                .localeCompare(`${bDate}T${b.startTime || b.start_time || ''}`);
+        });
+
         selectClass.innerHTML = `
         <option value="">Selecciona una clase semanal...</option>
-        ${schedules.map(s => {
+        ${sortedSchedules.map(s => {
             const activity = ACTIVITIES_MAP[s.activityId]?.name || 'Actividad';
             const day = DAY_NAMES[s.dayOfWeek] || `Día ${s.dayOfWeek}`;
             const teacher = TEACHERS_MAP[s.teacherId] || 'Sin profesor';
@@ -216,7 +229,13 @@ function renderBookings() {
         return;
     }
 
-    const view = paginate(bookings, currentPage);
+    const sortedBookings = [...bookings].sort((a, b) => {
+        const scheduleA = schedules.find(s => s.id === a.clase_id);
+        const scheduleB = schedules.find(s => s.id === b.clase_id);
+        return getScheduleSortKey(scheduleA).localeCompare(getScheduleSortKey(scheduleB));
+    });
+
+    const view = paginate(sortedBookings, currentPage);
     currentPage = view.page;
 
     tableBody.innerHTML = view.items.map(b => {

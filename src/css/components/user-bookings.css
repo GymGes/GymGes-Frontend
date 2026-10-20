@@ -1,0 +1,259 @@
+/* src/css/components/user-bookings.css */
+
+.member-bookings-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+/* Cabecera superior de reservas */
+.bookings-top-card {
+    background-color: var(--color-surface, #ffffff);
+    border: 1px solid var(--color-surface-border, rgba(193, 199, 206, 0.4));
+    border-radius: var(--radius-md, 14px);
+    padding: 1.5rem 1.75rem;
+    box-shadow: var(--shadow-sm, 0 1px 4px rgba(0, 0, 0, 0.04));
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+@media (min-width: 640px) {
+    .bookings-top-card {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+
+.bookings-title-group {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+}
+
+.bookings-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-primary, #002539);
+    letter-spacing: -0.02em;
+}
+
+.badge-active-count {
+    background-color: var(--color-secondary, #21648c);
+    color: #ffffff;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    padding: 0.2rem 0.65rem;
+    border-radius: var(--radius-full, 9999px);
+}
+
+.bookings-subtitle {
+    font-size: 0.875rem;
+    color: var(--color-text-muted, #41474d);
+    margin-top: 0.25rem;
+}
+
+.btn-book-new {
+    background-color: var(--color-primary, #002539);
+    color: #ffffff;
+    padding: 0.625rem 1.25rem;
+    border-radius: var(--radius-sm, 10px);
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    transition: background-color 0.2s ease;
+}
+
+.btn-book-new:hover {
+    background-color: var(--color-primary-container, #013c58);
+}
+
+/* Listado de tarjetas de reserva */
+.bookings-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.booking-item-card {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--color-surface, #ffffff);
+    border: 1px solid var(--color-surface-border, rgba(193, 199, 206, 0.4));
+    border-radius: var(--radius-md, 14px);
+    padding: 1.25rem 1.5rem;
+    box-shadow: var(--shadow-sm, 0 1px 4px rgba(0, 0, 0, 0.04));
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.booking-item-card:hover {
+    box-shadow: 0 6px 16px rgba(1, 60, 88, 0.08);
+}
+
+@media (min-width: 768px) {
+    .booking-item-card {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+
+/* Franjas verticales laterales de acento */
+.card-left-stripe {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+}
+
+.stripe-blue {
+    background-color: var(--color-secondary, #21648c);
+}
+
+.stripe-gold {
+    background-color: var(--color-accent-gold, #ffb955);
+}
+
+.booking-main-info {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+/* Cuadrante horario */
+.booking-time-square {
+    width: 4.25rem;
+    height: 4.25rem;
+    border-radius: var(--radius-md, 12px);
+    background-color: var(--color-surface-low, #e5eeff);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    line-height: 1.1;
+}
+
+.time-square-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-secondary, #21648c);
+    text-align: center;
+}
+
+.time-square-time {
+    font-size: 1.1875rem;
+    font-weight: 700;
+    color: var(--color-primary, #002539);
+    margin-top: 0.15rem;
+}
+
+.booking-details-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.booking-activity-title {
+    font-size: 1.1875rem;
+    font-weight: 700;
+    color: var(--color-primary, #002539);
+    letter-spacing: -0.015em;
+}
+
+.booking-meta-line {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    margin-top: 0.25rem;
+    font-size: 0.8125rem;
+    color: var(--color-text-muted, #41474d);
+}
+
+.meta-icon-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.meta-icon-item .material-symbols-outlined {
+    font-size: 1rem;
+    color: var(--color-secondary, #21648c);
+}
+
+.meta-separator {
+    color: #c1c7ce;
+}
+
+/* Botón de Cancelación */
+.btn-cancel-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.625rem 1rem;
+    border-radius: var(--radius-sm, 10px);
+    border: 1px solid var(--color-secondary, #21648c);
+    background-color: transparent;
+    color: var(--color-secondary, #21648c);
+    font-family: inherit;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-cancel-action:hover {
+    background-color: rgba(33, 100, 140, 0.08);
+}
+
+.btn-cancel-action:active {
+    transform: scale(0.97);
+}
+
+.btn-cancel-action .material-symbols-outlined {
+    font-size: 1.125rem;
+}
+
+/* Estado sin reservas */
+.empty-bookings-box {
+    background-color: var(--color-surface, #ffffff);
+    border: 1px solid var(--color-surface-border, rgba(193, 199, 206, 0.4));
+    border-radius: var(--radius-md, 14px);
+    padding: 3rem 1.5rem;
+    text-align: center;
+    color: var(--color-text-muted, #41474d);
+    font-size: 0.9375rem;
+}
+
+/* Resumen del modal de cancelación */
+.cancel-modal-summary {
+    background-color: var(--color-surface-low, #eff4ff);
+    border-radius: var(--radius-md, 12px);
+    padding: 0.875rem 1rem;
+    margin: 1rem 0;
+}
+
+.cancel-summary-title {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    color: var(--color-primary, #002539);
+}
+
+.cancel-summary-subtitle {
+    font-size: 0.8125rem;
+    color: var(--color-secondary, #21648c);
+    margin-top: 0.25rem;
+    font-weight: 600;
+}
