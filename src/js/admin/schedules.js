@@ -337,7 +337,10 @@ btnConfirmDelete?.addEventListener("click", async () => {
       closeDeleteModal();
     } catch (error) {
       console.error("Error eliminando sesión:", error);
-      alert("No se pudo eliminar la sesión. Inténtalo de nuevo.");
+      alert(
+        error?.message ||
+        "No se pudo eliminar la sesión."
+      );
     }
   }
 });
