@@ -339,6 +339,8 @@ btnConfirmDelete?.addEventListener("click", async () => {
     } catch (error) {
       console.error("Error eliminando sesión:", error);
 
+      closeDeleteModal();
+
       modalService.error(
         error?.message || "No se pudo eliminar la sesión.",
         "No se puede eliminar la sesión"
