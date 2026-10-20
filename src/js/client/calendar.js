@@ -3,6 +3,7 @@ import { scheduleService } from '../services/scheduleService.js';
 import { activityService } from '../services/activityService.js';
 import { teacherService } from '../services/teacherService.js';
 import { bookingService } from '../services/bookingService.js';
+import { modalService } from '../services/modalService.js';
 
 // Catálogo de imágenes referenciales por tipo de actividad
 const ACTIVITY_IMAGES = {
@@ -382,8 +383,7 @@ bookingForm?.addEventListener('submit', async (e) => {
 
         closeBookingModal();
         renderScheduleForDay(selectedDay);
-
-        alert(`¡Plaza reservada con éxito para el socio ${code}!`);
+        modalService.success(`¡Plaza reservada con éxito para el socio ${code}!`)
     } catch (error) {
         console.error('Error al registrar la reserva:', error);
 

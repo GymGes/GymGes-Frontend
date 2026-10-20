@@ -125,7 +125,7 @@ function show(type, message, customTitle) {
 export const modalService = {
     show,
     error: (message, title) => show('error', message, title),
-    success: (message, title) => show('success', message, title),
+    success: (message, title) => show('exito en la operación', message, title),
     warning: (message, title) => show('warning', message, title),
     info: (message, title) => show('info', message, title)
 };

@@ -5,6 +5,8 @@ import { scheduleService } from '../services/scheduleService.js';
 import { activityService } from '../services/activityService.js';
 import { teacherService } from '../services/teacherService.js';
 import { paginate, renderPagination } from '../utils/paginate.js';
+import { notificationService } from '../services/notificationService.js';
+import { modalService } from '../services/modalService.js';
 
 // Días de la semana para los nombres de turnos
 const DAY_NAMES = {
@@ -201,15 +203,7 @@ async function loadData() {
         renderBookings();
     } catch (error) {
         console.error('Error cargando los datos de reservas:', error);
-        if (tableBody) {
-            tableBody.innerHTML = `
-            <tr>
-            <td colspan="6" class="text-center table-state-row" style="color: var(--color-error, #ba1a1a);">
-                Error al conectar con la API del servidor.
-            </td>
-            </tr>
-        `;
-        }
+        modalService.error("Error al conectar con la API del servidor.")
     }
 }
 
@@ -336,7 +330,7 @@ btnConfirmDelete?.addEventListener('click', async () => {
         try {
             await bookingService.deleteBooking(bookingToDeleteId);
         } catch (error) {
-            alert(error?.message || 'No se pudo cancelar la reserva.');
+            modalService.error(error?.message || 'No se pudo cancelar la reserva.');
             return;
         }
 
@@ -381,7 +375,7 @@ bookingForm?.addEventListener('submit', async (e) => {
             clase_id: claseId
         });
     } catch (error) {
-        alert(error?.message || 'No se pudo registrar la reserva.');
+        modalService.error(error?.message || 'No se pudo registrar la reserva.');
         return;
     }
 

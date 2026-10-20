@@ -1,5 +1,7 @@
+
 /* src/js/admin/activities.js */
 import { activityService } from '../services/activityService.js';
+import { notificationService } from '../services/notificationService.js';
 
 // Estado local de actividades en la vista
 let activities = [];
@@ -26,71 +28,126 @@ const dropzonePreview = document.getElementById('dropzone-preview');
 const previewFilename = document.getElementById('preview-filename');
 const previewImage = document.getElementById('preview-image');
 
-// Cargar actividades desde el servicio (API o Fallback)
+// Obtener un mensaje legible del error
+function getErrorMessage(error, fallback) {
+    return (
+        error?.response?.data?.detail ||
+        error?.message ||
+        fallback
+    );
+}
+
+// 1. Cargar actividades desde el servicio
 async function loadActivities() {
     if (tableBody) {
         tableBody.innerHTML = `
-        <tr id="table-loading-row">
-        <td colspan="4" class="text-center table-state-row">
-            Cargando catálogo de actividades...
-        </td>
-        </tr>
-    `;
-    }
-    activities = await activityService.getActivities();
-    renderActivities();
+            <tr id="table-loading-row">
+                <td colspan="4" class="text-center table-state-row">
+                    Cargando catálogo de actividades...
+                </td>
+            </tr>
+        `;
     }
 
+    try {
+        activities = await activityService.getActivities();
+        renderActivities();
+    } catch (error) {
+        console.error('Error al cargar las actividades:', error);
+
+        if (tableBody) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="text-center table-state-row">
+                        No se ha podido cargar el catálogo de actividades.
+                    </td>
+                </tr>
+            `;
+        }
+
+        notificationService.error(
+            getErrorMessage(
+                error,
+                'No se han podido cargar las actividades.'
+            )
+        );
+    }
+}
+
 // 2. Renderizado dinámico de la tabla
-    function renderActivities() {
+function renderActivities() {
     if (!tableBody) return;
 
     if (activities.length === 0) {
-    tableBody.innerHTML = `
-        <tr>
-        <td colspan="4" class="text-center table-state-row">
-            No hay actividades registradas en el catálogo.
-        </td>
-        </tr>
-    `;
-    return;
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="4" class="text-center table-state-row">
+                    No hay actividades registradas en el catálogo.
+                </td>
+            </tr>
+        `;
+        return;
     }
 
     tableBody.innerHTML = activities.map(act => `
-    <tr id="activity-row-${act.id}">
-        <td>
-        <div class="cell-activity">
-            <img class="cell-activity-img" src="${act.imageUrl}" alt="${act.name}" />
-            <div class="cell-activity-info">
-            <span class="cell-activity-title">${act.name}</span>
-            <span class="cell-activity-desc">${act.description || ''}</span>
-            </div>
-        </div>
-        </td>
-        <td style="white-space: nowrap;">
-        <span style="display: inline-flex; align-items: center; gap: 0.35rem; color: var(--color-text-main);">
-            <span class="material-symbols-outlined" style="font-size: 16px; color: var(--color-secondary);">schedule</span>
-            ${act.duration} min
-        </span>
-        </td>
-        <td style="white-space: nowrap;">
-        <strong style="color: var(--color-primary);">${act.capacity}</strong> plazas
-        </td>
-        <td class="text-right" style="white-space: nowrap;">
-        <div class="cell-actions">
-            <button class="btn-icon" type="button" aria-label="Editar" onclick="window.openEditModal(${act.id})">
-            <span class="material-symbols-outlined" style="font-size: 18px;">edit</span>
-            </button>
-            <button class="btn-icon btn-icon-danger" type="button" aria-label="Eliminar" onclick="window.openDeleteModal(${act.id})">
-            <span class="material-symbols-outlined" style="font-size: 18px;">delete</span>
-            </button>
-        </div>
-        </td>
-    </tr>
+        <tr id="activity-row-${act.id}">
+            <td>
+                <div class="cell-activity">
+                    <img
+                        class="cell-activity-img"
+                        src="${act.imageUrl}"
+                        alt="${act.name}"
+                    />
+                    <div class="cell-activity-info">
+                        <span class="cell-activity-title">${act.name}</span>
+                        <span class="cell-activity-desc">${act.description || ''}</span>
+                    </div>
+                </div>
+            </td>
+
+            <td style="white-space: nowrap;">
+                <span style="display: inline-flex; align-items: center; gap: 0.35rem; color: var(--color-text-main);">
+                    <span class="material-symbols-outlined" style="font-size: 16px; color: var(--color-secondary);">
+                        schedule
+                    </span>
+                    ${act.duration} min
+                </span>
+            </td>
+
+            <td style="white-space: nowrap;">
+                <strong style="color: var(--color-primary);">${act.capacity}</strong> plazas
+            </td>
+
+            <td class="text-right" style="white-space: nowrap;">
+                <div class="cell-actions">
+                    <button
+                        class="btn-icon"
+                        type="button"
+                        aria-label="Editar"
+                        onclick="window.openEditModal(${act.id})"
+                    >
+                        <span class="material-symbols-outlined" style="font-size: 18px;">
+                            edit
+                        </span>
+                    </button>
+
+                    <button
+                        class="btn-icon btn-icon-danger"
+                        type="button"
+                        aria-label="Eliminar"
+                        onclick="window.openDeleteModal(${act.id})"
+                    >
+                        <span class="material-symbols-outlined" style="font-size: 18px;">
+                            delete
+                        </span>
+                    </button>
+                </div>
+            </td>
+        </tr>
     `).join('');
 }
 
-// Control del Modal de Crear / Editar
+// 3. Control del modal de Crear / Editar
 function openModal(isEdit = false, activity = null) {
     const modalTitle = document.getElementById('modal-title');
     const inputName = document.getElementById('modal-act-name');
@@ -100,6 +157,7 @@ function openModal(isEdit = false, activity = null) {
 
     if (isEdit && activity) {
         editingActivityId = activity.id;
+
         modalTitle.textContent = 'Editar Tipo de Actividad';
         inputName.value = activity.name;
         inputDuration.value = activity.duration;
@@ -111,16 +169,20 @@ function openModal(isEdit = false, activity = null) {
         dropzonePreview.classList.remove('hidden');
     } else {
         editingActivityId = null;
+
         modalTitle.textContent = 'Añadir Tipo de Actividad';
         activityForm.reset();
+
         inputDuration.value = 50;
         inputCapacity.value = 16;
+
         previewImage.removeAttribute('src');
         previewFilename.textContent = 'imagen.jpg';
         dropzonePreview.classList.add('hidden');
     }
 
     if (fileInput) fileInput.value = '';
+
     activityModal.classList.remove('hidden');
 }
 
@@ -129,12 +191,13 @@ function closeModal() {
     editingActivityId = null;
 }
 
-// Control del Modal de Confirmación de Borrado
+// 4. Control del modal de confirmación de borrado
 window.openDeleteModal = function (id) {
     const target = activities.find(a => a.id === id);
     if (!target) return;
 
     activityToDeleteId = id;
+
     document.getElementById('delete-activity-name').textContent = target.name;
     deleteModal.classList.remove('hidden');
 };
@@ -146,10 +209,13 @@ function closeDeleteModal() {
 
 window.openEditModal = function (id) {
     const target = activities.find(a => a.id === id);
-    if (target) openModal(true, target);
+
+    if (target) {
+        openModal(true, target);
+    }
 };
 
-// Event Listeners
+// 5. Event listeners
 btnOpenCreate?.addEventListener('click', () => openModal(false));
 btnCloseModal?.addEventListener('click', closeModal);
 btnCancelModal?.addEventListener('click', closeModal);
@@ -157,19 +223,47 @@ btnCancelModal?.addEventListener('click', closeModal);
 btnCloseDeleteModal?.addEventListener('click', closeDeleteModal);
 btnCancelDelete?.addEventListener('click', closeDeleteModal);
 
+// 6. Eliminar actividad
 btnConfirmDelete?.addEventListener('click', async () => {
-    if (activityToDeleteId !== null) {
-        await activityService.deleteActivity(activityToDeleteId);
-        activities = activities.filter(a => a.id !== activityToDeleteId);
+    if (activityToDeleteId === null) return;
+
+    const idToDelete = activityToDeleteId;
+
+    btnConfirmDelete.disabled = true;
+
+    try {
+        await activityService.deleteActivity(idToDelete);
+
+        activities = activities.filter(a => a.id !== idToDelete);
+
         renderActivities();
         closeDeleteModal();
+
+        notificationService.success(
+            'La actividad se ha eliminado correctamente.'
+        );
+    } catch (error) {
+        console.error('Error al eliminar la actividad:', error);
+
+        notificationService.error(
+            getErrorMessage(
+                error,
+                'No se ha podido eliminar la actividad.'
+            )
+        );
+    } finally {
+        btnConfirmDelete.disabled = false;
     }
 });
 
-// Dropzone y selección de archivo
-dropzoneBox?.addEventListener('click', () => fileInput?.click());
+// 7. Dropzone y selección de archivo
+dropzoneBox?.addEventListener('click', () => {
+    fileInput?.click();
+});
+
 fileInput?.addEventListener('change', (e) => {
     const file = e.target.files[0];
+
     if (file) {
         previewImage.src = URL.createObjectURL(file);
         previewFilename.textContent = file.name;
@@ -177,32 +271,110 @@ fileInput?.addEventListener('change', (e) => {
     }
 });
 
-// Guardar formulario (Crear o Actualizar)
+// 8. Guardar formulario (Crear o Actualizar)
 activityForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const activityData = {
         name: document.getElementById('modal-act-name').value.trim(),
-        duration: parseInt(document.getElementById('modal-act-duration').value, 10),
-        capacity: parseInt(document.getElementById('modal-act-capacity').value, 10),
+        duration: parseInt(
+            document.getElementById('modal-act-duration').value,
+            10
+        ),
+        capacity: parseInt(
+            document.getElementById('modal-act-capacity').value,
+            10
+        ),
         description: document.getElementById('modal-act-desc').value.trim(),
         image: fileInput?.files[0] || null
     };
 
-    if (editingActivityId) {
-        const updated = await activityService.updateActivity(editingActivityId, activityData);
-        const index = activities.findIndex(a => a.id === editingActivityId);
-        if (index !== -1) activities[index] = updated;
-    } else {
-        const created = await activityService.createActivity(activityData);
-        activities.unshift(created);
+    // Validación básica del formulario
+    if (!activityData.name) {
+        notificationService.warning(
+            'Introduce el nombre de la actividad.'
+        );
+        return;
     }
 
-    renderActivities();
-    closeModal();
+    if (
+        !Number.isInteger(activityData.duration) ||
+        activityData.duration <= 0
+    ) {
+        notificationService.warning(
+            'La duración debe ser un número entero mayor que cero.'
+        );
+        return;
+    }
+
+    if (
+        !Number.isInteger(activityData.capacity) ||
+        activityData.capacity <= 0
+    ) {
+        notificationService.warning(
+            'La capacidad debe ser un número entero mayor que cero.'
+        );
+        return;
+    }
+
+    const isEditing = editingActivityId !== null;
+    const activityId = editingActivityId;
+
+    const submitButton = activityForm.querySelector(
+        'button[type="submit"]'
+    );
+
+    if (submitButton) submitButton.disabled = true;
+
+    try {
+        if (isEditing) {
+            const updated = await activityService.updateActivity(
+                activityId,
+                activityData
+            );
+
+            const index = activities.findIndex(
+                a => a.id === activityId
+            );
+
+            if (index !== -1) {
+                activities[index] = updated;
+            }
+
+            notificationService.success(
+                'La actividad se ha actualizado correctamente.'
+            );
+        } else {
+            const created = await activityService.createActivity(
+                activityData
+            );
+
+            activities.unshift(created);
+
+            notificationService.success(
+                'La actividad se ha creado correctamente.'
+            );
+        }
+
+        renderActivities();
+        closeModal();
+    } catch (error) {
+        console.error('Error al guardar la actividad:', error);
+
+        notificationService.error(
+            getErrorMessage(
+                error,
+                isEditing
+                    ? 'No se ha podido actualizar la actividad.'
+                    : 'No se ha podido crear la actividad.'
+            )
+        );
+    } finally {
+        if (submitButton) submitButton.disabled = false;
+    }
 });
 
-// Cerrar con Escape
+// 9. Cerrar con Escape
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         closeModal();
@@ -210,5 +382,5 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Inicializar la carga al entrar a la página
+// 10. Inicializar la carga al entrar a la página
 loadActivities();

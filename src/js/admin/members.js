@@ -2,7 +2,7 @@
 import { memberService } from '../services/memberService.js';
 import { planService } from '../services/planService.js';
 import { paginate, renderPagination } from '../utils/paginate.js';
-
+import { modalService } from '../services/modalService.js';
 // Estado local
 let members = [];
 let plans = [];
@@ -283,7 +283,8 @@ btnCloseDeleteModal?.addEventListener('click', closeDeleteModal);
 btnCancelDelete?.addEventListener('click', closeDeleteModal);
 
 btnConfirmDelete?.addEventListener('click', async () => {
-    if (memberToDeleteCode) {
+    try{
+        if (memberToDeleteCode) {
         await memberService.deleteMember(memberToDeleteCode);
         members = members.filter(m => m.codigo !== memberToDeleteCode);
         displayedMembers = null;
@@ -291,6 +292,10 @@ btnConfirmDelete?.addEventListener('click', async () => {
         renderMembers();
         closeDeleteModal();
     }
+} catch{
+        console.error("Error cargando sesiones:", error);
+    modalService.error("ocurrio un error al borrar al miembro, intentalo de nuevo mas tarde")
+}
 });
 
 // Guardar socio (Crear o Actualizar)
@@ -325,7 +330,7 @@ memberForm?.addEventListener('submit', async (e) => {
         // Validar duplicado de código/DNI en mock local
         const exists = members.some(m => m.codigo === memberData.codigo);
         if (exists) {
-            alert(`Ya existe un socio registrado con el código / DNI: ${memberData.codigo}`);
+            modalService.info(`Ya existe un socio registrado con el código / DNI: ${memberData.codigo}`);
             return;
         }
         const created = await memberService.createMember(memberData);
