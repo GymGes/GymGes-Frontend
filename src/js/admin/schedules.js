@@ -2,6 +2,7 @@
 import { scheduleService } from "../services/scheduleService.js";
 import { activityService } from "../services/activityService.js";
 import { teacherService } from "../services/teacherService.js";
+import { modalService } from "../services/modalService.js";
 
 // Estado local
 let schedules = [];
@@ -337,9 +338,10 @@ btnConfirmDelete?.addEventListener("click", async () => {
       closeDeleteModal();
     } catch (error) {
       console.error("Error eliminando sesión:", error);
-      alert(
-        error?.message ||
-        "No se pudo eliminar la sesión."
+
+      modalService.error(
+        error?.message || "No se pudo eliminar la sesión.",
+        "No se puede eliminar la sesión"
       );
     }
   }
