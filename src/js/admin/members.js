@@ -24,7 +24,6 @@ const inputCode = document.getElementById('modal-member-code');
 const inputName = document.getElementById('modal-member-name');
 const inputSurname = document.getElementById('modal-member-surname');
 const selectPlan = document.getElementById('modal-member-plan');
-const inputCredits = document.getElementById('modal-member-credits');
 const inputAge = document.getElementById('modal-member-age');
 const inputCity = document.getElementById('modal-member-city');
 const inputAddress = document.getElementById('modal-member-address');
@@ -49,17 +48,6 @@ async function loadPlansOptions() {
     `).join('');
     }
     }
-
-// Al cambiar de plan en el formulario de alta, auto-completar los créditos sugeridos
-selectPlan?.addEventListener('change', () => {
-    if (!editingMemberCode) {
-        const selectedOption = selectPlan.options[selectPlan.selectedIndex];
-        const defaultCredits = selectedOption?.getAttribute('data-credits');
-        if (defaultCredits && inputCredits) {
-            inputCredits.value = defaultCredits;
-        }
-    }
-});
 
 // 2. Cargar socios iniciales
 async function loadMembers() {
@@ -155,7 +143,6 @@ function openModal(isEdit = false, member = null) {
         inputName.value = member.nombre;
         inputSurname.value = member.apellido;
         selectPlan.value = member.plan_id;
-        inputCredits.value = member.creditos_restantes;
         inputAge.value = member.edad;
         inputCity.value = member.ciudad;
         inputAddress.value = member.direccion;
@@ -171,7 +158,6 @@ function openModal(isEdit = false, member = null) {
         inputAge.value = 30;
         if (selectPlan.options.length > 0) {
             selectPlan.selectedIndex = 0;
-            inputCredits.value = selectPlan.options[0].getAttribute('data-credits') || 8;
         }
     }
 
@@ -292,6 +278,15 @@ btnConfirmDelete?.addEventListener('click', async () => {
 memberForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
+    const planId = parseInt(selectPlan.value, 10);
+    const selectedPlan = plans.find(p => Number(p.id) === planId);
+    const existingMember = editingMemberCode
+        ? members.find(m => m.codigo === editingMemberCode)
+        : null;
+    const creditosRestantes = existingMember
+        ? existingMember.creditos_restantes
+        : (selectedPlan?.credits ?? 8);
+
     const memberData = {
         codigo: inputCode.value.trim().toUpperCase(),
         nombre: inputName.value.trim(),
@@ -299,8 +294,8 @@ memberForm?.addEventListener('submit', async (e) => {
         edad: parseInt(inputAge.value, 10),
         ciudad: inputCity.value.trim(),
         direccion: inputAddress.value.trim(),
-        plan_id: parseInt(selectPlan.value, 10),
-        creditos_restantes: parseInt(inputCredits.value, 10)
+        plan_id: planId,
+        creditos_restantes: creditosRestantes
     };
 
     if (editingMemberCode) {
