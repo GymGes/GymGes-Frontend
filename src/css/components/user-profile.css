@@ -1,0 +1,111 @@
+/* src/css/components/user-profile.css */
+
+.member-profile-card {
+    background-color: var(--color-surface, #ffffff);
+    border: 1px solid var(--color-surface-border, rgba(193, 199, 206, 0.4));
+    border-radius: var(--radius-md, 14px);
+    padding: 1.75rem;
+    box-shadow: var(--shadow-sm, 0 1px 4px rgba(0, 0, 0, 0.04));
+}
+
+.profile-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.profile-card-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-primary, #002539);
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+}
+
+.badge-active-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background-color: rgba(202, 230, 255, 0.6);
+    color: var(--color-primary, #013c58);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    padding: 0.2rem 0.625rem;
+    border-radius: var(--radius-full, 9999px);
+    margin-top: 0.35rem;
+}
+
+.badge-dot-green {
+    width: 6px;
+    height: 6px;
+    border-radius: var(--radius-full, 9999px);
+    background-color: var(--color-secondary, #21648c);
+}
+
+.btn-profile-logout {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: transparent;
+    border: none;
+    color: #383f70;
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0.35rem 0.5rem;
+    border-radius: var(--radius-sm, 8px);
+    transition: all 0.2s ease;
+}
+
+.btn-profile-logout:hover {
+    color: var(--color-error, #ba1a1a);
+    background-color: rgba(186, 26, 26, 0.08);
+}
+
+.profile-card-fields {
+    margin-top: 1.25rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-field-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.65rem 0;
+    border-top: 1px solid var(--color-surface-border, rgba(193, 199, 206, 0.25));
+    font-size: 0.875rem;
+}
+
+.profile-field-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #31355c;
+    font-size: 0.8125rem;
+    font-weight: 500;
+}
+
+.profile-field-label .material-symbols-outlined {
+    font-size: 1.125rem;
+    color: #242d46;
+}
+
+.profile-field-value {
+    color: var(--color-primary, #002539);
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-align: right;
+}
+
+.profile-field-value.mono {
+    font-family: monospace;
+    font-weight: 600;
+}
+
+.profile-field-value.credits {
+    color: var(--color-secondary, #21648c);
+    font-weight: 700;
+}
