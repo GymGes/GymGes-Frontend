@@ -27,13 +27,13 @@
                 </a>
                 <nav class="header-nav" aria-label="Navegación principal">
                     <a class="nav-link" href="../index.html">Actividades</a>
-                    <a class="nav-link" href="calendar.html">Horario Semanal</a>
-                    <a class="nav-link active" href="user.html" aria-current="page">Mi Espacio</a>
+                    <a class="nav-link hidden" href="calendar.html">Horario Semanal</a>
+                    <a class="nav-link active hidden" href="user.html" aria-current="page">Mi Espacio</a>
                 </nav>
             </div>
 
             <div class="header-actions">
-                <a class="btn-pill btn-pill-gold" href="user.html">Acceso Socio</a>
+            <a id="btn-member-access" class="btn-pill btn-pill-gold" href="#">Acceso Socio</a>
                 <a class="btn-pill btn-pill-navy" href="admin/activities-admin.html">Acceso Admin</a>
             </div>
         </div>
@@ -44,7 +44,7 @@
         <div class="user-container">
 
             <!-- Banner Hero de Identificación -->
-            <section class="auth-hero-banner" id="auth-drawer" aria-labelledby="auth-hero-title">
+            <!-- <section class="auth-hero-banner" id="auth-drawer" aria-labelledby="auth-hero-title">
                 <div class="blur-circle blur-circle-blue" aria-hidden="true"></div>
                 <div class="blur-circle blur-circle-gold" aria-hidden="true"></div>
 
@@ -60,7 +60,7 @@
                         </p>
                     </div>
 
-                    <!-- Tarjeta con campo de entrada -->
+                    <!-- Tarjeta con campo de entrada 
                     <form id="auth-form" class="auth-hero-card" onsubmit="event.preventDefault(); return false;" novalidate>
                       <div class="auth-input-row">
                           <div class="auth-input-wrapper">
@@ -76,7 +76,7 @@
                                   autocomplete="off"
                               />
                           </div>
-                          <!-- Cambiado a type="button" para que jamás recargue la página -->
+                          <!-- Cambiado a type="button" para que jamás recargue la página 
                           <button type="button" id="btn-enter-space" class="btn-auth-enter">
                               <span>Entrar a mi espacio</span>
                               <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
@@ -89,7 +89,7 @@
                       <p id="login-error" class="auth-error-text hidden" role="alert"></p>
                   </form>
                 </div>
-            </section>
+            </section> -->
 
             <!-- Dashboard del Socio (Oculto inicialmente hasta autenticar) -->
             <div id="member-dashboard" class="member-dashboard-grid hidden" aria-live="polite">
@@ -221,6 +221,7 @@
 
     <!-- Controlador JS del cliente -->
     <script type="module" src="../src/js/client/user.js"></script>
+    <script type="module" src="/src/js/client/client_access.js"></script>
 </body>
 
 </html>
