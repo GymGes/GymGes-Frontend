@@ -22,6 +22,12 @@ function formatDateShort(iso) {
     return d && m ? `${d}/${m}` : '';
 }
 
+function getScheduleSortKey(schedule) {
+    if (!schedule) return '';
+    const date = schedule.activityDate || schedule.activity_date || schedule.date || '';
+    return `${date}T${schedule.startTime || schedule.start_time || ''}`;
+}
+
 // Diccionarios en memoria cargados dinámicamente desde el backend
 let ACTIVITIES_MAP = {};
 let TEACHERS_MAP = {};
@@ -218,7 +224,13 @@ function renderBookings() {
         return;
     }
 
-    tableBody.innerHTML = bookings.map(b => {
+    const sortedBookings = [...bookings].sort((a, b) => {
+        const scheduleA = schedules.find(s => s.id === a.clase_id);
+        const scheduleB = schedules.find(s => s.id === b.clase_id);
+        return getScheduleSortKey(scheduleA).localeCompare(getScheduleSortKey(scheduleB));
+    });
+
+    tableBody.innerHTML = sortedBookings.map(b => {
         const member = members.find(m => m.codigo === b.socio_codigo);
         const memberName = member ? `${member.nombre} ${member.apellido}` : b.socio_codigo;
 
