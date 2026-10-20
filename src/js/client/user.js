@@ -14,9 +14,9 @@ let memberBookings = [];
 let bookingToCancelId = null;
 
 // Elementos del DOM - Login y Contenedores
-const authForm = document.getElementById('auth-form');
-const dniInput = document.getElementById('dni-input');
-const btnEnterSpace = document.getElementById('btn-enter-space');
+// const authForm = document.getElementById('auth-form');
+// const dniInput = document.getElementById('dni-input');
+// const btnEnterSpace = document.getElementById('btn-enter-space');
 const loginError = document.getElementById('login-error');
 const memberDashboard = document.getElementById('member-dashboard');
 const btnLogout = document.getElementById('btn-logout');
@@ -42,7 +42,23 @@ const btnCancelModalBack = document.getElementById('btn-cancel-modal-back');
 const btnConfirmCancelBooking = document.getElementById('btn-confirm-cancel-booking');
 
 const DAY_NAMES = { 1: 'LUN', 2: 'MAR', 3: 'MIÉ', 4: 'JUE', 5: 'VIE', 6: 'SÁB', 7: 'DOM' };
+const COOKIE_NAME = 'pulse_member_dni';
 
+function getCookie(name) {
+  const prefix = `${name}=`;
+  const cookie = document.cookie
+    .split('; ')
+    .find(item => item.startsWith(prefix));
+
+  return cookie
+    ? decodeURIComponent(cookie.slice(prefix.length))
+    : null;
+}
+
+function deleteMemberCookie() {
+  document.cookie =
+    `${COOKIE_NAME}=; Path=/; Max-Age=0; SameSite=Lax`;
+}
 // 1. Notificaciones de error
 function showError(msg) {
     if (!loginError) return;
@@ -60,8 +76,9 @@ function hideError() {
 function getScheduleParts(schedule) {
     if (!schedule) return { label: '-', time: '--:--', long: '-', date: '' };
 
-    const rawDate = schedule.activity_date || schedule.activityDate;
-    let time = schedule.startTime || schedule.start_time || '00:00';
+    // const rawDate = schedule.activity_date || schedule.activityDate;
+    const rawDate = schedule.activityDate;
+    let time = schedule.startTime|| '00:00';
     let label = 'SESIÓN';
     let long = 'Fecha no disponible';
     let date = '';
@@ -87,13 +104,7 @@ function getScheduleParts(schedule) {
                 label = DAY_NAMES[dayOfWeek] || 'DÍA';
             }
 
-            if (!schedule.startTime && !schedule.start_time) {
-                const h = String(d.getHours()).padStart(2, '0');
-                const m = String(d.getMinutes()).padStart(2, '0');
-                time = `${h}:${m}`;
-            }
-
-            long = d.toLocaleDateString('es-ES', {
+            fullText = d.toLocaleDateString('es-ES', {
                 weekday: 'long',
                 day: 'numeric',
                 month: 'long'
@@ -251,87 +262,107 @@ document.addEventListener('keydown', (e) => {
 });
 
 // 6. Proceso de autenticación
-async function authenticateMember(code) {
-    hideError();
-    if (btnEnterSpace) btnEnterSpace.disabled = true;
+
+async function loadMember(code) {
+    const normalizedCode = String(code).trim().toUpperCase();
 
     try {
-        const [membersList, loadedSchedules, loadedActivities, loadedTeachers] = await Promise.all([
+        const [
+            membersList,
+            loadedSchedules,
+            loadedActivities,
+            loadedTeachers
+        ] = await Promise.all([
             memberService.getMembers(),
             scheduleService.getSchedules(),
             activityService.getActivities(),
             teacherService.getTeachers()
         ]);
 
-        // Búsqueda flexible que admite mayúsculas/minúsculas y ambos idiomas
         const member = (membersList || []).find(m => {
-            const mCode = String(m.codigo || m.code || '').trim().toUpperCase();
-            return mCode === code;
+            const memberCode = String(m.codigo || m.code || '')
+                .trim()
+                .toUpperCase();
+
+            return memberCode === normalizedCode;
         });
 
         if (!member) {
-            showError(`No existe ningún socio con el código "${code}".`);
+            deleteMemberCookie();
+            localStorage.removeItem(COOKIE_NAME);
+            window.location.href = '../index.html';
             return;
         }
 
         currentMember = member;
         schedules = loadedSchedules || [];
-        activitiesMap = new Map((loadedActivities || []).map(a => [a.id, a]));
-        teachersMap = new Map((loadedTeachers || []).map(t => [t.id, t]));
 
-        localStorage.setItem('pulse_member_dni', code);
-        memberBookings = await bookingService.getBookingsByMember(code);
+        activitiesMap = new Map(
+            (loadedActivities || []).map(a => [a.id, a])
+        );
+
+        teachersMap = new Map(
+            (loadedTeachers || []).map(t => [t.id, t])
+        );
+
+        memberBookings =
+            await bookingService.getBookingsByMember(normalizedCode);
 
         renderProfile(currentMember);
         renderBookings();
 
-        memberDashboard.classList.remove('hidden');
-        if (dniInput) dniInput.value = code;
+        memberDashboard?.classList.remove('hidden');
+
     } catch (err) {
-        console.error('Error en el acceso del socio:', err);
-        showError('No se pudo conectar con el servidor para validar al socio.');
-    } finally {
-        if (btnEnterSpace) btnEnterSpace.disabled = false;
+        console.error('Error al cargar el espacio del socio:', err);
+        alert('No se han podido cargar tus datos. Comprueba tu conexión e inténtalo de nuevo.');
     }
 }
+
 
 // Función unificada de envío
-function handleAuthSubmit() {
-    const code = dniInput?.value?.trim().toUpperCase();
-    if (!code) {
-        showError('Introduce tu código de socio o DNI.');
-        return;
-    }
-    authenticateMember(code);
-}
+// function handleAuthSubmit() {
+//     const code = dniInput?.value?.trim().toUpperCase();
+//     if (!code) {
+//         showError('Introduce tu código de socio o DNI.');
+//         return;
+//     }
+//     loadMember(code);
+// }
 
 // Listeners desacoplados (clic, submit y tecla Enter)
-btnEnterSpace?.addEventListener('click', handleAuthSubmit);
+// btnEnterSpace?.addEventListener('click', handleAuthSubmit);
 
-authForm?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    handleAuthSubmit();
-});
+// authForm?.addEventListener('submit', (e) => {
+//     e.preventDefault();
+//     handleAuthSubmit();
+// });
 
-dniInput?.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-        e.preventDefault();
-        handleAuthSubmit();
-    }
-});
+// dniInput?.addEventListener('keydown', (e) => {
+//     if (e.key === 'Enter') {
+//         e.preventDefault();
+//         handleAuthSubmit();
+//     }
+// });
 
 btnLogout?.addEventListener('click', () => {
-    localStorage.removeItem('pulse_member_dni');
-    currentMember = null;
-    memberBookings = [];
-    memberDashboard.classList.add('hidden');
-    if (dniInput) dniInput.value = '';
-    hideError();
+  deleteMemberCookie();
+  localStorage.removeItem('pulse_member_dni');
+
+  currentMember = null;
+  memberBookings = [];
+
+  window.location.href = '../index.html';
 });
 
 // 7. Auto-login si ya existe DNI en la sesión del navegador
-const savedDni = (localStorage.getItem('pulse_member_dni') || '').trim().toUpperCase();
+// Restaurar la sesión desde la cookie
+const savedDni = (getCookie(COOKIE_NAME) || '')
+    .trim()
+    .toUpperCase();
+
 if (savedDni) {
-    if (dniInput) dniInput.value = savedDni;
-    authenticateMember(savedDni);
+    loadMember(savedDni);
+} else {
+    window.location.href = '../index.html';
 }

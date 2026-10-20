@@ -14,7 +14,7 @@
     padding: 1rem;
 }
 
-.modal-backdrop.hidden {
+.hidden {
     display: none;
 }
 

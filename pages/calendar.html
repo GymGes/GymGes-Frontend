@@ -27,13 +27,13 @@
                 </a>
                 <nav class="header-nav" aria-label="Navegación principal">
                     <a class="nav-link" href="../index.html">Actividades</a>
-                    <a class="nav-link active" href="calendar.html" aria-current="page">Horario Semanal</a>
-                    <a class="nav-link" href="user.html">Mi Espacio</a>
+                    <a class="nav-link active hidden" href="calendar.html" aria-current="page">Horario Semanal</a>
+                    <a class="nav-link hidden" href="user.html">Mi Espacio</a>
                 </nav>
             </div>
 
             <div class="header-actions">
-                <a class="btn-pill btn-pill-gold" href="user.html">Acceso Socio</a>
+                <a id="btn-member-access" class="btn-pill btn-pill-gold" href="#">Acceso Socio</a>
                 <a class="btn-pill btn-pill-navy" href="admin/activities-admin.html">Acceso Admin</a>
             </div>
         </div>
@@ -136,6 +136,7 @@
 
     <!-- Script del controlador cliente -->
     <script type="module" src="../src/js/client/calendar.js"></script>
+    <script type="module" src="/src/js/client/client_access.js"></script>
 </body>
 
 </html>

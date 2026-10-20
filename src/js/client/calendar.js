@@ -43,7 +43,18 @@ const modalClassId = document.getElementById('modal-class-id');
 const modalSocioCode = document.getElementById('modal-socio-code');
 const btnCloseModal = document.getElementById('btn-close-booking-modal');
 const btnCancelModal = document.getElementById('btn-cancel-booking-modal');
+const COOKIE_NAME = 'pulse_member_dni';
 
+function getCookie(name) {
+    const prefix = `${name}=`;
+    const cookie = document.cookie
+        .split('; ')
+        .find(item => item.startsWith(prefix));
+
+    return cookie
+        ? decodeURIComponent(cookie.slice(prefix.length))
+        : null;
+}
 // 1. Selector de fechas de la semana (Lunes a Domingo)
 function getWeekDays() {
     const now = new Date();
@@ -149,7 +160,7 @@ function getScheduleSpots(s) {
 function renderScheduleForDay(day) {
     if (!scheduleList) return;
 
-    const activeDni = (localStorage.getItem('pulse_member_dni') || '').trim().toUpperCase();
+    const activeDni = (getCookie(COOKIE_NAME) || '').trim().toUpperCase();
     const dayClasses = schedules.filter(s => getScheduleDay(s) === day);
 
     if (dayClasses.length === 0) {
@@ -275,13 +286,18 @@ window.handleOpenBookingModal = function (scheduleId) {
     modalActivityName.textContent = activity.name || activity.nombre || 'Actividad';
     modalActivityDetails.textContent = `${dayName} a las ${time} · Impartido por ${teacherName}`;
 
-    const savedDni = localStorage.getItem('pulse_member_dni') || '';
-    if (savedDni) {
-        modalSocioCode.value = savedDni;
-    }
+    const savedDni = (getCookie(COOKIE_NAME) || '').trim().toUpperCase();
 
-    bookingModal.classList.remove('hidden');
-    modalSocioCode.focus();
+if (!savedDni) {
+    window.location.href = '../index.html';
+    return;
+}
+
+modalSocioCode.value = savedDni;
+modalSocioCode.readOnly = true;
+
+// Mostrar el modal de reserva
+bookingModal.classList.remove('hidden');
 };
 
 function closeBookingModal() {
@@ -296,8 +312,15 @@ btnCancelModal?.addEventListener('click', closeBookingModal);
 bookingForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const code = modalSocioCode.value.trim().toUpperCase();
+    const code = (getCookie(COOKIE_NAME) || '').trim().toUpperCase();
     const classId = Number(modalClassId.value);
+
+    if (!code) {
+        window.location.href = '../index.html';
+        return;
+    }
+
+    if (!classId) return;
 
     if (!code || !classId) return;
 
@@ -308,8 +331,7 @@ bookingForm?.addEventListener('submit', async (e) => {
     }
 
     try {
-        localStorage.setItem('pulse_member_dni', code);
-
+        // Contrato estricto según createBooking(bookingData) de bookingService.js
         const newBooking = await bookingService.createBooking({
             socio_codigo: code,
             clase_id: classId
@@ -372,4 +394,10 @@ async function initCalendar() {
     }
 }
 
-initCalendar();
+const savedDni = (getCookie(COOKIE_NAME) || '').trim().toUpperCase();
+
+if (savedDni) {
+    initCalendar();
+} else {
+    window.location.href = '../index.html';
+}
