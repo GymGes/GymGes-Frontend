@@ -22,11 +22,6 @@ const DAY_NAMES = {
     6: 'Sábado',
     7: 'Domingo'
 };
-function formatDateShort(iso) {
-    if (!iso) return '';
-    const [y, m, d] = String(iso).slice(0, 10).split('-');
-    return d && m ? `${d}/${m}` : '';
-}
 
 // Estado reactivo
 let schedules = [];
@@ -160,10 +155,10 @@ function renderScheduleForDay(day) {
     if (dayClasses.length === 0) {
         scheduleList.innerHTML = `
         <div class="schedule-state">
-        <p>No hay sesiones programadas para este día.</p>
-        <p style="font-size: 0.8125rem; margin-top: 0.35rem;">Selecciona otro día en el selector superior.</p>
+            <p>No hay sesiones programadas para este día.</p>
+            <p style="font-size: 0.8125rem; margin-top: 0.35rem;">Selecciona otro día en el selector superior.</p>
         </div>
-    `;
+        `;
         return;
     }
 
@@ -200,68 +195,66 @@ function renderScheduleForDay(day) {
             const teacherName = teacher ? (teacher.name || teacher.nombre) : 'Instructor';
             const spots = getScheduleSpots(s);
 
-            // Comprobar si el socio ya tiene reservada esta sesión (contrato de toFrontend: b.socio_codigo y b.clase_id)
             const isReserved = bookings.some(b => {
                 const bCode = (b.socio_codigo || '').toUpperCase();
                 const bClassId = Number(b.clase_id);
                 return activeDni && bCode === activeDni && bClassId === s.id;
             });
 
-        const dateShort = formatDateShort(s.activityDate);
+            if (isReserved) {
+                return `
+                <button class="slot-btn slot-reserved" type="button" disabled aria-label="${time} - Reservado">
+                    <div class="slot-time-group">
+                        <span class="slot-time">${time}</span>
+                        <span class="material-symbols-outlined slot-icon" aria-hidden="true">check_circle</span>
+                    </div>
+                    <span class="slot-badge">Reservado</span>
+                </button>
+                `;
+            }
 
-        if (isReserved) {
-            return `
-             <button class="slot-btn slot-reserved" type="button" disabled aria-label="${time} - Reservado">
-               <div class="slot-time-group">
-                  <span class="slot-time">${dateShort} ${DAY_NAMES[getScheduleDay(s)]} ${time}</span>
-                  <span class="material-symbols-outlined slot-icon" aria-hidden="true">check_circle</span>
-              </div>
-              <span class="slot-badge">Reservado</span>
-          </button>
-         `;
-      }
             if (spots <= 0) {
                 return `
-            <button class="slot-btn slot-full" type="button" disabled aria-label="${time} - Completo">
-            <span class="slot-time">${dateShort} ${DAY_NAMES[getScheduleDay(s)]} ${time}</span>
-            <span class="slot-details">Completo</span>
-            </button>
-        `;
+                <button class="slot-btn slot-full" type="button" disabled aria-label="${time} - Completo">
+                    <span class="slot-time">${time}</span>
+                    <span class="slot-details">Completo</span>
+                </button>
+                `;
             }
 
             return `
-        <button
-            class="slot-btn slot-available"
-            type="button"
-            onclick="window.handleOpenBookingModal(${s.id})">
-            <span class="slot-time">${time}</span>
-            <span class="slot-details">${teacherName} · ${spots} libres</span>
-        </button>
-        `;
+            <button
+                class="slot-btn slot-available"
+                type="button"
+                onclick="window.handleOpenBookingModal(${s.id})">
+                <span class="slot-time">${time}</span>
+                <span class="slot-details">${teacherName} · ${spots} libres</span>
+            </button>
+            `;
         }).join('');
 
         return `
         <article class="schedule-activity-card">
-        <div class="activity-info-group">
-            <img class="activity-thumb" src="${activityImg}" alt="${activity.name}" loading="lazy" />
-            <div class="activity-details">
-            <h2 class="activity-title">${activity.name || activity.nombre || 'Actividad'}</h2>
-            <div class="activity-meta">
-                <span class="meta-item">
-                <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
-                <span>${duration} min</span>
-                </span>
-                <span class="meta-separator" aria-hidden="true">•</span>
-                <span class="meta-item">Aforo máx. ${maxStudents}</span>
+            <div class="activity-info-group">
+                <img class="activity-thumb" src="${activityImg}" alt="${activity.name}" loading="lazy" />
+                <div class="activity-details">
+                    <h2 class="activity-title">${activity.name || activity.nombre || 'Actividad'}</h2>
+                    <div class="activity-meta">
+                        <span class="meta-item">
+                            <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
+                            <span>${duration} min</span>
+                        </span>
+                        <span class="meta-separator" aria-hidden="true">•</span>
+                        <span class="meta-item">Aforo máx. ${maxStudents}</span>
+                    </div>
+                </div>
             </div>
-            </div>
-        </div>
 
-        <div class="slot-list" aria-label="Turnos de ${activity.name}">
-            ${slotsHtml}
-        </div>
+            <div class="slot-list" aria-label="Turnos de ${activity.name}">
+                ${slotsHtml}
+            </div>
         </article>
-    `;
+        `;
     }).join('');
 }
 
@@ -276,12 +269,11 @@ window.handleOpenBookingModal = function (scheduleId) {
     const teacher = teachersMap.get(getScheduleTeacherId(schedule));
     const teacherName = teacher ? (teacher.name || teacher.nombre) : 'Instructor';
     const time = getScheduleTime(schedule);
-    const dateShort = formatDateShort(schedule.activityDate);
     const dayName = DAY_NAMES[getScheduleDay(schedule)] || 'Día';
 
     modalClassId.value = schedule.id;
     modalActivityName.textContent = activity.name || activity.nombre || 'Actividad';
-    modalActivityDetails.textContent = `${dateShort} ${dayName} ${time} · Impartido por ${teacherName}`;
+    modalActivityDetails.textContent = `${dayName} a las ${time} · Impartido por ${teacherName}`;
 
     const savedDni = localStorage.getItem('pulse_member_dni') || '';
     if (savedDni) {
@@ -318,7 +310,6 @@ bookingForm?.addEventListener('submit', async (e) => {
     try {
         localStorage.setItem('pulse_member_dni', code);
 
-        // Contrato estricto según createBooking(bookingData) de bookingService.js
         const newBooking = await bookingService.createBooking({
             socio_codigo: code,
             clase_id: classId
@@ -326,7 +317,6 @@ bookingForm?.addEventListener('submit', async (e) => {
 
         bookings.push(newBooking);
 
-        // Actualizar visualmente la plaza libre
         if (selectedSchedule) {
             if (typeof selectedSchedule.available_spots === 'number') {
                 selectedSchedule.available_spots = Math.max(0, selectedSchedule.available_spots - 1);
@@ -375,10 +365,10 @@ async function initCalendar() {
         console.error('Error al inicializar la cartelera:', err);
         scheduleList.innerHTML = `
         <div class="schedule-state">
-        <p style="color: var(--color-error); font-weight: 600;">No se pudo conectar con el servidor.</p>
-        <p style="font-size: 0.8125rem; margin-top: 0.35rem;">Asegúrate de que la API de FastAPI esté levantada en el puerto 8000.</p>
+            <p style="color: var(--color-error); font-weight: 600;">No se pudo conectar con el servidor.</p>
+            <p style="font-size: 0.8125rem; margin-top: 0.35rem;">Asegúrate de que la API de FastAPI esté levantada en el puerto 8000.</p>
         </div>
-    `;
+        `;
     }
 }
 
