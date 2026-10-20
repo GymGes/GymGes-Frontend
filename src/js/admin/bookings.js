@@ -108,9 +108,16 @@ function populateSelects() {
     }
 
     if (selectClass) {
+        const sortedSchedules = [...schedules].sort((a, b) => {
+            const aDate = a.activityDate || a.activity_date || a.date || '';
+            const bDate = b.activityDate || b.activity_date || b.date || '';
+            return `${aDate}T${a.startTime || a.start_time || ''}`
+                .localeCompare(`${bDate}T${b.startTime || b.start_time || ''}`);
+        });
+
         selectClass.innerHTML = `
         <option value="">Selecciona una clase semanal...</option>
-        ${schedules.map(s => {
+        ${sortedSchedules.map(s => {
             const activity = ACTIVITIES_MAP[s.activityId]?.name || 'Actividad';
             const day = DAY_NAMES[s.dayOfWeek] || `Día ${s.dayOfWeek}`;
             const teacher = TEACHERS_MAP[s.teacherId] || 'Sin profesor';
