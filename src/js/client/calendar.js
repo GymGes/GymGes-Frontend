@@ -430,6 +430,9 @@ async function initCalendar() {
             teacherService.getTeachers(),
             bookingService.getBookings()
         ]);
+ document.querySelectorAll('.nav-link.hidden').forEach(link => {
+            link.classList.remove('hidden');
+        });
 
         schedules = loadedSchedules;
         activitiesMap = new Map(loadedActivities.map(a => [a.id, a]));
