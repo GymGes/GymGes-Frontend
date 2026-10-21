@@ -343,6 +343,5 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Carga inicial
 
 loadMembers();
