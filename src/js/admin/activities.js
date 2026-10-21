@@ -1,7 +1,7 @@
 
 /* src/js/admin/activities.js */
 import { activityService } from '../services/activityService.js';
-import { notificationService } from '../services/notificationService.js';
+import { modalService } from '../services/modalService.js';
 
 // Estado local de actividades en la vista
 let activities = [];
@@ -65,7 +65,7 @@ async function loadActivities() {
             `;
         }
 
-        notificationService.error(
+        modalService.error(
             getErrorMessage(
                 error,
                 'No se han podido cargar las actividades.'
@@ -239,13 +239,13 @@ btnConfirmDelete?.addEventListener('click', async () => {
         renderActivities();
         closeDeleteModal();
 
-        notificationService.success(
+        modalService.success(
             'La actividad se ha eliminado correctamente.'
         );
     } catch (error) {
         console.error('Error al eliminar la actividad:', error);
 
-        notificationService.error(
+        modalService.error(
             getErrorMessage(
                 error,
                 'No se ha podido eliminar la actividad.'
@@ -291,7 +291,7 @@ activityForm?.addEventListener('submit', async (e) => {
 
     // Validación básica del formulario
     if (!activityData.name) {
-        notificationService.warning(
+        modalService.warning(
             'Introduce el nombre de la actividad.'
         );
         return;
@@ -301,7 +301,7 @@ activityForm?.addEventListener('submit', async (e) => {
         !Number.isInteger(activityData.duration) ||
         activityData.duration <= 0
     ) {
-        notificationService.warning(
+        modalService.warning(
             'La duración debe ser un número entero mayor que cero.'
         );
         return;
@@ -311,7 +311,7 @@ activityForm?.addEventListener('submit', async (e) => {
         !Number.isInteger(activityData.capacity) ||
         activityData.capacity <= 0
     ) {
-        notificationService.warning(
+        modalService.warning(
             'La capacidad debe ser un número entero mayor que cero.'
         );
         return;
@@ -341,7 +341,7 @@ activityForm?.addEventListener('submit', async (e) => {
                 activities[index] = updated;
             }
 
-            notificationService.success(
+            modalService.success(
                 'La actividad se ha actualizado correctamente.'
             );
         } else {
@@ -351,7 +351,7 @@ activityForm?.addEventListener('submit', async (e) => {
 
             activities.unshift(created);
 
-            notificationService.success(
+            modalService.success(
                 'La actividad se ha creado correctamente.'
             );
         }
@@ -361,7 +361,7 @@ activityForm?.addEventListener('submit', async (e) => {
     } catch (error) {
         console.error('Error al guardar la actividad:', error);
 
-        notificationService.error(
+        modalService.error(
             getErrorMessage(
                 error,
                 isEditing

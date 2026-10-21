@@ -1,7 +1,7 @@
 
 /* src/js/admin/plans.js */
 import { planService } from '../services/planService.js';
-import { notificationService } from '../services/notificationService.js';
+import { modalService } from '../services/modalService.js';
 
 // Estado local
 let plans = [];
@@ -65,7 +65,7 @@ async function loadPlans() {
             `;
         }
 
-        notificationService.error(
+        modalService.error(
             getErrorMessage(
                 error,
                 'No se ha podido cargar el catálogo de planes.'
@@ -217,13 +217,13 @@ btnConfirmDelete?.addEventListener('click', async () => {
         renderPlans();
         closeDeleteModal();
 
-        notificationService.success(
+        modalService.success(
             'El plan se ha eliminado correctamente.'
         );
     } catch (error) {
         console.error('Error al eliminar el plan:', error);
 
-        notificationService.error(
+        modalService.error(
             getErrorMessage(
                 error,
                 'No se ha podido eliminar el plan.'
@@ -242,7 +242,7 @@ planForm?.addEventListener('submit', async (e) => {
     const creditsVal = Number(inputPlanCredits.value);
 
     if (!nameVal) {
-        notificationService.warning(
+        modalService.warning(
             'Introduce el nombre del plan.'
         );
         inputPlanName.focus();
@@ -254,7 +254,7 @@ planForm?.addEventListener('submit', async (e) => {
         !Number.isInteger(creditsVal) ||
         creditsVal < 0
     ) {
-        notificationService.warning(
+        modalService.warning(
             'Introduce una cantidad válida de créditos.'
         );
         inputPlanCredits.focus();
@@ -288,7 +288,7 @@ planForm?.addEventListener('submit', async (e) => {
                 plans[index] = updated;
             }
 
-            notificationService.success(
+            modalService.success(
                 'El plan se ha actualizado correctamente.'
             );
         } else {
@@ -296,7 +296,7 @@ planForm?.addEventListener('submit', async (e) => {
 
             plans.push(created);
 
-            notificationService.success(
+            modalService.success(
                 'El plan se ha creado correctamente.'
             );
         }
@@ -306,7 +306,7 @@ planForm?.addEventListener('submit', async (e) => {
     } catch (error) {
         console.error('Error al guardar el plan:', error);
 
-        notificationService.error(
+        modalService.error(
             getErrorMessage(
                 error,
                 isEditing

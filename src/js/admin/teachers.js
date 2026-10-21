@@ -1,7 +1,7 @@
 
 /* src/js/admin/teachers.js */
 import { teacherService } from '../services/teacherService.js';
-import { notificationService } from '../services/notificationService.js';
+import { modalService } from '../services/modalService.js';
 import { paginate, renderPagination } from '../utils/paginate.js';
 
 // Estado local
@@ -69,7 +69,7 @@ async function loadTeachers() {
             `;
         }
 
-        notificationService.error(
+        modalService.error(
             getErrorMessage(
                 error,
                 'No se ha podido cargar el listado de profesores.'
@@ -221,13 +221,13 @@ btnConfirmDelete?.addEventListener('click', async () => {
         renderTeachers();
         closeDeleteModal();
 
-        notificationService.success(
+        modalService.success(
             'El profesor se ha eliminado correctamente.'
         );
     } catch (error) {
         console.error('Error al eliminar el profesor:', error);
 
-        notificationService.error(
+        modalService.error(
             getErrorMessage(
                 error,
                 'No se ha podido eliminar el profesor.'
@@ -245,7 +245,7 @@ teacherForm?.addEventListener('submit', async (e) => {
     const nameVal = inputTeacherName.value.trim();
 
     if (!nameVal) {
-        notificationService.warning(
+        modalService.warning(
             'Introduce el nombre del profesor.'
         );
         inputTeacherName.focus();
@@ -275,7 +275,7 @@ teacherForm?.addEventListener('submit', async (e) => {
                 teachers[index] = updated;
             }
 
-            notificationService.success(
+            modalService.success(
                 'El profesor se ha actualizado correctamente.'
             );
         } else {
@@ -285,7 +285,7 @@ teacherForm?.addEventListener('submit', async (e) => {
 
             teachers.push(created);
 
-            notificationService.success(
+            modalService.success(
                 'El profesor se ha creado correctamente.'
             );
         }
@@ -296,7 +296,7 @@ teacherForm?.addEventListener('submit', async (e) => {
     } catch (error) {
         console.error('Error al guardar el profesor:', error);
 
-        notificationService.error(
+        modalService.error(
             getErrorMessage(
                 error,
                 isEditing

@@ -348,7 +348,7 @@ async function loadMember(code) {
     } catch (err) {
         console.error('Error al cargar el espacio del socio:', err);
 
-        notificationService.error(
+        modalService.error(
             'No se han podido cargar tus datos. Comprueba tu conexión e inténtalo de nuevo.'
         );
     }
