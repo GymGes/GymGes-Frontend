@@ -94,7 +94,8 @@
             <!-- Dashboard del Socio (Oculto inicialmente hasta autenticar) -->
             <div id="member-dashboard" class="member-dashboard-grid hidden" aria-live="polite">
 
-                <!-- Columna Izquierda: Ficha de Perfil -->
+                <!-- Columna Izquierda: Ficha de Perfil y pestañas -->
+                <div class="member-side-column">
                 <aside class="member-profile-card" aria-labelledby="member-name">
                     <header class="profile-card-header">
                         <div>
@@ -149,6 +150,33 @@
                     </dl>
                 </aside>
 
+                <!-- Pestañas de reservas, debajo de los datos del socio -->
+                <div class="bookings-tabs" role="tablist" aria-label="Vistas de reservas">
+                    <button
+                        id="bookings-tab-upcoming"
+                        class="bookings-tab active"
+                        type="button"
+                        role="tab"
+                        aria-selected="true"
+                        aria-controls="bookings-list"
+                    >
+                        <span class="material-symbols-outlined" aria-hidden="true">event_available</span>
+                        <span>Mis Reservas</span>
+                    </button>
+                    <button
+                        id="bookings-tab-history"
+                        class="bookings-tab"
+                        type="button"
+                        role="tab"
+                        aria-selected="false"
+                        aria-controls="bookings-list"
+                    >
+                        <span class="material-symbols-outlined" aria-hidden="true">history</span>
+                        <span>Historial</span>
+                    </button>
+                </div>
+                </div>
+
                 <!-- Columna Derecha: Reservas Activas -->
                 <section class="member-bookings-column" aria-labelledby="bookings-heading">
                     <header class="bookings-top-card">
@@ -157,8 +185,9 @@
                                 <h2 id="bookings-heading" class="bookings-title">Mis Reservas</h2>
                                 <span id="bookings-count" class="badge-active-count">0 Activas</span>
                             </div>
-                            <p class="bookings-subtitle">Consulta tus próximas sesiones y gestiona tus reservas.</p>
+                            <p id="bookings-subtitle" class="bookings-subtitle">Consulta tus próximas sesiones y gestiona tus reservas.</p>
                         </div>
+
                         <a class="btn-book-new" href="calendar.html">
                             <span class="material-symbols-outlined" aria-hidden="true">add_circle</span>
                             <span>Reservar Nueva Clase</span>
@@ -166,7 +195,7 @@
                     </header>
 
                     <!-- Lista de Tarjetas de Reserva -->
-                    <div id="bookings-list" class="bookings-items-list" aria-live="polite">
+                    <div id="bookings-list" class="bookings-items-list" role="tabpanel" aria-live="polite">
                         <!-- Se inyecta dinámicamente con JS -->
                     </div>
                 </section>
