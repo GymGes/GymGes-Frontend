@@ -14,6 +14,9 @@
 @import "./components/modals.css";
 @import './components/schedule.css';
 @import './components/user.css';
+@import "components/user-profile.css";
+@import "components/user-bookings.css";
+@import "components/user-auth.css";
 
 /* Reseteo y estructura base (Sticky Footer) */
 *,

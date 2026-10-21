@@ -1,16 +1,19 @@
 /* src/js/admin/members.js */
 import { memberService } from '../services/memberService.js';
 import { planService } from '../services/planService.js';
-
+import { paginate, renderPagination } from '../utils/paginate.js';
+import { modalService } from '../services/modalService.js';
 // Estado local
 let members = [];
 let plans = [];
 let memberToDeleteCode = null;
 let editingMemberCode = null;
 let displayedMembers = null;
+let currentPage = 1;
 
 // Elementos del DOM
 const tableBody = document.getElementById('members-table-body');
+const pagination = document.getElementById('members-pagination');
 const memberSearchForm = document.getElementById('member-search-form');
 const memberSearchCodeInput = document.getElementById('member-search-code');
 const btnShowAllMembers = document.getElementById('btn-show-all-members');
@@ -24,7 +27,6 @@ const inputCode = document.getElementById('modal-member-code');
 const inputName = document.getElementById('modal-member-name');
 const inputSurname = document.getElementById('modal-member-surname');
 const selectPlan = document.getElementById('modal-member-plan');
-const inputCredits = document.getElementById('modal-member-credits');
 const inputAge = document.getElementById('modal-member-age');
 const inputCity = document.getElementById('modal-member-city');
 const inputAddress = document.getElementById('modal-member-address');
@@ -50,17 +52,6 @@ async function loadPlansOptions() {
     }
     }
 
-// Al cambiar de plan en el formulario de alta, auto-completar los créditos sugeridos
-selectPlan?.addEventListener('change', () => {
-    if (!editingMemberCode) {
-        const selectedOption = selectPlan.options[selectPlan.selectedIndex];
-        const defaultCredits = selectedOption?.getAttribute('data-credits');
-        if (defaultCredits && inputCredits) {
-            inputCredits.value = defaultCredits;
-        }
-    }
-});
-
 // 2. Cargar socios iniciales
 async function loadMembers() {
     if (tableBody) {
@@ -74,6 +65,7 @@ async function loadMembers() {
     }
     await loadPlansOptions();
     members = await memberService.getMembers();
+    currentPage = 1;
     renderMembers();
     }
 
@@ -93,10 +85,14 @@ function renderMembers(membersToRender = displayedMembers ?? members) {
             </td>
         </tr>
     `;
+    renderPagination(pagination, paginate([], currentPage), setPage);
     return;
 }
 
-    tableBody.innerHTML = membersToRender.map(member => {
+    const view = paginate(membersToRender, currentPage);
+    currentPage = view.page;
+
+    tableBody.innerHTML = view.items.map(member => {
         const plan = plans.find(p => p.id === member.plan_id);
         const planName = plan ? plan.name : 'Plan General';
 
@@ -139,6 +135,13 @@ function renderMembers(membersToRender = displayedMembers ?? members) {
         </tr>
     `;
     }).join('');
+
+    renderPagination(pagination, view, setPage);
+}
+
+function setPage(page) {
+    currentPage = page;
+    renderMembers();
 }
 
 // 4. Modales (Crear / Editar)
@@ -155,7 +158,6 @@ function openModal(isEdit = false, member = null) {
         inputName.value = member.nombre;
         inputSurname.value = member.apellido;
         selectPlan.value = member.plan_id;
-        inputCredits.value = member.creditos_restantes;
         inputAge.value = member.edad;
         inputCity.value = member.ciudad;
         inputAddress.value = member.direccion;
@@ -171,7 +173,6 @@ function openModal(isEdit = false, member = null) {
         inputAge.value = 30;
         if (selectPlan.options.length > 0) {
             selectPlan.selectedIndex = 0;
-            inputCredits.value = selectPlan.options[0].getAttribute('data-credits') || 8;
         }
     }
 
@@ -237,6 +238,7 @@ memberSearchForm?.addEventListener('submit', async (event) => {
         }
 
         displayedMembers = [member];
+        currentPage = 1;
         renderMembers();
 
         memberSearchFeedback.textContent =
@@ -244,6 +246,7 @@ memberSearchForm?.addEventListener('submit', async (event) => {
     } catch (error) {
         if (error?.type === 'not_found') {
             displayedMembers = [];
+            currentPage = 1;
             renderMembers();
 
             memberSearchFeedback.textContent =
@@ -262,6 +265,7 @@ btnShowAllMembers?.addEventListener('click', async () => {
 
     try {
         members = await memberService.getMembers();
+        currentPage = 1;
         renderMembers();
         memberSearchFeedback.textContent = 'Mostrando todos los socios.';
     } catch (error) {
@@ -279,18 +283,33 @@ btnCloseDeleteModal?.addEventListener('click', closeDeleteModal);
 btnCancelDelete?.addEventListener('click', closeDeleteModal);
 
 btnConfirmDelete?.addEventListener('click', async () => {
-    if (memberToDeleteCode) {
+    try{
+        if (memberToDeleteCode) {
         await memberService.deleteMember(memberToDeleteCode);
         members = members.filter(m => m.codigo !== memberToDeleteCode);
         displayedMembers = null;
+        currentPage = 1;
         renderMembers();
         closeDeleteModal();
     }
+} catch{
+        console.error("Error cargando sesiones:", error);
+    modalService.error("ocurrio un error al borrar al miembro, intentalo de nuevo mas tarde")
+}
 });
 
 // Guardar socio (Crear o Actualizar)
 memberForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    const planId = parseInt(selectPlan.value, 10);
+    const selectedPlan = plans.find(p => Number(p.id) === planId);
+    const existingMember = editingMemberCode
+        ? members.find(m => m.codigo === editingMemberCode)
+        : null;
+    const creditosRestantes = existingMember
+        ? existingMember.creditos_restantes
+        : (selectedPlan?.credits ?? 8);
 
     const memberData = {
         codigo: inputCode.value.trim().toUpperCase(),
@@ -299,8 +318,8 @@ memberForm?.addEventListener('submit', async (e) => {
         edad: parseInt(inputAge.value, 10),
         ciudad: inputCity.value.trim(),
         direccion: inputAddress.value.trim(),
-        plan_id: parseInt(selectPlan.value, 10),
-        creditos_restantes: parseInt(inputCredits.value, 10)
+        plan_id: planId,
+        creditos_restantes: creditosRestantes
     };
 
     if (editingMemberCode) {
@@ -311,7 +330,7 @@ memberForm?.addEventListener('submit', async (e) => {
         // Validar duplicado de código/DNI en mock local
         const exists = members.some(m => m.codigo === memberData.codigo);
         if (exists) {
-            alert(`Ya existe un socio registrado con el código / DNI: ${memberData.codigo}`);
+            modalService.info(`Ya existe un socio registrado con el código / DNI: ${memberData.codigo}`);
             return;
         }
         const created = await memberService.createMember(memberData);
@@ -319,6 +338,7 @@ memberForm?.addEventListener('submit', async (e) => {
     }
 
     displayedMembers = null;
+    currentPage = 1;
     renderMembers();
     closeModal();
 });

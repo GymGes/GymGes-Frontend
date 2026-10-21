@@ -141,6 +141,7 @@
                             </tbody>
                         </table>
                     </div>
+                    <div id="members-pagination" class="table-pagination hidden"></div>
                 </section>
 
             </div>
@@ -187,26 +188,14 @@
                     </div>
                 </div>
 
-                <!-- 3. Plan de Suscripción y Créditos Restantes -->
-                <div class="form-row">
-                    <div class="form-group" style="margin-top: 0;">
-                        <label class="form-label" for="modal-member-plan">
-                            Plan Contratado <span class="required">*</span>
-                        </label>
-                        <select id="modal-member-plan" class="form-select" required>
-                            <option value="1">selecciona un plan</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group" style="margin-top: 0;">
-                        <label class="form-label" for="modal-member-credits">
-                            Créditos restantes <span class="required">*</span>
-                        </label>
-                        <div class="input-with-icon">
-                            <input id="modal-member-credits" class="form-input" type="number" required min="0" max="100" value="8" />
-                            <span class="material-symbols-outlined" aria-hidden="true">token</span>
-                        </div>
-                    </div>
+                <!-- 3. Plan de Suscripción -->
+                <div class="form-group">
+                    <label class="form-label" for="modal-member-plan">
+                        Plan Contratado <span class="required">*</span>
+                    </label>
+                    <select id="modal-member-plan" class="form-select" required>
+                        <option value="1">selecciona un plan</option>
+                    </select>
                 </div>
 
                 <!-- 4. Edad y Ciudad -->

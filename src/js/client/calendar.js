@@ -3,14 +3,9 @@ import { scheduleService } from '../services/scheduleService.js';
 import { activityService } from '../services/activityService.js';
 import { teacherService } from '../services/teacherService.js';
 import { bookingService } from '../services/bookingService.js';
+import { modalService } from '../services/modalService.js';
 
-// Catálogo de imágenes referenciales por tipo de actividad
-const ACTIVITY_IMAGES = {
-    1: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDCbKlWkvNFcFZV6Uq59uuc6qEAlkyNXUsSfkZFTCAQfMLwYYjeSKbdGb9J7uEdvHKsPkcKVTt0s7_PNSRylpoS22kKZgQl1x_IYKYfyi-pZrO0R-CoED3AVCNyJTiuk4wHtrB4qu9ybiG2NXjCKMpwTNRMFN0waoAYTXlwnuwTbuzs9hj0fTc538UOhH_lTF45zBu4mbNUeS4teVRlTf_uedIzOowaLT3WqO42BFUoZAH8pMw2js_osw',
-    2: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCmnvv3hDgfaufGsKgGb1gkc9DhRk0Ojt4uh56G55qsJ_9kR1JIQ4tSaSKUNRl4vbekBmjAKGhwRv2KpxCm5LUzInEqxDuY1VO2xbSvEHLg0ur-qOWi3W06Uc8MpGipWE1BmqC6EwHKBGTWjApPcntbQk86aXTRyU1Wy5I37WgyKa-ZnoYks-LTgBkK980VapacREkhMR2-Y-YhgkNAqaR6ZyHBiFoTEJ6F_FAOS2REXF6Y8ccUF7R6Sg',
-    3: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC1bqNH9tL8RqMEgH0Y0nofwXOuMu3j-GbUP7A5KOG1-LxoTDI-Te_gESBbGleROmyES9AgAHLGrr-pQuUeMmhntqlb_Oo8YdcTFhpGUbsqCTktd4LfOc3lF23hv7Ii4ONML8yg2uzlHxTSCcVP1J2whvA3MSKGfFz5uGtJzCWA3PYUrSMZ2aY1qGVTjQCv7jbPbpzwvOMNisnaoT6MD3uwjBvWOhb4ECCbEq8M-sTnLgyAURrztLdiLQ',
-    4: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAyUGoypimWzJIwc6qnHC5lwHfaWZwGTE1elGN7VpqtjDSQjM8dupED9_jMN2RnIWUFEEJmgnxjDK1j_RT7nHr2y_VroohgZFzGHbKIuJ_ThlcWEEYMdOnC5QfLaXKpX6ytHQvUapyUqq2U6u76CjUi_82kMznwNK4HE4ripXsuUgYYlLeEEF0zHS0zJbclriQ93KXWWJNhAQwID7IDgU4GFWbhP4UQtvPnVc9ZATAdxbhyj3ALvJVbrg'
-};
+// Imagen neutra de respaldo por si algún registro carece de foto
 const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=600&auto=format&fit=crop';
 
 const DAY_NAMES = {
@@ -22,11 +17,6 @@ const DAY_NAMES = {
     6: 'Sábado',
     7: 'Domingo'
 };
-function formatDateShort(iso) {
-    if (!iso) return '';
-    const [y, m, d] = String(iso).slice(0, 10).split('-');
-    return d && m ? `${d}/${m}` : '';
-}
 
 // Estado reactivo
 let schedules = [];
@@ -36,18 +26,39 @@ let bookings = [];
 let selectedDay = 1;
 let selectedSchedule = null;
 
-// Referencias al DOM
+// Referencias al DOM - Selector y Cartelera
 const weekBar = document.getElementById('schedule-week-bar');
 const scheduleList = document.getElementById('schedule-list');
+
+// Referencias al DOM - Modal de Confirmación
 const bookingModal = document.getElementById('booking-modal');
 const bookingForm = document.getElementById('client-booking-form');
-
 const modalActivityName = document.getElementById('modal-activity-name');
 const modalActivityDetails = document.getElementById('modal-activity-details');
 const modalClassId = document.getElementById('modal-class-id');
 const modalSocioCode = document.getElementById('modal-socio-code');
 const btnCloseModal = document.getElementById('btn-close-booking-modal');
 const btnCancelModal = document.getElementById('btn-cancel-booking-modal');
+const COOKIE_NAME = 'pulse_member_dni';
+
+function getCookie(name) {
+    const prefix = `${name}=`;
+    const cookie = document.cookie
+        .split('; ')
+        .find(item => item.startsWith(prefix));
+
+    return cookie
+        ? decodeURIComponent(cookie.slice(prefix.length))
+        : null;
+}
+// Referencias al DOM - Modal de Aviso / Sin Créditos
+const noticeModal = document.getElementById('notice-modal');
+const noticeModalTitle = document.getElementById('notice-modal-title');
+const noticeModalActivity = document.getElementById('notice-modal-activity');
+const noticeModalDetails = document.getElementById('notice-modal-details');
+const noticeModalMessage = document.getElementById('notice-modal-message');
+const btnCloseNoticeModal = document.getElementById('btn-close-notice-modal');
+const btnNoticeModalBack = document.getElementById('btn-notice-modal-back');
 
 // 1. Selector de fechas de la semana (Lunes a Domingo)
 function getWeekDays() {
@@ -154,16 +165,16 @@ function getScheduleSpots(s) {
 function renderScheduleForDay(day) {
     if (!scheduleList) return;
 
-    const activeDni = (localStorage.getItem('pulse_member_dni') || '').trim().toUpperCase();
+    const activeDni = (getCookie(COOKIE_NAME) || '').trim().toUpperCase();
     const dayClasses = schedules.filter(s => getScheduleDay(s) === day);
 
     if (dayClasses.length === 0) {
         scheduleList.innerHTML = `
         <div class="schedule-state">
-        <p>No hay sesiones programadas para este día.</p>
-        <p style="font-size: 0.8125rem; margin-top: 0.35rem;">Selecciona otro día en el selector superior.</p>
+            <p>No hay sesiones programadas para este día.</p>
+            <p style="font-size: 0.8125rem; margin-top: 0.35rem;">Selecciona otro día en el selector superior.</p>
         </div>
-    `;
+        `;
         return;
     }
 
@@ -187,12 +198,13 @@ function renderScheduleForDay(day) {
         const activity = activitiesMap.get(actId) || {
             name: 'Actividad Pulse',
             duration: 50,
-            max_students: 16
+            capacity: 16
         };
 
-        const activityImg = ACTIVITY_IMAGES[actId] || DEFAULT_IMAGE;
+        // Prioridad: imagen real de Cloudinary/API -> fallback de seguridad
+        const activityImg = activity.imageUrl || activity.image_url || DEFAULT_IMAGE;
         const duration = activity.duration || activity.duracion || 50;
-        const maxStudents = activity.max_students || activity.maxStudents || 16;
+        const maxStudents = activity.capacity || activity.max_students || activity.maxStudents || 16;
 
         const slotsHtml = classList.map(s => {
             const time = getScheduleTime(s);
@@ -200,72 +212,70 @@ function renderScheduleForDay(day) {
             const teacherName = teacher ? (teacher.name || teacher.nombre) : 'Instructor';
             const spots = getScheduleSpots(s);
 
-            // Comprobar si el socio ya tiene reservada esta sesión (contrato de toFrontend: b.socio_codigo y b.clase_id)
             const isReserved = bookings.some(b => {
                 const bCode = (b.socio_codigo || '').toUpperCase();
                 const bClassId = Number(b.clase_id);
                 return activeDni && bCode === activeDni && bClassId === s.id;
             });
 
-        const dateShort = formatDateShort(s.activityDate);
+            if (isReserved) {
+                return `
+                <button class="slot-btn slot-reserved" type="button" disabled aria-label="${time} - Reservado">
+                    <div class="slot-time-group">
+                        <span class="slot-time">${time}</span>
+                        <span class="material-symbols-outlined slot-icon" aria-hidden="true">check_circle</span>
+                    </div>
+                    <span class="slot-badge">Reservado</span>
+                </button>
+                `;
+            }
 
-        if (isReserved) {
-            return `
-             <button class="slot-btn slot-reserved" type="button" disabled aria-label="${time} - Reservado">
-               <div class="slot-time-group">
-                  <span class="slot-time">${dateShort} ${DAY_NAMES[getScheduleDay(s)]} ${time}</span>
-                  <span class="material-symbols-outlined slot-icon" aria-hidden="true">check_circle</span>
-              </div>
-              <span class="slot-badge">Reservado</span>
-          </button>
-         `;
-      }
             if (spots <= 0) {
                 return `
-            <button class="slot-btn slot-full" type="button" disabled aria-label="${time} - Completo">
-            <span class="slot-time">${dateShort} ${DAY_NAMES[getScheduleDay(s)]} ${time}</span>
-            <span class="slot-details">Completo</span>
-            </button>
-        `;
+                <button class="slot-btn slot-full" type="button" disabled aria-label="${time} - Completo">
+                    <span class="slot-time">${time}</span>
+                    <span class="slot-details">Completo</span>
+                </button>
+                `;
             }
 
             return `
-        <button
-            class="slot-btn slot-available"
-            type="button"
-            onclick="window.handleOpenBookingModal(${s.id})">
-            <span class="slot-time">${time}</span>
-            <span class="slot-details">${teacherName} · ${spots} libres</span>
-        </button>
-        `;
+            <button
+                class="slot-btn slot-available"
+                type="button"
+                onclick="window.handleOpenBookingModal(${s.id})">
+                <span class="slot-time">${time}</span>
+                <span class="slot-details">${teacherName} · ${spots} libres</span>
+            </button>
+            `;
         }).join('');
 
         return `
         <article class="schedule-activity-card">
-        <div class="activity-info-group">
-            <img class="activity-thumb" src="${activityImg}" alt="${activity.name}" loading="lazy" />
-            <div class="activity-details">
-            <h2 class="activity-title">${activity.name || activity.nombre || 'Actividad'}</h2>
-            <div class="activity-meta">
-                <span class="meta-item">
-                <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
-                <span>${duration} min</span>
-                </span>
-                <span class="meta-separator" aria-hidden="true">•</span>
-                <span class="meta-item">Aforo máx. ${maxStudents}</span>
+            <div class="activity-info-group">
+                <img class="activity-thumb" src="${activityImg}" alt="${activity.name}" loading="lazy" />
+                <div class="activity-details">
+                    <h2 class="activity-title">${activity.name || activity.nombre || 'Actividad'}</h2>
+                    <div class="activity-meta">
+                        <span class="meta-item">
+                            <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
+                            <span>${duration} min</span>
+                        </span>
+                        <span class="meta-separator" aria-hidden="true">•</span>
+                        <span class="meta-item">Aforo máx. ${maxStudents}</span>
+                    </div>
+                </div>
             </div>
-            </div>
-        </div>
 
-        <div class="slot-list" aria-label="Turnos de ${activity.name}">
-            ${slotsHtml}
-        </div>
+            <div class="slot-list" aria-label="Turnos de ${activity.name}">
+                ${slotsHtml}
+            </div>
         </article>
-    `;
+        `;
     }).join('');
 }
 
-// 4. Modal de Reserva
+// 4. Modales: Reserva y Aviso
 window.handleOpenBookingModal = function (scheduleId) {
     const schedule = schedules.find(s => s.id === scheduleId);
     if (!schedule) return;
@@ -276,20 +286,24 @@ window.handleOpenBookingModal = function (scheduleId) {
     const teacher = teachersMap.get(getScheduleTeacherId(schedule));
     const teacherName = teacher ? (teacher.name || teacher.nombre) : 'Instructor';
     const time = getScheduleTime(schedule);
-    const dateShort = formatDateShort(schedule.activityDate);
     const dayName = DAY_NAMES[getScheduleDay(schedule)] || 'Día';
 
     modalClassId.value = schedule.id;
     modalActivityName.textContent = activity.name || activity.nombre || 'Actividad';
-    modalActivityDetails.textContent = `${dateShort} ${dayName} ${time} · Impartido por ${teacherName}`;
+    modalActivityDetails.textContent = `${dayName} a las ${time} · Impartido por ${teacherName}`;
 
-    const savedDni = localStorage.getItem('pulse_member_dni') || '';
-    if (savedDni) {
-        modalSocioCode.value = savedDni;
-    }
+    const savedDni = (getCookie(COOKIE_NAME) || '').trim().toUpperCase();
 
-    bookingModal.classList.remove('hidden');
-    modalSocioCode.focus();
+if (!savedDni) {
+    window.location.href = '../index.html';
+    return;
+}
+
+modalSocioCode.value = savedDni;
+modalSocioCode.readOnly = true;
+
+// Mostrar el modal de reserva
+bookingModal.classList.remove('hidden');
 };
 
 function closeBookingModal() {
@@ -297,27 +311,55 @@ function closeBookingModal() {
     selectedSchedule = null;
 }
 
+function openNoticeModal({ title, message, activityName, activityDetails }) {
+    if (noticeModalTitle && title) noticeModalTitle.textContent = title;
+    if (noticeModalActivity) noticeModalActivity.textContent = activityName || 'Sesión seleccionada';
+    if (noticeModalDetails) noticeModalDetails.textContent = activityDetails || '';
+    if (noticeModalMessage && message) noticeModalMessage.textContent = message;
+
+    if (noticeModal) noticeModal.classList.remove('hidden');
+}
+
+function closeNoticeModal() {
+    if (noticeModal) noticeModal.classList.add('hidden');
+}
+
+// Listeners de cierre
 btnCloseModal?.addEventListener('click', closeBookingModal);
 btnCancelModal?.addEventListener('click', closeBookingModal);
+btnCloseNoticeModal?.addEventListener('click', closeNoticeModal);
+btnNoticeModalBack?.addEventListener('click', closeNoticeModal);
 
 // Procesar Reserva contra bookingService
 bookingForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const code = modalSocioCode.value.trim().toUpperCase();
+    const code = (getCookie(COOKIE_NAME) || '').trim().toUpperCase();
     const classId = Number(modalClassId.value);
+    const currentActivityName = modalActivityName?.textContent || 'Clase Pulse';
+    const currentActivityDetails = modalActivityDetails?.textContent || '';
+
+    if (!code) {
+        window.location.href = '../index.html';
+        return;
+    }
+
+    if (!classId) return;
 
     if (!code || !classId) return;
 
     const dniRegex = /^[0-9XYZ][0-9]{7}[TRWAGMYFPDXBNJZSQVHLCKE]$/;
     if (!dniRegex.test(code)) {
-        alert('Introduce un formato de DNI/NIE reglamentario (ej. 12345678Z).');
+        openNoticeModal({
+            title: 'Documento no válido',
+            message: 'Por favor, introduce un formato de DNI/NIE reglamentario (ej. 12345678Z).',
+            activityName: currentActivityName,
+            activityDetails: currentActivityDetails
+        });
         return;
     }
 
     try {
-        localStorage.setItem('pulse_member_dni', code);
-
         // Contrato estricto según createBooking(bookingData) de bookingService.js
         const newBooking = await bookingService.createBooking({
             socio_codigo: code,
@@ -326,7 +368,6 @@ bookingForm?.addEventListener('submit', async (e) => {
 
         bookings.push(newBooking);
 
-        // Actualizar visualmente la plaza libre
         if (selectedSchedule) {
             if (typeof selectedSchedule.available_spots === 'number') {
                 selectedSchedule.available_spots = Math.max(0, selectedSchedule.available_spots - 1);
@@ -337,19 +378,44 @@ bookingForm?.addEventListener('submit', async (e) => {
 
         closeBookingModal();
         renderScheduleForDay(selectedDay);
-
-        alert(`¡Plaza reservada con éxito para el socio ${code}!`);
+        modalService.success(`¡Plaza reservada con éxito para el socio ${code}!`)
     } catch (error) {
         console.error('Error al registrar la reserva:', error);
-        const detail = error.response?.data?.detail;
-        alert(detail ? `Error: ${detail}` : 'No se pudo completar la reserva.');
+
+        closeBookingModal();
+
+        const resData = error.response?.data;
+        const detail = typeof resData?.detail === 'string' ? resData.detail : (resData?.message || '');
+
+        // Mensaje enfocado directamente en la falta de saldo/créditos
+        let title = 'Créditos Insuficientes';
+        let message = 'No te quedan créditos disponibles para realizar esta reserva. Puedes consultar tu saldo actual desde tu espacio de socio.';
+
+        if (detail.toLowerCase().includes('ya') && detail.toLowerCase().includes('reserva')) {
+            title = 'Ya tienes plaza';
+            message = 'Ya dispones de una reserva confirmada para esta misma sesión.';
+        } else if (detail && (detail.toLowerCase().includes('crédit') || detail.toLowerCase().includes('saldo'))) {
+            message = detail;
+        }
+
+        openNoticeModal({
+            title,
+            message,
+            activityName: currentActivityName,
+            activityDetails: currentActivityDetails
+        });
     }
 });
 
-// Cerrar con Escape
+// Cerrar con Escape cualquiera de los dos modales
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !bookingModal.classList.contains('hidden')) {
-        closeBookingModal();
+    if (e.key === 'Escape') {
+        if (bookingModal && !bookingModal.classList.contains('hidden')) {
+            closeBookingModal();
+        }
+        if (noticeModal && !noticeModal.classList.contains('hidden')) {
+            closeNoticeModal();
+        }
     }
 });
 
@@ -375,11 +441,17 @@ async function initCalendar() {
         console.error('Error al inicializar la cartelera:', err);
         scheduleList.innerHTML = `
         <div class="schedule-state">
-        <p style="color: var(--color-error); font-weight: 600;">No se pudo conectar con el servidor.</p>
-        <p style="font-size: 0.8125rem; margin-top: 0.35rem;">Asegúrate de que la API de FastAPI esté levantada en el puerto 8000.</p>
+            <p style="color: var(--color-error); font-weight: 600;">No se pudo conectar con el servidor.</p>
+            <p style="font-size: 0.8125rem; margin-top: 0.35rem;">Asegúrate de que la API de FastAPI esté levantada en el puerto 8000.</p>
         </div>
-    `;
+        `;
     }
 }
 
-initCalendar();
+const savedDni = (getCookie(COOKIE_NAME) || '').trim().toUpperCase();
+
+if (savedDni) {
+    initCalendar();
+} else {
+    window.location.href = '../index.html';
+}

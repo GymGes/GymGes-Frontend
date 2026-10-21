@@ -4,6 +4,9 @@ import { memberService } from '../services/memberService.js';
 import { scheduleService } from '../services/scheduleService.js';
 import { activityService } from '../services/activityService.js';
 import { teacherService } from '../services/teacherService.js';
+import { paginate, renderPagination } from '../utils/paginate.js';
+import { notificationService } from '../services/notificationService.js';
+import { modalService } from '../services/modalService.js';
 
 // Días de la semana para los nombres de turnos
 const DAY_NAMES = {
@@ -22,6 +25,12 @@ function formatDateShort(iso) {
     return d && m ? `${d}/${m}` : '';
 }
 
+function getScheduleSortKey(schedule) {
+    if (!schedule) return '';
+    const date = schedule.activityDate || schedule.activity_date || schedule.date || '';
+    return `${date}T${schedule.startTime || schedule.start_time || ''}`;
+}
+
 // Diccionarios en memoria cargados dinámicamente desde el backend
 let ACTIVITIES_MAP = {};
 let TEACHERS_MAP = {};
@@ -31,9 +40,11 @@ let bookings = [];
 let members = [];
 let schedules = [];
 let bookingToDeleteId = null;
+let currentPage = 1;
 
 // Elementos del DOM
 const tableBody = document.getElementById('bookings-table-body');
+const pagination = document.getElementById('bookings-pagination');
 const bookingModal = document.getElementById('booking-modal');
 const deleteModal = document.getElementById('delete-booking-modal');
 const bookingForm = document.getElementById('booking-form');
@@ -108,13 +119,20 @@ function populateSelects() {
     }
 
     if (selectClass) {
+        const sortedSchedules = [...schedules].sort((a, b) => {
+            const aDate = a.activityDate || a.activity_date || a.date || '';
+            const bDate = b.activityDate || b.activity_date || b.date || '';
+            return `${aDate}T${a.startTime || a.start_time || ''}`
+                .localeCompare(`${bDate}T${b.startTime || b.start_time || ''}`);
+        });
+
         selectClass.innerHTML = `
         <option value="">Selecciona una clase semanal...</option>
-        ${schedules.map(s => {
+        ${sortedSchedules.map(s => {
             const activity = ACTIVITIES_MAP[s.activityId]?.name || 'Actividad';
             const day = DAY_NAMES[s.dayOfWeek] || `Día ${s.dayOfWeek}`;
             const teacher = TEACHERS_MAP[s.teacherId] || 'Sin profesor';
-            const dateShort = formatDateShort(s.activityDate);
+            const dateShort = formatDateShort(s.activityDate || s.activity_date || s.date);
             return `
             <option value="${s.id}">
             ${activity} ·${dateShort ? ` ${dateShort}` : ''} ${day} a las ${s.startTime} (${teacher})
@@ -181,18 +199,11 @@ async function loadData() {
         schedules = (loadedSchedules || []).map(normalizeSchedule);
 
         populateSelects();
+        currentPage = 1;
         renderBookings();
     } catch (error) {
         console.error('Error cargando los datos de reservas:', error);
-        if (tableBody) {
-            tableBody.innerHTML = `
-            <tr>
-            <td colspan="6" class="text-center table-state-row" style="color: var(--color-error, #ba1a1a);">
-                Error al conectar con la API del servidor.
-            </td>
-            </tr>
-        `;
-        }
+        modalService.error("Error al conectar con la API del servidor.")
     }
 }
 
@@ -208,10 +219,20 @@ function renderBookings() {
         </td>
         </tr>
     `;
+        renderPagination(pagination, paginate([], currentPage), setPage);
         return;
     }
 
-    tableBody.innerHTML = bookings.map(b => {
+    const sortedBookings = [...bookings].sort((a, b) => {
+        const scheduleA = schedules.find(s => s.id === a.clase_id);
+        const scheduleB = schedules.find(s => s.id === b.clase_id);
+        return getScheduleSortKey(scheduleA).localeCompare(getScheduleSortKey(scheduleB));
+    });
+
+    const view = paginate(sortedBookings, currentPage);
+    currentPage = view.page;
+
+    tableBody.innerHTML = view.items.map(b => {
         const member = members.find(m => m.codigo === b.socio_codigo);
         const memberName = member ? `${member.nombre} ${member.apellido}` : b.socio_codigo;
 
@@ -220,7 +241,7 @@ function renderBookings() {
         const activityName = activity ? (activity.name || activity.nombre) : 'Clase no encontrada';
         const dayName = schedule ? (DAY_NAMES[schedule.dayOfWeek] || `Día ${schedule.dayOfWeek}`) : '-';
         const time = schedule ? schedule.startTime : '-';
-        const dateShort = formatDateShort(schedule?.activityDate);
+        const dateShort = formatDateShort(schedule?.activityDate || schedule?.activity_date || schedule?.date);
         const when = schedule ? `${dateShort ? `${dateShort} ` : ''}${dayName} · ${time}` : '-';
         const teacherName = schedule ? (TEACHERS_MAP[schedule.teacherId] || 'Sin asignar') : '-';
 
@@ -237,7 +258,7 @@ function renderBookings() {
             <span style="font-weight: 600; color: var(--color-primary);">${activityName}</span>
         </td>
         <td style="white-space: nowrap;">
-            <span class="badge-day">${dayName} · ${time}</span>
+            <span class="badge-day">${when}</span>
         </td>
         <td style="white-space: nowrap;">
             <div class="cell-teacher-indicator">
@@ -255,6 +276,13 @@ function renderBookings() {
         </tr>
     `;
     }).join('');
+
+    renderPagination(pagination, view, setPage);
+}
+
+function setPage(page) {
+    currentPage = page;
+    renderBookings();
 }
 
 // 4. Ciclo de vida de los modales
@@ -302,7 +330,7 @@ btnConfirmDelete?.addEventListener('click', async () => {
         try {
             await bookingService.deleteBooking(bookingToDeleteId);
         } catch (error) {
-            alert(error?.message || 'No se pudo cancelar la reserva.');
+            modalService.error(error?.message || 'No se pudo cancelar la reserva.');
             return;
         }
 
@@ -313,6 +341,7 @@ btnConfirmDelete?.addEventListener('click', async () => {
         }
 
         bookings = bookings.filter(b => b.id !== bookingToDeleteId);
+        currentPage = 1;
         renderBookings();
         closeDeleteModal();
     }
@@ -346,13 +375,14 @@ bookingForm?.addEventListener('submit', async (e) => {
             clase_id: claseId
         });
     } catch (error) {
-        alert(error?.message || 'No se pudo registrar la reserva.');
+        modalService.error(error?.message || 'No se pudo registrar la reserva.');
         return;
     }
 
     if (member) member.creditos_restantes -= 1;
 
     bookings.unshift(newBooking);
+    currentPage = 1;
     renderBookings();
     closeModal();
 });

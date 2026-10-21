@@ -2,15 +2,19 @@
 import { scheduleService } from "../services/scheduleService.js";
 import { activityService } from "../services/activityService.js";
 import { teacherService } from "../services/teacherService.js";
+import { paginate, renderPagination } from "../utils/paginate.js";
+import { modalService } from "../services/modalService.js";
 
 // Estado local
 let schedules = [];
 let scheduleToDeleteId = null;
 let activitiesMap = {};
 let teachersMap = {};
+let currentPage = 1;
 
 // Referencias del DOM
 const tableBody = document.getElementById("schedules-table-body");
+const pagination = document.getElementById("schedules-pagination");
 const scheduleModal = document.getElementById("schedule-modal");
 const deleteModal = document.getElementById("delete-schedule-modal");
 const scheduleForm = document.getElementById("schedule-form");
@@ -150,17 +154,18 @@ async function loadSchedules() {
     schedules = loadedSchedules
     
 
+    currentPage = 1;
     renderSchedules();
   } catch (error) {
     console.error("Error cargando sesiones:", error);
-
-    tableBody.innerHTML = `
-            <tr>
-                <td colspan="5" class="text-center table-state-row">
-                    No se pudieron cargar los datos. Comprueba que el backend está activo.
-                </td>
-            </tr>
-        `;
+    modalService.error("No se pudieron cargar los datos. Comprueba que el backend está activo.")
+    // tableBody.innerHTML = `
+    //         <tr>
+    //             <td colspan="5" class="text-center table-state-row">
+    //                 No se pudieron cargar los datos. Comprueba que el backend está activo.
+    //             </td>
+    //         </tr>
+    //     `;
   }
 }
 
@@ -176,6 +181,7 @@ function renderSchedules() {
                 </td>
             </tr>
         `;
+    renderPagination(pagination, paginate([], currentPage), setPage);
     return;
   }
 
@@ -185,7 +191,10 @@ function renderSchedules() {
     ),
   );
 
-  tableBody.innerHTML = schedules
+  const view = paginate(schedules, currentPage);
+  currentPage = view.page;
+
+  tableBody.innerHTML = view.items
     .map((schedule) => {
       const activity = activitiesMap[schedule.activityId] || {
         name: `Actividad #${schedule.activityId}`,
@@ -243,6 +252,13 @@ function renderSchedules() {
         `;
     })
     .join("");
+
+  renderPagination(pagination, view, setPage);
+}
+
+function setPage(page) {
+  currentPage = page;
+  renderSchedules();
 }
 
 function formatDate(dateString) {
@@ -327,11 +343,13 @@ btnConfirmDelete?.addEventListener("click", async () => {
     try {
       await scheduleService.deleteSchedule(scheduleToDeleteId);
       schedules = schedules.filter((s) => s.id !== scheduleToDeleteId);
+      currentPage = 1;
       renderSchedules();
       closeDeleteModal();
     } catch (error) {
       console.error("Error eliminando sesión:", error);
-      alert("No se pudo eliminar la sesión. Inténtalo de nuevo.");
+      modalService.error(error?.message || "No se pudo eliminar la sesión.")
+
     }
   }
 });
@@ -355,7 +373,7 @@ scheduleForm?.addEventListener("submit", async (e) => {
     !scheduleData.activityDate ||
     !scheduleData.startTime
   ) {
-    alert("Completa todos los campos.");
+    modalService.warning("Completa todos los campos.");
     return;
   }
 
@@ -364,7 +382,7 @@ scheduleForm?.addEventListener("submit", async (e) => {
     scheduleData.activityDate < inputDate.min ||
     scheduleData.activityDate > inputDate.max
   ) {
-    alert("Solo puedes crear sesiones desde hoy hasta dentro de 14 días.");
+    modalService.info("Solo puedes crear sesiones desde hoy hasta dentro de 14 días.")
     return;
   }
   // if (editingScheduleId) {
@@ -386,17 +404,18 @@ scheduleForm?.addEventListener("submit", async (e) => {
       schedules.push(created);
     }
 
+    currentPage = 1;
     renderSchedules();
     closeModal();
   } catch (error) {
     console.error("Error creando sesión:", error);
 
     if (error.type === "conflict") {
-        alert(error.message);
+        modalService.error(error.message)
         return;
     }
 
-    alert(error.message || "No se pudo crear la sesión.");
+    modalService.error(error.message || "No se pudo crear la sesión.");
   }
 });
 
