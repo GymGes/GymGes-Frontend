@@ -1,5 +1,3 @@
-
-/* src/js/admin/activities.js */
 import { activityService } from '../services/activityService.js';
 import { modalService } from '../services/modalService.js';
 
@@ -28,7 +26,6 @@ const dropzonePreview = document.getElementById('dropzone-preview');
 const previewFilename = document.getElementById('preview-filename');
 const previewImage = document.getElementById('preview-image');
 
-// Obtener un mensaje legible del error
 function getErrorMessage(error, fallback) {
     return (
         error?.response?.data?.detail ||
@@ -37,7 +34,6 @@ function getErrorMessage(error, fallback) {
     );
 }
 
-// 1. Cargar actividades desde el servicio
 async function loadActivities() {
     if (tableBody) {
         tableBody.innerHTML = `
@@ -74,7 +70,6 @@ async function loadActivities() {
     }
 }
 
-// 2. Renderizado dinámico de la tabla
 function renderActivities() {
     if (!tableBody) return;
 
@@ -147,7 +142,6 @@ function renderActivities() {
     `).join('');
 }
 
-// 3. Control del modal de Crear / Editar
 function openModal(isEdit = false, activity = null) {
     const modalTitle = document.getElementById('modal-title');
     const inputName = document.getElementById('modal-act-name');
@@ -191,7 +185,6 @@ function closeModal() {
     editingActivityId = null;
 }
 
-// 4. Control del modal de confirmación de borrado
 window.openDeleteModal = function (id) {
     const target = activities.find(a => a.id === id);
     if (!target) return;
@@ -215,15 +208,14 @@ window.openEditModal = function (id) {
     }
 };
 
-// 5. Event listeners
+//Event listeners
 btnOpenCreate?.addEventListener('click', () => openModal(false));
 btnCloseModal?.addEventListener('click', closeModal);
 btnCancelModal?.addEventListener('click', closeModal);
-
 btnCloseDeleteModal?.addEventListener('click', closeDeleteModal);
 btnCancelDelete?.addEventListener('click', closeDeleteModal);
 
-// 6. Eliminar actividad
+//Eliminar actividad
 btnConfirmDelete?.addEventListener('click', async () => {
     if (activityToDeleteId === null) return;
 
@@ -256,7 +248,6 @@ btnConfirmDelete?.addEventListener('click', async () => {
     }
 });
 
-// 7. Dropzone y selección de archivo
 dropzoneBox?.addEventListener('click', () => {
     fileInput?.click();
 });
@@ -271,7 +262,7 @@ fileInput?.addEventListener('change', (e) => {
     }
 });
 
-// 8. Guardar formulario (Crear o Actualizar)
+//Guardar formulario (Crear o Actualizar)
 activityForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -289,7 +280,6 @@ activityForm?.addEventListener('submit', async (e) => {
         image: fileInput?.files[0] || null
     };
 
-    // Validación básica del formulario
     if (!activityData.name) {
         modalService.warning(
             'Introduce el nombre de la actividad.'
@@ -374,7 +364,6 @@ activityForm?.addEventListener('submit', async (e) => {
     }
 });
 
-// 9. Cerrar con Escape
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         closeModal();
@@ -382,5 +371,5 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// 10. Inicializar la carga al entrar a la página
+
 loadActivities();

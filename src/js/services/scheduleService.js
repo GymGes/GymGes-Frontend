@@ -12,7 +12,7 @@ function mapWeeklyClass(item) {
         availableSpots: item.available_spots,
     };
 }
-// Convierte los datos del formulario al formato de FastAPI
+
 function mapPayload(data) {
     return {
         activity_type_id: Number(data.activityId),
@@ -21,9 +21,6 @@ function mapPayload(data) {
     };
 }
 export const scheduleService = {
-    /**
-     * Obtiene la lista de horarios semanales
-     */
 async getSchedules() {
     const response = await api.get('/weekly-classes/');
 
@@ -35,9 +32,7 @@ async getSchedules() {
 
     return schedules.map(mapWeeklyClass);
 },
-    /**
-     * Crea una nueva asignación horaria
-     */
+
 
 async createSchedule(scheduleData) {
     const response = await api.post(
@@ -58,32 +53,6 @@ async createSchedule(scheduleData) {
     return mapWeeklyClass(created);
 },
 
-    /**
-     * Actualiza una asignación horaria existente
-     */
-    // async updateSchedule(id, scheduleData) {
-    //     try {
-    //         return await api.put(`/schedules/${id}`, scheduleData);
-    //     } catch (error) {
-    //         console.warn('Backend API no disponible (actualizando en mock data):', error.message);
-    //         const index = mockSchedules.findIndex(s => s.id === id);
-    //         if (index !== -1) {
-    //             mockSchedules[index] = {
-    //                 ...mockSchedules[index],
-    //                 activityId: Number(scheduleData.activityId),
-    //                 dayOfWeek: Number(scheduleData.dayOfWeek),
-    //                 startTime: scheduleData.startTime,
-    //                 teacherId: Number(scheduleData.teacherId)
-    //             };
-    //             return mockSchedules[index];
-    //         }
-    //         throw error;
-    //     }
-    // },
-
-    /**
-     * Elimina un horario por su ID
-     */
       async deleteSchedule(id) {
         await api.delete(`/weekly-classes/${id}`);
         return true;

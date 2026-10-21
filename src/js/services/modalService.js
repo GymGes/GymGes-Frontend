@@ -113,7 +113,6 @@ function show(type, message, customTitle) {
     const icon = iconContainer.querySelector('.material-symbols-outlined');
     icon.textContent = config.icon;
 
-    // Adaptar el color del icono al tipo de notificación.
     iconContainer.className = `icon-badge-${type}`;
 
     modal.classList.remove('hidden');

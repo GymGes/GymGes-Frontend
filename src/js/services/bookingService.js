@@ -6,8 +6,6 @@ const toFrontend = (b) => ({
     clase_id: b.class_id
 });
 
-const isNetworkError = (error) => error?.type === 'network';
-
 export const bookingService = {
 
     async getBookings() {
@@ -15,10 +13,7 @@ export const bookingService = {
         return (Array.isArray(data) ? data : []).map(toFrontend);
     },
 
-    /**
-     * Útil para el espacio personal del socio. Si el backend aún no expone
-     * esa ruta (404), se filtra en cliente a partir de la lista completa.
-     */
+
     async getBookingsByMember(memberCode) {
         const code = memberCode.trim().toUpperCase();
         try {
@@ -42,9 +37,7 @@ export const bookingService = {
         return toFrontend(await api.post('/booking/', payload));
     },
 
-    /**
-     * Cancela / elimina una reserva por su ID (DELETE /booking/{id}).
-     */
+
     async deleteBooking(id) {
         await api.delete(`/booking/${id}`);
         return true;

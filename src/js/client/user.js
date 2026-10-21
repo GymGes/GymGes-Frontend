@@ -1,4 +1,3 @@
-/* src/js/client/user.js */
 import { bookingService } from '../services/bookingService.js';
 import { memberService } from '../services/memberService.js';
 import { scheduleService } from '../services/scheduleService.js';
@@ -56,7 +55,6 @@ function deleteMemberCookie() {
 }
 
 
-// 2. Normalización de fechas y horarios
 function getScheduleParts(schedule) {
     if (!schedule) return { label: '-', time: '--:--', long: '-', date: '' };
 
@@ -105,7 +103,6 @@ function getScheduleParts(schedule) {
     return { label, time, long, date };
 }
 
-// 3. Renderizado de la ficha del socio
 function renderProfile(member) {
     if (!member) return;
 
@@ -131,12 +128,10 @@ function renderProfile(member) {
     }
 }
 
-// 4. Renderizado de reservas activas (solo hoy y días futuros)
 function renderBookings() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Filtra para descartar reservas de días pasados
     const upcomingBookings = memberBookings.filter(b => {
         const schedule = schedules.find(s => s.id === b.clase_id);
         if (!schedule) return true;
@@ -148,7 +143,6 @@ function renderBookings() {
         return isNaN(sessionDate.getTime()) || sessionDate >= today;
     });
 
-    // Ordena de forma cronológica (más próximas primero)
     upcomingBookings.sort((a, b) => {
         const sA = schedules.find(s => s.id === a.clase_id);
         const sB = schedules.find(s => s.id === b.clase_id);
@@ -228,7 +222,6 @@ function renderBookings() {
     });
 }
 
-// 5. Modal de Cancelación
 function openCancelModal(bookingId) {
     const booking = memberBookings.find(b => b.id === bookingId);
     if (!booking) return;
@@ -288,7 +281,6 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// 6. Proceso de autenticación y carga
 async function loadMember(code) {
     const normalizedCode = String(code).trim().toUpperCase();
 
@@ -364,7 +356,6 @@ btnLogout?.addEventListener('click', () => {
     window.location.href = '../index.html';
 });
 
-// 7. Auto-login si ya existe DNI en la sesión del navegador
 const savedDni = (getCookie(COOKIE_NAME) || localStorage.getItem(COOKIE_NAME) || '')
     .trim()
     .toUpperCase();

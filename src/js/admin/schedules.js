@@ -1,4 +1,3 @@
-/* src/js/admin/schedules.js */
 import { scheduleService } from "../services/scheduleService.js";
 import { activityService } from "../services/activityService.js";
 import { teacherService } from "../services/teacherService.js";
@@ -52,31 +51,7 @@ function formatInputDate(date) {
 
   return `${year}-${month}-${day}`;
 }
-// 1. Selector interactivo de días (Lunes 1 a Domingo 7)
-// function selectCalendarDay(dayNumber) {
-//     const day = Number(dayNumber);
-//     if (inputDay) inputDay.value = day;
 
-//     if (selectedDayDisplay) {
-//         selectedDayDisplay.textContent = `${DAY_NAMES[day]} seleccionado (Día ${day})`;
-//     }
-
-//     dayButtons.forEach(btn => {
-//         const btnDay = Number(btn.getAttribute('data-day'));
-//         if (btnDay === day) {
-//             btn.classList.add('active');
-//         } else {
-//             btn.classList.remove('active');
-//         }
-//     });
-// }
-
-// dayButtons.forEach(btn => {
-//     btn.addEventListener('click', () => {
-//         const day = btn.getAttribute('data-day');
-//         selectCalendarDay(day);
-//     });
-// });
 function fillSelect(select, items, placeholder) {
   if (!select) return;
 
@@ -92,8 +67,6 @@ function fillSelect(select, items, placeholder) {
     `;
 }
 
-// 2. Cargar datos iniciales
-// Cargar sesiones, actividades y profesores desde FastAPI
 async function loadSchedules() {
   if (!tableBody) return;
 
@@ -132,7 +105,6 @@ async function loadSchedules() {
       teachers.map((teacher) => [teacher.id, teacher.name]),
     );
 
-    // Rellenar los desplegables con actividades y profesores.
     fillSelect(
       document.getElementById("modal-activity-id"),
       activities,
@@ -145,7 +117,6 @@ async function loadSchedules() {
       "Selecciona un profesor",
     );
 
-    // Mostrar únicamente las sesiones desde hoy hasta dentro de 14 días.
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -159,17 +130,10 @@ async function loadSchedules() {
   } catch (error) {
     console.error("Error cargando sesiones:", error);
     modalService.error("No se pudieron cargar los datos. Comprueba que el backend está activo.")
-    // tableBody.innerHTML = `
-    //         <tr>
-    //             <td colspan="5" class="text-center table-state-row">
-    //                 No se pudieron cargar los datos. Comprueba que el backend está activo.
-    //             </td>
-    //         </tr>
-    //     `;
+
   }
 }
 
-// 3. Renderizado de la tabla
 function renderSchedules() {
   if (!tableBody) return;
 
@@ -266,26 +230,8 @@ function formatDate(dateString) {
   return `${day}/${month}/${year}`;
 }
 
-// 4. Ciclo de vida de los modales
 function openModal(isEdit = false, schedule = null) {
-  // const selectActivity = document.getElementById('modal-activity-id');
   const inputTime = document.getElementById("modal-time");
-  // const selectTeacher = document.getElementById('modal-teacher-id');
-
-  // if (isEdit && schedule) {
-  //     editingScheduleId = schedule.id;
-  //     modalTitle.textContent = 'Editar Clase Semanal';
-  //     selectActivity.value = schedule.activityId;
-  //     inputTime.value = schedule.startTime;
-  //     selectTeacher.value = schedule.teacherId;
-  //     selectCalendarDay(schedule.dayOfWeek);
-  // } else {
-  //     editingScheduleId = null;
-  //     modalTitle.textContent = 'Añadir Clase Semanal';
-  //     scheduleForm.reset();
-  //     inputTime.value = '09:00';
-  //     selectCalendarDay(3); // Por defecto Miércoles
-  // }
 
   scheduleForm.reset();
   configureDateInput();
@@ -303,13 +249,7 @@ function openModal(isEdit = false, schedule = null) {
 
 function closeModal() {
   scheduleModal.classList.add("hidden");
-  // editingScheduleId = null;
 }
-
-// window.openEditScheduleModal = function (id) {
-//     const target = schedules.find(s => s.id === id);
-//     if (target) openModal(true, target);
-// };
 
 window.openDeleteScheduleModal = function (id) {
   const target = schedules.find((s) => s.id === id);
@@ -330,7 +270,7 @@ function closeDeleteModal() {
   scheduleToDeleteId = null;
 }
 
-// 5. Event Listeners
+//Event Listeners
 btnOpenCreate?.addEventListener("click", () => openModal(false));
 btnCloseModal?.addEventListener("click", closeModal);
 btnCancelModal?.addEventListener("click", closeModal);
@@ -354,7 +294,7 @@ btnConfirmDelete?.addEventListener("click", async () => {
   }
 });
 
-// Guardar formulario (Crear o Actualizar)
+//Guardar formulario (Crear o Actualizar)
 
 scheduleForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -366,7 +306,6 @@ scheduleForm?.addEventListener("submit", async (e) => {
     teacherId: document.getElementById("modal-teacher-id").value,
   };
 
-  // Validar que todos los campos estén completos
   if (
     !scheduleData.activityId ||
     !scheduleData.teacherId ||
@@ -377,7 +316,6 @@ scheduleForm?.addEventListener("submit", async (e) => {
     return;
   }
 
-  // Validar el intervalo de fechas permitido
   if (
     scheduleData.activityDate < inputDate.min ||
     scheduleData.activityDate > inputDate.max
@@ -385,18 +323,10 @@ scheduleForm?.addEventListener("submit", async (e) => {
     modalService.info("Solo puedes crear sesiones desde hoy hasta dentro de 14 días.")
     return;
   }
-  // if (editingScheduleId) {
-  //     const updated = await scheduleService.updateSchedule(editingScheduleId, scheduleData);
-  //     const index = schedules.findIndex(s => s.id === editingScheduleId);
-  //     if (index !== -1) schedules[index] = updated;
-  // } else {
-  //     const created = await scheduleService.createSchedule(scheduleData);
-  //     schedules.unshift(created);
-  // }
+
   try {
     const created = await scheduleService.createSchedule(scheduleData);
 
-    // Mostrar la sesión si su fecha está dentro del intervalo visible
     if (
       created.activityDate >= inputDate.min &&
       created.activityDate <= inputDate.max
@@ -419,7 +349,6 @@ scheduleForm?.addEventListener("submit", async (e) => {
   }
 });
 
-// Cerrar con Escape
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     closeModal();
@@ -427,6 +356,5 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-// Inicializar carga de la tabla
 configureDateInput();
 loadSchedules();

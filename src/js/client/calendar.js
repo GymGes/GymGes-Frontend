@@ -1,4 +1,3 @@
-/* src/js/client/calendar.js */
 import { scheduleService } from '../services/scheduleService.js';
 import { activityService } from '../services/activityService.js';
 import { teacherService } from '../services/teacherService.js';
@@ -18,7 +17,7 @@ const DAY_NAMES = {
     7: 'Domingo'
 };
 
-// Estado reactivo
+
 let schedules = [];
 let activitiesMap = new Map();
 let teachersMap = new Map();
@@ -26,11 +25,9 @@ let bookings = [];
 let selectedDay = 1;
 let selectedSchedule = null;
 
-// Referencias al DOM - Selector y Cartelera
 const weekBar = document.getElementById('schedule-week-bar');
 const scheduleList = document.getElementById('schedule-list');
 
-// Referencias al DOM - Modal de Confirmación
 const bookingModal = document.getElementById('booking-modal');
 const bookingForm = document.getElementById('client-booking-form');
 const modalActivityName = document.getElementById('modal-activity-name');
@@ -51,7 +48,7 @@ function getCookie(name) {
         ? decodeURIComponent(cookie.slice(prefix.length))
         : null;
 }
-// Referencias al DOM - Modal de Aviso / Sin Créditos
+
 const noticeModal = document.getElementById('notice-modal');
 const noticeModalTitle = document.getElementById('notice-modal-title');
 const noticeModalActivity = document.getElementById('notice-modal-activity');
@@ -60,7 +57,6 @@ const noticeModalMessage = document.getElementById('notice-modal-message');
 const btnCloseNoticeModal = document.getElementById('btn-close-notice-modal');
 const btnNoticeModalBack = document.getElementById('btn-notice-modal-back');
 
-// 1. Selector de fechas de la semana (Lunes a Domingo)
 function getWeekDays() {
     const now = new Date();
     const currentDayOfWeek = now.getDay() === 0 ? 7 : now.getDay();
@@ -115,7 +111,6 @@ function renderWeekBar() {
     });
 }
 
-// 2. Normalizadores defensivos de sesión
 function getScheduleDay(s) {
     if (s.dayOfWeek !== undefined && s.dayOfWeek !== null) return Number(s.dayOfWeek);
     if (s.day_of_week !== undefined && s.day_of_week !== null) return Number(s.day_of_week);
@@ -161,7 +156,6 @@ function getScheduleSpots(s) {
     return 0;
 }
 
-// 3. Renderizado de sesiones del día
 function renderScheduleForDay(day) {
     if (!scheduleList) return;
 
@@ -178,7 +172,6 @@ function renderScheduleForDay(day) {
         return;
     }
 
-    // Agrupar por actividad
     const groupedByActivity = {};
     dayClasses.forEach(s => {
         const actId = getScheduleActivityId(s);
@@ -188,7 +181,6 @@ function renderScheduleForDay(day) {
         groupedByActivity[actId].push(s);
     });
 
-    // Ordenar por hora de inicio
     Object.values(groupedByActivity).forEach(list => {
         list.sort((a, b) => getScheduleTime(a).localeCompare(getScheduleTime(b)));
     });
@@ -201,7 +193,6 @@ function renderScheduleForDay(day) {
             capacity: 16
         };
 
-        // Prioridad: imagen real de Cloudinary/API -> fallback de seguridad
         const activityImg = activity.imageUrl || activity.image_url || DEFAULT_IMAGE;
         const duration = activity.duration || activity.duracion || 50;
         const maxStudents = activity.capacity || activity.max_students || activity.maxStudents || 16;
@@ -275,7 +266,6 @@ function renderScheduleForDay(day) {
     }).join('');
 }
 
-// 4. Modales: Reserva y Aviso
 window.handleOpenBookingModal = function (scheduleId) {
     const schedule = schedules.find(s => s.id === scheduleId);
     if (!schedule) return;
@@ -302,7 +292,6 @@ if (!savedDni) {
 modalSocioCode.value = savedDni;
 modalSocioCode.readOnly = true;
 
-// Mostrar el modal de reserva
 bookingModal.classList.remove('hidden');
 };
 
@@ -324,13 +313,11 @@ function closeNoticeModal() {
     if (noticeModal) noticeModal.classList.add('hidden');
 }
 
-// Listeners de cierre
 btnCloseModal?.addEventListener('click', closeBookingModal);
 btnCancelModal?.addEventListener('click', closeBookingModal);
 btnCloseNoticeModal?.addEventListener('click', closeNoticeModal);
 btnNoticeModalBack?.addEventListener('click', closeNoticeModal);
 
-// Procesar Reserva contra bookingService
 bookingForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -360,7 +347,6 @@ bookingForm?.addEventListener('submit', async (e) => {
     }
 
     try {
-        // Contrato estricto según createBooking(bookingData) de bookingService.js
         const newBooking = await bookingService.createBooking({
             socio_codigo: code,
             clase_id: classId
@@ -387,7 +373,6 @@ bookingForm?.addEventListener('submit', async (e) => {
         const resData = error.response?.data;
         const detail = typeof resData?.detail === 'string' ? resData.detail : (resData?.message || '');
 
-        // Mensaje enfocado directamente en la falta de saldo/créditos
         let title = 'Créditos Insuficientes';
         let message = 'No te quedan créditos disponibles para realizar esta reserva. Puedes consultar tu saldo actual desde tu espacio de socio.';
 
@@ -407,7 +392,6 @@ bookingForm?.addEventListener('submit', async (e) => {
     }
 });
 
-// Cerrar con Escape cualquiera de los dos modales
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         if (bookingModal && !bookingModal.classList.contains('hidden')) {
@@ -419,7 +403,6 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// 5. Carga inicial
 async function initCalendar() {
     renderWeekBar();
 

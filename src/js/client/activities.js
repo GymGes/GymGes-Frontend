@@ -1,7 +1,5 @@
-/* src/js/client/activities.js */
 import { activityService } from '../services/activityService.js';
 
-// Imagen de seguridad por si algún registro no trae foto ni en el servicio
 const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=600&auto=format&fit=crop';
 
 const gridContainer = document.getElementById('activities-grid');

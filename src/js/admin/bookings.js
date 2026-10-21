@@ -1,4 +1,3 @@
-/* src/js/admin/bookings.js */
 import { bookingService } from '../services/bookingService.js';
 import { memberService } from '../services/memberService.js';
 import { scheduleService } from '../services/scheduleService.js';
@@ -62,7 +61,6 @@ const btnCloseDeleteModal = document.getElementById('btn-close-delete-booking-mo
 const btnCancelDelete = document.getElementById('btn-cancel-delete-booking');
 const btnConfirmDelete = document.getElementById('btn-confirm-delete-booking');
 
-// Normalizador defensivo de sesiones (unifica camelCase y snake_case del backend)
 function normalizeSchedule(s) {
     let dayOfWeek = s.dayOfWeek ?? s.day_of_week;
     let startTime = s.startTime ?? s.start_time;
@@ -94,7 +92,6 @@ function normalizeSchedule(s) {
     };
 }
 
-// Normalizador defensivo de socios
 function normalizeMember(m) {
     return {
         ...m,
@@ -105,7 +102,6 @@ function normalizeMember(m) {
     };
 }
 
-// 1. Cargar desplegables del modal (Socios y Clases disponibles)
 function populateSelects() {
     if (selectMember) {
         selectMember.innerHTML = `
@@ -143,7 +139,6 @@ function populateSelects() {
     }
 }
 
-// Advertencia visual de créditos al seleccionar un socio
 selectMember?.addEventListener('change', () => {
     const selectedOption = selectMember.options[selectMember.selectedIndex];
     const credits = Number(selectedOption?.getAttribute('data-credits') || 0);
@@ -162,7 +157,6 @@ selectMember?.addEventListener('change', () => {
     }
 });
 
-// 2. Carga inicial de datos desde FastAPI
 async function loadData() {
     if (tableBody) {
         tableBody.innerHTML = `
@@ -207,7 +201,6 @@ async function loadData() {
     }
 }
 
-// 3. Renderizado de la tabla de reservas
 function renderBookings() {
     if (!tableBody) return;
 
@@ -285,7 +278,6 @@ function setPage(page) {
     renderBookings();
 }
 
-// 4. Ciclo de vida de los modales
 function openModal() {
     bookingForm.reset();
     memberCreditsInfo.textContent = '';
@@ -316,13 +308,13 @@ function closeDeleteModal() {
     bookingToDeleteId = null;
 }
 
-// 5. Event Listeners
+// Event Listeners
 btnOpenCreate?.addEventListener('click', openModal);
 btnCloseModal?.addEventListener('click', closeModal);
 btnCancelModal?.addEventListener('click', closeModal);
-
 btnCloseDeleteModal?.addEventListener('click', closeDeleteModal);
 btnCancelDelete?.addEventListener('click', closeDeleteModal);
+
 
 btnConfirmDelete?.addEventListener('click', async () => {
     if (bookingToDeleteId !== null) {
@@ -333,13 +325,10 @@ btnConfirmDelete?.addEventListener('click', async () => {
             modalService.error(error?.message || 'No se pudo cancelar la reserva.');
             return;
         }
-
-        // Reembolsar 1 crédito en la sesión local al cancelar
         if (target) {
             const member = members.find(m => m.codigo === target.socio_codigo);
             if (member) member.creditos_restantes += 1;
         }
-
         bookings = bookings.filter(b => b.id !== bookingToDeleteId);
         currentPage = 1;
         renderBookings();
@@ -387,7 +376,6 @@ bookingForm?.addEventListener('submit', async (e) => {
     closeModal();
 });
 
-// Cerrar con Escape
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         closeModal();
@@ -395,5 +383,5 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Cargar datos
+
 loadData();

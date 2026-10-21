@@ -1,10 +1,8 @@
-
 import { memberService } from './../services/memberService.js';
 
 const COOKIE_NAME = 'pulse_member_dni';
 const COOKIE_MAX_AGE = 60 * 60 * 8;
 
-// Crear el modal dinámicamente para reutilizarlo en las tres páginas.
 function createAccessModal() {
   if (document.getElementById('member-access-modal')) return;
 
@@ -89,7 +87,6 @@ function createAccessModal() {
   document.body.appendChild(modal);
 }
 
-// Obtener el valor de una cookie.
 function getCookie(name) {
   const prefix = `${name}=`;
 
@@ -102,20 +99,17 @@ function getCookie(name) {
     : null;
 }
 
-// Guardar el DNI en una cookie durante 8 horas.
 function saveCookie(dni) {
   document.cookie =
     `${COOKIE_NAME}=${encodeURIComponent(dni)}; ` +
     `Path=/; Max-Age=${COOKIE_MAX_AGE}; SameSite=Lax`;
 }
 
-// Eliminar la cookie del socio.
 function deleteCookie() {
   document.cookie =
     `${COOKIE_NAME}=; Path=/; Max-Age=0; SameSite=Lax`;
 }
 
-// Mostrar u ocultar los enlaces privados del menú.
 function setPrivateLinksVisibility(isAuthenticated) {
   const privateLinks = document.querySelectorAll(
     '.header-nav .nav-link[href="pages/calendar.html"], ' +
@@ -262,11 +256,10 @@ function initClientAccess() {
     }
   });
 
-  // Recuperar la visibilidad inicial según la cookie.
   setPrivateLinksVisibility(Boolean(getCookie(COOKIE_NAME)));
 }
 
-// Ejecutar cuando el DOM esté disponible.
+
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initClientAccess);
 } else {

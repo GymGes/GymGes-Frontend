@@ -1,5 +1,3 @@
-
-/* src/js/admin/teachers.js */
 import { teacherService } from '../services/teacherService.js';
 import { modalService } from '../services/modalService.js';
 import { paginate, renderPagination } from '../utils/paginate.js';
@@ -30,7 +28,6 @@ const btnCloseDeleteModal = document.getElementById('btn-close-delete-teacher-mo
 const btnCancelDelete = document.getElementById('btn-cancel-delete-teacher');
 const btnConfirmDelete = document.getElementById('btn-confirm-delete-teacher');
 
-// Obtener un mensaje legible del error
 function getErrorMessage(error, fallback) {
     return (
         error?.response?.data?.detail ||
@@ -39,7 +36,6 @@ function getErrorMessage(error, fallback) {
     );
 }
 
-// 1. Cargar datos del servicio
 async function loadTeachers() {
     if (tableBody) {
         tableBody.innerHTML = `
@@ -78,7 +74,6 @@ async function loadTeachers() {
     }
 }
 
-// 2. Renderizado de la tabla de profesores
 function renderTeachers() {
     if (!tableBody) return;
 
@@ -144,7 +139,6 @@ function setPage(page) {
     renderTeachers();
 }
 
-// 3. Modales (Crear / Editar)
 function openModal(isEdit = false, teacher = null) {
     if (!teacherModal || !teacherForm) return;
 
@@ -169,7 +163,6 @@ function closeModal() {
     editingTeacherId = null;
 }
 
-// Exponer funciones para los botones de acción en tabla
 window.openEditTeacherModal = function (id) {
     const teacher = teachers.find(t => t.id === id);
 
@@ -193,7 +186,7 @@ function closeDeleteModal() {
     teacherToDeleteId = null;
 }
 
-// 4. Asignación de eventos
+//Event listener
 btnOpenCreate?.addEventListener('click', () => openModal(false));
 btnCloseModal?.addEventListener('click', closeModal);
 btnCancelModal?.addEventListener('click', closeModal);
@@ -201,7 +194,7 @@ btnCancelModal?.addEventListener('click', closeModal);
 btnCloseDeleteModal?.addEventListener('click', closeDeleteModal);
 btnCancelDelete?.addEventListener('click', closeDeleteModal);
 
-// 5. Eliminar profesor
+//Eliminar profesor
 btnConfirmDelete?.addEventListener('click', async () => {
     if (teacherToDeleteId === null) return;
 
@@ -238,7 +231,7 @@ btnConfirmDelete?.addEventListener('click', async () => {
     }
 });
 
-// 6. Guardar profesor (Creación / Actualización)
+//Guardar profesor (Creación / Actualización)
 teacherForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -309,7 +302,6 @@ teacherForm?.addEventListener('submit', async (e) => {
     }
 });
 
-// 7. Cierre mediante Escape
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         closeModal();
@@ -317,5 +309,4 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// 8. Carga inicial
 loadTeachers();

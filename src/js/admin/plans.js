@@ -1,5 +1,3 @@
-
-/* src/js/admin/plans.js */
 import { planService } from '../services/planService.js';
 import { modalService } from '../services/modalService.js';
 
@@ -28,7 +26,6 @@ const btnCloseDeleteModal = document.getElementById('btn-close-delete-plan-modal
 const btnCancelDelete = document.getElementById('btn-cancel-delete-plan');
 const btnConfirmDelete = document.getElementById('btn-confirm-delete-plan');
 
-// Obtener un mensaje legible del error
 function getErrorMessage(error, fallback) {
     return (
         error?.response?.data?.detail ||
@@ -37,7 +34,6 @@ function getErrorMessage(error, fallback) {
     );
 }
 
-// 1. Cargar datos del servicio
 async function loadPlans() {
     if (tableBody) {
         tableBody.innerHTML = `
@@ -74,7 +70,6 @@ async function loadPlans() {
     }
 }
 
-// 2. Renderizar la tabla de planes
 function renderPlans() {
     if (!tableBody) return;
 
@@ -143,7 +138,6 @@ function renderPlans() {
     `).join('');
 }
 
-// 3. Modales (Crear / Editar)
 function openModal(isEdit = false, plan = null) {
     if (!planModal || !planForm) return;
 
@@ -170,7 +164,6 @@ function closeModal() {
     editingPlanId = null;
 }
 
-// Funciones globales para los botones de la tabla
 window.openEditPlanModal = function (id) {
     const plan = plans.find(p => p.id === id);
 
@@ -194,15 +187,14 @@ function closeDeleteModal() {
     planToDeleteId = null;
 }
 
-// 4. Asignación de eventos
+// Event Listeners
 btnOpenCreate?.addEventListener('click', () => openModal(false));
 btnCloseModal?.addEventListener('click', closeModal);
 btnCancelModal?.addEventListener('click', closeModal);
-
 btnCloseDeleteModal?.addEventListener('click', closeDeleteModal);
 btnCancelDelete?.addEventListener('click', closeDeleteModal);
 
-// 5. Eliminar plan
+//Eliminar plan
 btnConfirmDelete?.addEventListener('click', async () => {
     if (planToDeleteId === null) return;
 
@@ -234,7 +226,7 @@ btnConfirmDelete?.addEventListener('click', async () => {
     }
 });
 
-// 6. Guardar plan (Crear o Actualizar)
+//Guardar plan (Crear o Actualizar)
 planForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -319,7 +311,6 @@ planForm?.addEventListener('submit', async (e) => {
     }
 });
 
-// 7. Cierre mediante Escape
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         closeModal();
@@ -327,5 +318,4 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// 8. Carga inicial
 loadPlans();

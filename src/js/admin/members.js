@@ -1,4 +1,3 @@
-/* src/js/admin/members.js */
 import { memberService } from '../services/memberService.js';
 import { planService } from '../services/planService.js';
 import { paginate, renderPagination } from '../utils/paginate.js';
@@ -40,7 +39,6 @@ const btnCloseDeleteModal = document.getElementById('btn-close-delete-member-mod
 const btnCancelDelete = document.getElementById('btn-cancel-delete-member');
 const btnConfirmDelete = document.getElementById('btn-confirm-delete-member');
 
-// 1. Cargar planes disponibles y rellenar el <select>
 async function loadPlansOptions() {
     plans = await planService.getPlans();
     if (selectPlan && plans.length > 0) {
@@ -52,7 +50,6 @@ async function loadPlansOptions() {
     }
     }
 
-// 2. Cargar socios iniciales
 async function loadMembers() {
     if (tableBody) {
         tableBody.innerHTML = `
@@ -69,7 +66,6 @@ async function loadMembers() {
     renderMembers();
     }
 
-// 3. Renderizado de la tabla de socios
 function renderMembers(membersToRender = displayedMembers ?? members) {
     if (!tableBody) return;
 
@@ -144,7 +140,6 @@ function setPage(page) {
     renderMembers();
 }
 
-// 4. Modales (Crear / Editar)
 function openModal(isEdit = false, member = null) {
     if (isEdit && member) {
         editingMemberCode = member.codigo;
@@ -185,7 +180,6 @@ function closeModal() {
     editingMemberCode = null;
 }
 
-// Funciones globales para invocar desde los botones de fila
 window.openEditMemberModal = function (codigo) {
     const member = members.find(m => m.codigo === codigo);
     if (member) openModal(true, member);
@@ -205,6 +199,7 @@ function closeDeleteModal() {
     memberToDeleteCode = null;
 }
 
+// Event Listeners
 memberSearchForm?.addEventListener('submit', async (event) => {
     event.preventDefault();
 
@@ -274,14 +269,11 @@ btnShowAllMembers?.addEventListener('click', async () => {
     }
 });
 
-// 5. Asignación de eventos
 btnOpenCreate?.addEventListener('click', () => openModal(false));
 btnCloseModal?.addEventListener('click', closeModal);
 btnCancelModal?.addEventListener('click', closeModal);
-
 btnCloseDeleteModal?.addEventListener('click', closeDeleteModal);
 btnCancelDelete?.addEventListener('click', closeDeleteModal);
-
 btnConfirmDelete?.addEventListener('click', async () => {
     try{
         if (memberToDeleteCode) {
@@ -352,4 +344,5 @@ document.addEventListener('keydown', (e) => {
 });
 
 // Carga inicial
+
 loadMembers();
