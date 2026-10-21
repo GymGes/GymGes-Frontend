@@ -49,7 +49,6 @@ GymGes-Project/
 │   ├── service/                     # Capa de servicios auxiliares y negocio
 │   │   └── cloudinary_service.py    # Subida y transformación de imágenes
 │   ├── alembic.ini                  # Configuración de migraciones de base de datos
-│   ├── gymges.sqlite3               # Base de datos relacional local
 │   ├── main.py                      # Punto de entrada de la aplicación FastAPI
 │   └── requirements.txt             # Dependencias del backend de Python
 │
@@ -111,12 +110,13 @@ CLOUDINARY_URL="cloudinary://<API_KEY>:<API_SECRET>@<CLOUD_NAME>"
 
 | Variable | Tipo | Requerida | Propósito |
 | :--- | :--- | :---: | :--- |
-| `APP_TITLE` | `string` | Sí | Nombre de la API en la documentación OpenAPI y Swagger UI. |
-| `APP_VERSION` | `string` | Sí | Versión semántica del release desplegado. |
+| `APP_TITLE` | `string` | No (valor por defecto) | Nombre de la API en la documentación OpenAPI y Swagger UI. |
+| `APP_VERSION` | `string` | No (valor por defecto) | Versión de la API. |
 | `APP_DESCRIPTION` | `string` | No | Descripción técnica visible en la documentación interactiva. |
-| `DATABASE_NAME` | `string` | Sí | Nombre del archivo de base de datos SQLite local. |
-| `DATABASE_URL` | `string` | Sí | Cadena de conexión utilizada por el motor SQLAlchemy. |
-| `CLOUDINARY_URL` | `string` | Sí | URI autenticada para la subida y almacenamiento de fotografías. |
+| `DATABASE_NAME` | `string` | No (valor por defecto) | Nombre del archivo de base de datos SQLite local. |
+| `DATABASE_URL` | `string` | No (valor por defecto) | Cadena de conexión utilizada por el motor SQLAlchemy. |
+| `CLOUDINARY_URL` | `string` | Para imágenes | URI autenticada para subir y almacenar fotografías en Cloudinary. |
+| `GYM_TIMEZONE` | `string` | No (por defecto, `Europe/Madrid`) | Zona horaria utilizada para comprobar las fechas y las reglas de cancelación. |
 
 ---
 
@@ -126,17 +126,20 @@ La base de datos relacional está normalizada en 3NF para garantizar la integrid
 
 ```mermaid
 erDiagram
-    TIPOS_CLASE ||--o{ CLASES_SEMANALES : define
+    TIPOS_ACTIVIDADES ||--o{ CLASES_SEMANALES : define
     PROFESORES ||--o{ CLASES_SEMANALES : imparte
     PLANES ||--o{ SOCIOS : tiene
     CLASES_SEMANALES ||--o{ RESERVAS : tiene
     SOCIOS ||--o{ RESERVAS : realiza
 
-    TIPOS_CLASE {
+    TIPOS_ACTIVIDADES {
         int id PK
         string nombre
         int duracion
         int max_alumnos
+        string descripcion
+        string image_url
+        string image_public_id
     }
 
     PROFESORES {
@@ -152,7 +155,7 @@ erDiagram
 
     CLASES_SEMANALES {
         int id PK
-        date fecha_actividad
+        datetime fecha_actividad
         int plazas_disponibles
         int tipo_clase_id FK
         int profesor_id FK
@@ -179,7 +182,7 @@ erDiagram
 ### Reglas de Negocio Vinculadas al Modelo
 * **Identificador de Socio:** Clave primaria `codigo` normalizada a 9 caracteres (DNI/NIE).
 * **Consumo de Créditos:** La creación de una reserva resta 1 crédito en la ficha del socio y decrementa las plazas disponibles de la clase.
-* **Cancelación de Reserva:** La eliminación de la reserva reintegra automáticamente el crédito al socio y libera la plaza en el horario semanal.
+* **Cancelación de Reserva:** No se puede cancelar durante las dos horas previas al comienzo de la clase. Si la cancelación está permitida y la sesión es futura, se devuelve el crédito y se libera la plaza en el horario semanal.
 
 ---
 
@@ -191,7 +194,7 @@ Los endpoints siguen convenciones RESTful bajo FastAPI. Los modelos del backend 
 
 | Método | Ruta | Descripción | Parámetros / Cuerpo | Código de Respuesta |
 | :--- | :--- | :--- | :--- | :---: |
-| `GET` | `/members/` | Obtiene el listado completo de socios | Ninguno | `200 OK` |
+| `GET` | `/members/` | Obtiene el listado paginado de socios | Query opcional: `skip`, `limit` (máximo 1000 por petición) | `200 OK` |
 | `GET` | `/members/{code}` | Consulta la ficha de un socio por su DNI | `code`: string (en ruta) | `200 OK` |
 | `POST` | `/members/` | Da de alta un nuevo socio | JSON con datos del socio | `201 Created` |
 | `PUT` | `/members/{code}` | Modifica los datos de un socio existente | JSON con datos actualizados | `200 OK` |
@@ -201,18 +204,18 @@ Los endpoints siguen convenciones RESTful bajo FastAPI. Los modelos del backend 
 
 | Método | Ruta | Descripción | Parámetros / Cuerpo | Código de Respuesta |
 | :--- | :--- | :--- | :--- | :---: |
-| `GET` | `/weekly-classes/` | Cartelera de clases programadas y aforo | Query opcional: `?date=YYYY-MM-DD` | `200 OK` |
+| `GET` | `/weekly-classes/` | Cartelera de clases programadas y aforo | Query opcional: `skip`, `limit` (máximo 1000 por petición) | `200 OK` |
 | `POST` | `/weekly-classes/` | Programa una nueva sesión en el horario | JSON con datos de la sesión | `201 Created` |
 | `DELETE` | `/weekly-classes/{id}` | Cancela administrativamente una clase | `id`: integer (en ruta) | `204 No Content` |
 
-### 3. Reservas (`/bookings/`)
+### 3. Reservas (`/booking/`)
 
 | Método | Ruta | Descripción | Parámetros / Cuerpo | Código de Respuesta |
 | :--- | :--- | :--- | :--- | :---: |
-| `GET` | `/bookings/` | Registro de reservas del centro | Ninguno | `200 OK` |
-| `GET` | `/bookings/member/{code}` | Obtiene las reservas activas de un socio | `code`: string (en ruta) | `200 OK` |
-| `POST` | `/bookings/` | Reserva plaza y descuenta 1 crédito | `{ "socio_codigo": "...", "clase_id": 0 }` | `201 Created` |
-| `DELETE` | `/bookings/{id}` | Anula reserva y restituye el crédito | `id`: integer (en ruta) | `204 No Content` |
+| `GET` | `/booking/` | Registro de reservas del centro | Query opcional: `skip`, `limit` (máximo 1000 por petición) | `200 OK` |
+| `GET` | `/booking/member/{member_code}` | Obtiene las reservas de un socio | `member_code`: string (en ruta) | `200 OK` |
+| `POST` | `/booking/` | Reserva plaza y descuenta 1 crédito | `{ "member_code": "...", "class_id": 0 }` | `201 Created` |
+| `DELETE` | `/booking/{booking_id}` | Elimina una reserva; la devolución depende de la fecha de la sesión y del límite de cancelación | `booking_id`: integer (en ruta) | `204 No Content` |
 
 ### 4. Catálogos Maestros
 
@@ -231,7 +234,7 @@ Los endpoints siguen convenciones RESTful bajo FastAPI. Los modelos del backend 
 | **Arquitectura** | Sistema de diseño y estilos CSS modular desde cero | ✅ Completado | Arquitectura BEM y variables CSS nativas (`variables.css`), estructurada por componentes (`components/`) y layout sin dependencias de frameworks externos. |
 | **Arquitectura** | Capa adaptadora de servicios (Data Mapper) | ✅ Completado | Transformación bidireccional transparente entre esquemas de API en inglés y controladores frontend (`memberService.js`, `planService.js`, etc.). |
 | **Gestión Multimedia** | Integración con CDN Cloudinary | ✅ Completado | Servicio desacoplado (`cloudinary_service.py` y `cloudinary_config.py`) para subida, almacenamiento y optimización de fotografías de actividades. |
-| **Gestión de Socios** | Directorio y operaciones CRUD de miembros | ✅ Completado | Listado reactivo, formularios modales interactivos para alta/edición, validación de DNI único y asignación automática de créditos por plan. |
+| **Gestión de Socios** | Directorio y operaciones CRUD de miembros | ✅ Implementado | Listado reactivo, formularios modales para alta/edición, validación del código de socio y asignación inicial de créditos según el plan al dar de alta. |
 | **Gestión de Socios** | Barra de búsqueda y filtrado por código | ✅ Completado | Componente reutilizable `.table-toolbar` integrado en la tabla con consulta por endpoint, reseteo de lista y feedback de estado accesible. |
 | **Gestión de Socios** | Modal de baja y confirmación destructiva | ✅ Completado | Diálogo accesible de confirmación para eliminación de socios con advertencia de liberación de plazas y cancelación de reservas. |
 | **Gestión de Planes** | Catálogo de tarifas y balance de créditos | ✅ Completado | Lectura y vinculación de planes activos para parametrizar altas y consumos de créditos por sesión. |
@@ -249,18 +252,21 @@ Los endpoints siguen convenciones RESTful bajo FastAPI. Los modelos del backend 
 * **Python 3.10 o superior** con gestor `pip` y entorno virtual activado.
 * Servidor web para estáticos (extensión **Live Server** de VS Code o `npx serve`).
 
+Los comandos siguientes presuponen que `GymGes-Frontend` y `GymGes-backend` están en carpetas hermanas dentro de `GymGes-Project/`. Ejecútalos desde esa carpeta raíz.
+
 ### 1. Servidor Backend (FastAPI)
-```powershell
+```cmd
 # Acceder a la carpeta del backend
 cd GymGes-backend
 
-# Activar el entorno virtual
-.venv\Scripts\activate
+# Crear y activar el entorno virtual (Windows CMD)
+python -m venv .venv
+.venv\Scripts\activate.bat
 
 # Instalar las dependencias del proyecto
 pip install -r requirements.txt
 
-# Ejecutar migraciones con Alembic (si procede)
+# Opcional: ejecutar las migraciones manualmente; main.py también las aplica al arrancar
 alembic upgrade head
 
 # Iniciar la API con recarga en vivo
@@ -268,8 +274,10 @@ uvicorn main:app --reload --port 8000
 ```
 *Documentación interactiva Swagger UI disponible en:* `http://127.0.0.1:8000/docs`
 
+Al arrancar, `main.py` aplica las migraciones y carga los datos de demostración solo si la base de datos está vacía.
+
 ### 2. Cliente Frontend
-```powershell
+```cmd
 # Acceder a la carpeta del frontend
 cd GymGes-Frontend
 
@@ -277,3 +285,5 @@ cd GymGes-Frontend
 npx serve .
 ```
 *Portal accesible en:* `http://localhost:3000` (o el puerto configurado por Live Server, habitualmente `http://127.0.0.1:5500`).
+
+La URL de la API se configura en `src/js/config/endpointsConfig.js`. Actualmente apunta al backend desplegado en Render; para usar el backend local, configura `API_BASE_URL` como `http://127.0.0.1:8000/`.
