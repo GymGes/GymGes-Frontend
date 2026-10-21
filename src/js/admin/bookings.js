@@ -6,7 +6,7 @@ import { activityService } from '../services/activityService.js';
 import { teacherService } from '../services/teacherService.js';
 import { paginate, renderPagination } from '../utils/paginate.js';
 import { modalService } from '../services/modalService.js';
-import { modalService } from '../services/modalService.js';
+
 
 // Días de la semana para los nombres de turnos
 const DAY_NAMES = {
