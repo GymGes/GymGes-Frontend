@@ -12,6 +12,7 @@ let activitiesMap = new Map();
 let teachersMap = new Map();
 let memberBookings = [];
 let bookingToCancelId = null;
+let activeBookingsTab = 'upcoming';
 
 // Elementos del DOM - Contenedores
 const memberDashboard = document.getElementById('member-dashboard');
@@ -26,8 +27,12 @@ const memberAddress = document.getElementById('member-address');
 const memberCredits = document.getElementById('member-credits');
 
 // Elementos del DOM - Reservas
+const bookingsHeading = document.getElementById('bookings-heading');
 const bookingsCount = document.getElementById('bookings-count');
+const bookingsSubtitle = document.getElementById('bookings-subtitle');
 const bookingsList = document.getElementById('bookings-list');
+const tabUpcoming = document.getElementById('bookings-tab-upcoming');
+const tabHistory = document.getElementById('bookings-tab-history');
 
 // Elementos del DOM - Modal de Cancelación
 const cancelModal = document.getElementById('cancel-modal');
@@ -131,42 +136,83 @@ function renderProfile(member) {
     }
 }
 
-// 4. Renderizado de reservas activas (solo hoy y días futuros)
+// 4. Renderizado de reservas (activas e historial del mes)
+function getSessionStart(schedule) {
+    if (!schedule) return null;
+
+    const rawDate = schedule.activityDate || schedule.activity_date;
+    if (!rawDate) return null;
+
+    const time = schedule.startTime || schedule.start_time || '00:00';
+    const sessionStart = new Date(`${String(rawDate).slice(0, 10)}T${time}:00`);
+
+    return isNaN(sessionStart.getTime()) ? null : sessionStart;
+}
+
+function getBookingsForActiveTab() {
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const upcoming = [];
+    const history = [];
+
+    memberBookings.forEach(booking => {
+        const schedule = schedules.find(s => s.id === booking.clase_id);
+        const sessionStart = getSessionStart(schedule);
+
+        if (!sessionStart || sessionStart >= now) {
+            upcoming.push({ booking, schedule, sessionStart });
+        } else if (sessionStart >= monthStart) {
+            history.push({ booking, schedule, sessionStart });
+        }
+    });
+
+    const sortByDate = (a, b) => {
+        const timeA = a.sessionStart ? a.sessionStart.getTime() : 0;
+        const timeB = b.sessionStart ? b.sessionStart.getTime() : 0;
+        return timeA - timeB;
+    };
+
+    if (activeBookingsTab === 'history') {
+        history.sort((a, b) => sortByDate(b, a));
+        return { items: history, isHistory: true };
+    }
+
+    upcoming.sort(sortByDate);
+    return { items: upcoming, isHistory: false };
+}
+
 function renderBookings() {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const { items, isHistory } = getBookingsForActiveTab();
 
-    // Filtra para descartar reservas de días pasados
-    const upcomingBookings = memberBookings.filter(b => {
-        const schedule = schedules.find(s => s.id === b.clase_id);
-        if (!schedule) return true;
+    if (bookingsHeading) {
+        bookingsHeading.textContent = isHistory ? 'Historial de Reservas' : 'Mis Reservas';
+    }
 
-        const rawDate = schedule.activityDate || schedule.activity_date;
-        if (!rawDate) return true;
-
-        const sessionDate = new Date(`${String(rawDate).slice(0, 10)}T00:00:00`);
-        return isNaN(sessionDate.getTime()) || sessionDate >= today;
-    });
-
-    // Ordena de forma cronológica (más próximas primero)
-    upcomingBookings.sort((a, b) => {
-        const sA = schedules.find(s => s.id === a.clase_id);
-        const sB = schedules.find(s => s.id === b.clase_id);
-        const dateA = sA?.activityDate || sA?.activity_date || '';
-        const dateB = sB?.activityDate || sB?.activity_date || '';
-        const timeA = sA?.startTime || sA?.start_time || '00:00';
-        const timeB = sB?.startTime || sB?.start_time || '00:00';
-        return `${dateA}T${timeA}`.localeCompare(`${dateB}T${timeB}`);
-    });
+    if (bookingsSubtitle) {
+        bookingsSubtitle.textContent = isHistory
+            ? 'Consulta las clases a las que has asistido.'
+            : 'Consulta tus próximas sesiones y gestiona tus reservas.';
+    }
 
     if (bookingsCount) {
-        bookingsCount.textContent = `${upcomingBookings.length} Activas`;
+        bookingsCount.textContent = isHistory
+            ? `${items.length} Este mes`
+            : `${items.length} Activas`;
     }
 
     if (!bookingsList) return;
 
-    if (upcomingBookings.length === 0) {
-        bookingsList.innerHTML = `
+    if (items.length === 0) {
+        bookingsList.innerHTML = isHistory
+            ? `
+            <div class="empty-bookings-box">
+                <p>No tienes clases en tu historial de este mes.</p>
+                <p style="font-size: 0.8125rem; margin-top: 0.35rem; color: #72787e;">
+                    Aquí aparecerán las reservas de las clases que ya hayan finalizado.
+                </p>
+            </div>
+        `
+            : `
             <div class="empty-bookings-box">
                 <p>No tienes reservas activas en este momento.</p>
                 <p style="font-size: 0.8125rem; margin-top: 0.35rem; color: #72787e;">
@@ -177,8 +223,7 @@ function renderBookings() {
         return;
     }
 
-    bookingsList.innerHTML = upcomingBookings.map((b, index) => {
-        const schedule = schedules.find(s => s.id === b.clase_id);
+    bookingsList.innerHTML = items.map(({ booking: b, schedule }, index) => {
         const actId = Number(schedule?.activity_type_id || schedule?.activityId || 0);
         const teachId = Number(schedule?.teacher_id || schedule?.teacherId || 0);
 
@@ -189,8 +234,22 @@ function renderBookings() {
 
         const boxLabel = date ? `${date} ${label}` : label;
 
+        const actionMarkup = isHistory
+            ? `
+                <span class="booking-status-completed">
+                    <span class="material-symbols-outlined" aria-hidden="true">check_circle</span>
+                    <span>Completada</span>
+                </span>
+            `
+            : `
+                <button class="btn-cancel-action" type="button" data-id="${b.id}">
+                    <span class="material-symbols-outlined" aria-hidden="true">event_busy</span>
+                    <span>Cancelar Reserva</span>
+                </button>
+            `;
+
         return `
-            <article class="booking-item-card" id="booking-card-${b.id}">
+            <article class="booking-item-card ${isHistory ? 'booking-item-history' : ''}" id="booking-card-${b.id}">
                 <div class="card-left-stripe ${stripeClass}"></div>
                 <div class="booking-main-info">
                     <div class="booking-time-square">
@@ -214,19 +273,38 @@ function renderBookings() {
                 </div>
 
                 <div>
-                    <button class="btn-cancel-action" type="button" data-id="${b.id}">
-                        <span class="material-symbols-outlined" aria-hidden="true">event_busy</span>
-                        <span>Cancelar Reserva</span>
-                    </button>
+                    ${actionMarkup}
                 </div>
             </article>
         `;
     }).join('');
 
-    bookingsList.querySelectorAll('.btn-cancel-action').forEach(btn => {
-        btn.addEventListener('click', () => openCancelModal(Number(btn.dataset.id)));
-    });
+    if (!isHistory) {
+        bookingsList.querySelectorAll('.btn-cancel-action').forEach(btn => {
+            btn.addEventListener('click', () => openCancelModal(Number(btn.dataset.id)));
+        });
+    }
 }
+
+function setActiveBookingsTab(tab) {
+    activeBookingsTab = tab === 'history' ? 'history' : 'upcoming';
+
+    [
+        [tabUpcoming, 'upcoming'],
+        [tabHistory, 'history']
+    ].forEach(([button, name]) => {
+        if (!button) return;
+
+        const isActive = activeBookingsTab === name;
+        button.classList.toggle('active', isActive);
+        button.setAttribute('aria-selected', String(isActive));
+    });
+
+    renderBookings();
+}
+
+tabUpcoming?.addEventListener('click', () => setActiveBookingsTab('upcoming'));
+tabHistory?.addEventListener('click', () => setActiveBookingsTab('history'));
 
 // 5. Modal de Cancelación
 function openCancelModal(bookingId) {
