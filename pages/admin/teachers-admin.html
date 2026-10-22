@@ -6,16 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PulseGym Admin - Gestión de Profesores</title>
 
+    <!-- Favicon institucional -->
+    <link rel="icon" type="image/svg+xml" href="../../src/assets/favicon.svg" />
+
     <!-- Axios -->
     <script src="https://cdn.jsdelivr.net/npm/axios@1/dist/axios.min.js"></script>
-    <link rel="icon" type="image/png" href="../../src/img/favicon.ico">
+
     <!-- Hoja de estilos central -->
     <link rel="stylesheet" href="../../src/css/styles.css" />
 </head>
 
 <body>
-    <!-- Barra lateral de navegación -->
-    <aside class="admin-sidebar" aria-label="Menú de administración">
+    <!-- Telón de fondo para cerrar el menú en móvil -->
+    <div id="sidebar-backdrop" class="sidebar-backdrop" aria-hidden="true"></div>
+
+    <!-- Barra lateral de navegación (Drawer en móvil) -->
+    <aside id="admin-sidebar" class="admin-sidebar" aria-label="Menú de administración">
+        <!-- Botón para cerrar en móvil -->
+        <button id="btn-close-sidebar" class="sidebar-close-btn" type="button" aria-label="Cerrar menú">
+            <span class="material-symbols-outlined" aria-hidden="true">close</span>
+        </button>
+
         <div class="sidebar-brand-group">
             <div class="sidebar-brand">
                 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -37,11 +48,11 @@
                     <span class="material-symbols-outlined" aria-hidden="true">calendar_month</span>
                     <span>Horarios</span>
                 </a>
-                <a class="sidebar-link active" href="teachers-admin.html">
+                <a class="sidebar-link active" aria-current="page" href="teachers-admin.html">
                     <span class="material-symbols-outlined" aria-hidden="true">badge</span>
                     <span>Profesores</span>
                 </a>
-                <a class="sidebar-link" aria-current="page" href="plans-admin.html">
+                <a class="sidebar-link" href="plans-admin.html">
                     <span class="material-symbols-outlined" aria-hidden="true">loyalty</span>
                     <span>Planes</span>
                 </a>
@@ -66,6 +77,17 @@
 
     <!-- Área de contenido principal -->
     <div class="admin-layout">
+        <!-- Barra superior visible exclusivamente en móviles/tablets -->
+        <header class="admin-mobile-bar">
+            <button id="btn-open-sidebar" class="btn-icon-menu" type="button" aria-label="Abrir menú de navegación" aria-expanded="false">
+                <span class="material-symbols-outlined" aria-hidden="true">menu</span>
+            </button>
+            <div class="mobile-bar-brand">
+                <span class="mobile-bar-title">PulseGym</span>
+                <span class="mobile-bar-badge">Admin</span>
+            </div>
+        </header>
+
         <main class="admin-main">
             <div class="admin-container">
 
@@ -168,7 +190,8 @@
         </div>
     </div>
 
-    <!-- Script de lógica de administración de profesores -->
+    <!-- Scripts modulares -->
+    <script type="module" src="../../src/js/admin/admin-sidebar.js"></script>
     <script type="module" src="../../src/js/admin/teachers.js"></script>
 </body>
 

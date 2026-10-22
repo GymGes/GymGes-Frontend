@@ -25,8 +25,7 @@
     border: 1px solid var(--color-surface-border);
     box-shadow: var(--shadow-md);
     width: 100%;
-    max-width: 32rem;
-    /* 512px */
+    max-width: 32rem; /* 512px */
     max-height: 90vh;
     overflow-y: auto;
     padding: 1.5rem;
@@ -35,8 +34,7 @@
 }
 
 .modal-card-sm {
-    max-width: 26rem;
-    /* 416px para el de confirmación */
+    max-width: 26rem; /* 416px */
 }
 
 /* Cabecera del modal */
@@ -46,11 +44,13 @@
     justify-content: space-between;
     padding-bottom: 0.75rem;
     border-bottom: 1px solid var(--color-surface-border);
+    gap: 0.75rem;
 }
 
 .modal-header-info {
     display: flex;
     flex-direction: column;
+    min-width: 0;
 }
 
 .modal-title {
@@ -58,6 +58,7 @@
     font-size: 1.25rem;
     font-weight: 700;
     color: var(--color-primary);
+    line-height: 1.25;
 }
 
 .modal-subtitle {
@@ -70,6 +71,7 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    min-width: 0;
 }
 
 .icon-badge-danger {
@@ -117,6 +119,7 @@
 
 .input-with-icon {
     position: relative;
+    width: 100%;
 }
 
 .input-with-icon .material-symbols-outlined {
@@ -161,13 +164,14 @@
 .form-helper {
     font-size: 0.6875rem;
     color: var(--color-text-muted);
+    line-height: 1.35;
 }
 
 /* Dropzone para simular subida de imágenes (Cloudinary) */
 .dropzone {
     border: 2px dashed rgba(193, 199, 206, 0.8);
     border-radius: var(--radius-sm);
-    padding: 1.25rem;
+    padding: 1.25rem 1rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -209,13 +213,15 @@
     padding: 0.5rem 0.75rem;
     background-color: var(--color-surface-low);
     border-radius: var(--radius-sm);
+    gap: 0.5rem;
 }
 
 .dropzone-preview img {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     object-fit: cover;
     border-radius: var(--radius-sm);
+    flex-shrink: 0;
 }
 
 .dropzone-preview.hidden {
@@ -264,11 +270,12 @@
 /* Selector interactivo de días de la semana (1 a 7) */
 .calendar-day-selector {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 0.375rem;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 0.25rem;
     background-color: var(--color-surface-low);
     padding: 0.375rem;
     border-radius: var(--radius-sm);
+    width: 100%;
 }
 
 .calendar-day-btn {
@@ -276,7 +283,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0.5rem 0.25rem;
+    padding: 0.5rem 0.125rem;
     border-radius: var(--radius-sm);
     border: none;
     background: transparent;
@@ -284,6 +291,7 @@
     cursor: pointer;
     transition: all 0.15s ease;
     font-family: var(--font-family);
+    min-width: 0;
 }
 
 .calendar-day-btn:hover {
@@ -298,7 +306,7 @@
 }
 
 .calendar-day-btn .day-name {
-    font-size: 0.6875rem;
+    font-size: 0.625rem;
     text-transform: uppercase;
     font-weight: 600;
     line-height: 1;
@@ -315,7 +323,7 @@
     line-height: 1;
 }
 
-/* Badge de aviso / tokens (hermano de .icon-badge-danger) */
+/* Badge de aviso / tokens */
 .icon-badge-warning {
     width: 2.25rem;
     height: 2.25rem;
@@ -328,7 +336,7 @@
     flex-shrink: 0;
 }
 
-/* Caja de resumen de sesión o actividad para modales */
+/* Caja de resumen de sesión o actividad */
 .modal-summary-box {
     background-color: var(--color-surface-low);
     border-radius: var(--radius-sm);
@@ -347,4 +355,26 @@
     color: var(--color-secondary);
     margin-top: 0.25rem;
     font-weight: 500;
+}
+
+/* Adaptaciones de modales en pantallas móviles */
+@media (max-width: 480px) {
+    .modal-backdrop {
+        padding: 0.75rem;
+    }
+
+    .modal-card {
+        padding: 1.125rem 1rem;
+        max-height: 94vh;
+    }
+
+    .modal-footer {
+        flex-direction: column-reverse;
+        gap: 0.5rem;
+    }
+
+    .modal-footer .btn {
+        width: 100%;
+        justify-content: center;
+    }
 }
