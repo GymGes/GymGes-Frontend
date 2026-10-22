@@ -112,10 +112,7 @@ function deleteCookie() {
 
 function setPrivateLinksVisibility(isAuthenticated) {
   const privateLinks = document.querySelectorAll(
-    '.header-nav .nav-link[href="pages/calendar.html"], ' +
-    '.header-nav .nav-link[href="pages/user.html"], ' +
-    '.header-nav .nav-link[href="calendar.html"], ' +
-    '.header-nav .nav-link[href="user.html"]'
+    '.nav-link[href*="calendar.html"], .nav-link[href*="user.html"]'
   );
 
   privateLinks.forEach(link => {
@@ -133,7 +130,8 @@ function initClientAccess() {
   const submitButton = document.getElementById('member-access-submit');
   const closeButton = document.getElementById('member-access-close');
   const cancelButton = document.getElementById('member-access-cancel');
-  const calendarButton = document.getElementById('calendar-button')
+  const calendarButton = document.getElementById('calendar-button');
+
   function openModal() {
     errorElement.textContent = '';
     errorElement.classList.add('hidden');
@@ -146,6 +144,7 @@ function initClientAccess() {
   function closeModal() {
     modal.classList.add('hidden');
   }
+
   function showError(message) {
     errorElement.textContent = message;
     errorElement.classList.remove('hidden');
@@ -154,25 +153,28 @@ function initClientAccess() {
   const accessButton = document.getElementById('btn-member-access');
 
   accessButton?.addEventListener('click', event => {
-  const dni = getCookie(COOKIE_NAME);
+    event.preventDefault();
+    const dni = getCookie(COOKIE_NAME);
 
-  if (dni) {
-    const isHomePage =
-      location.pathname.endsWith('/index.html') ||
-      location.pathname === '/';
+    if (dni) {
+      const isHomePage =
+        location.pathname.endsWith('/index.html') ||
+        location.pathname === '/' ||
+        location.pathname.endsWith('/');
 
-    if (isHomePage) {
-      location.href = 'pages/user.html';
-    } else if (location.pathname.endsWith('/user.html')) {
-      location.reload();
-    } else {
-      location.href = 'user.html';
+      if (isHomePage) {
+        location.href = 'pages/user.html';
+      } else if (location.pathname.endsWith('/user.html')) {
+        location.reload();
+      } else {
+        location.href = 'user.html';
+      }
+
+      return;
     }
 
-    return;
-  }
-  document.getElementById('member-access-subtitle').textContent = 'Introduce tu DNI para acceder a tu espacio personal.';
-  openModal();
+    document.getElementById('member-access-subtitle').textContent = 'Introduce tu DNI para acceder a tu espacio personal.';
+    openModal();
   });
 
   closeButton.addEventListener('click', closeModal);
@@ -184,14 +186,16 @@ function initClientAccess() {
     }
   });
 
-  calendarButton.addEventListener('click', event => {
-    const dni = getCookie(COOKIE_NAME);
-    if (!dni) {
-      event.preventDefault();
-      document.getElementById('member-access-subtitle').textContent = 'Para consultar el horario, debes iniciar sesión.';
-      openModal();
-    }
-  });
+  if (calendarButton) {
+    calendarButton.addEventListener('click', event => {
+      const dni = getCookie(COOKIE_NAME);
+      if (!dni) {
+        event.preventDefault();
+        document.getElementById('member-access-subtitle').textContent = 'Para consultar el horario, debes iniciar sesión.';
+        openModal();
+      }
+    });
+  }
 
   document.addEventListener('keydown', event => {
     if (
@@ -202,7 +206,7 @@ function initClientAccess() {
     }
   });
 
-  // Validar el DNI al enviar el formulario.
+  // Validar el DNI al enviar el formulario
   form.addEventListener('submit', async event => {
     event.preventDefault();
 
@@ -241,7 +245,8 @@ function initClientAccess() {
 
       const isHomePage =
         location.pathname.endsWith('/index.html') ||
-        location.pathname === '/';
+        location.pathname === '/' ||
+        location.pathname.endsWith('/');
 
       if (isHomePage) {
         location.href = 'pages/user.html';
@@ -268,7 +273,6 @@ function initClientAccess() {
 
   setPrivateLinksVisibility(Boolean(getCookie(COOKIE_NAME)));
 }
-
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initClientAccess);
