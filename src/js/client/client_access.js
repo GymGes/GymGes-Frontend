@@ -23,7 +23,7 @@ function createAccessModal() {
             Acceso Socio
           </h2>
 
-          <p class="modal-subtitle">
+          <p id="member-access-subtitle" class="modal-subtitle">
             Introduce tu DNI para acceder a tu espacio personal.
           </p>
         </div>
@@ -133,7 +133,7 @@ function initClientAccess() {
   const submitButton = document.getElementById('member-access-submit');
   const closeButton = document.getElementById('member-access-close');
   const cancelButton = document.getElementById('member-access-cancel');
-
+  const calendarButton = document.getElementById('calendar-button')
   function openModal() {
     errorElement.textContent = '';
     errorElement.classList.add('hidden');
@@ -171,6 +171,7 @@ function initClientAccess() {
 
     return;
   }
+  document.getElementById('member-access-subtitle').textContent = 'Introduce tu DNI para acceder a tu espacio personal.';
   openModal();
   });
 
@@ -180,6 +181,15 @@ function initClientAccess() {
   modal.addEventListener('click', event => {
     if (event.target === modal) {
       closeModal();
+    }
+  });
+
+  calendarButton.addEventListener('click', event => {
+    const dni = getCookie(COOKIE_NAME);
+    if (!dni) {
+      event.preventDefault();
+      document.getElementById('member-access-subtitle').textContent = 'Para consultar el horario, debes iniciar sesión.';
+      openModal();
     }
   });
 
