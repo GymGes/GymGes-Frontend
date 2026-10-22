@@ -37,3 +37,11 @@
 .member-dashboard-grid.hidden {
     display: none !important;
 }
+
+/* Columna izquierda: ficha del socio y pestañas */
+.member-side-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 0;
+}
