@@ -1,356 +1,241 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
+
+<head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PulseGym Admin - Gestión de Horarios</title>
 
+    <!-- Favicon institucional -->
+    <link rel="icon" type="image/svg+xml" href="../../src/assets/favicon.svg" />
+
     <!-- Axios -->
     <script src="https://cdn.jsdelivr.net/npm/axios@1/dist/axios.min.js"></script>
-    <link rel="icon" type="image/png" href="../../src/img/favicon.ico">
+
     <!-- Hoja de estilos central -->
     <link rel="stylesheet" href="../../src/css/styles.css" />
-  </head>
+</head>
 
-  <body>
-    <!-- Barra lateral de navegación -->
-    <aside class="admin-sidebar" aria-label="Menú de administración">
-      <div class="sidebar-brand-group">
-        <div class="sidebar-brand">
-          <svg
-            width="32"
-            height="32"
-            viewBox="0 0 32 32"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-          >
-            <rect width="32" height="32" rx="8" fill="#013C58" />
-            <path
-              d="M5 16H9L12 8L16 24L20 13L23 16H27"
-              stroke="#F5A201"
-              stroke-width="2.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-          <div class="sidebar-brand-text">
-            <span class="sidebar-title">PulseGym</span>
-            <span class="sidebar-badge">Administración</span>
-          </div>
+<body>
+    <!-- Telón de fondo para cerrar el menú en móvil -->
+    <div id="sidebar-backdrop" class="sidebar-backdrop" aria-hidden="true"></div>
+
+    <!-- Barra lateral de navegación (Drawer en móvil) -->
+    <aside id="admin-sidebar" class="admin-sidebar" aria-label="Menú de administración">
+        <!-- Botón para cerrar en móvil -->
+        <button id="btn-close-sidebar" class="sidebar-close-btn" type="button" aria-label="Cerrar menú">
+            <span class="material-symbols-outlined" aria-hidden="true">close</span>
+        </button>
+
+        <div class="sidebar-brand-group">
+            <div class="sidebar-brand">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <rect width="32" height="32" rx="8" fill="#013C58" />
+                    <path d="M5 16H9L12 8L16 24L20 13L23 16H27" stroke="#F5A201" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <div class="sidebar-brand-text">
+                    <span class="sidebar-title">PulseGym</span>
+                    <span class="sidebar-badge">Administración</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav" aria-label="Secciones de administración">
+                <a class="sidebar-link" href="activities-admin.html">
+                    <span class="material-symbols-outlined" aria-hidden="true">fitness_center</span>
+                    <span>Actividades</span>
+                </a>
+                <a class="sidebar-link active" aria-current="page" href="schedules-admin.html">
+                    <span class="material-symbols-outlined" aria-hidden="true">calendar_month</span>
+                    <span>Horarios</span>
+                </a>
+                <a class="sidebar-link" href="teachers-admin.html">
+                    <span class="material-symbols-outlined" aria-hidden="true">badge</span>
+                    <span>Profesores</span>
+                </a>
+                <a class="sidebar-link" href="plans-admin.html">
+                    <span class="material-symbols-outlined" aria-hidden="true">loyalty</span>
+                    <span>Planes</span>
+                </a>
+                <a class="sidebar-link" href="members-admin.html">
+                    <span class="material-symbols-outlined" aria-hidden="true">groups</span>
+                    <span>Socios</span>
+                </a>
+                <a class="sidebar-link" href="bookings-admin.html">
+                    <span class="material-symbols-outlined" aria-hidden="true">event_available</span>
+                    <span>Reservas</span>
+                </a>
+            </nav>
         </div>
 
-        <nav class="sidebar-nav" aria-label="Secciones de administración">
-          <a class="sidebar-link" href="activities-admin.html">
-            <span class="material-symbols-outlined" aria-hidden="true"
-              >fitness_center</span
-            >
-            <span>Actividades</span>
-          </a>
-          <a class="sidebar-link active" href="schedules-admin.html">
-            <span class="material-symbols-outlined" aria-hidden="true"
-              >calendar_month</span
-            >
-            <span>Horarios</span>
-          </a>
-          <a class="sidebar-link" href="teachers-admin.html">
-            <span class="material-symbols-outlined" aria-hidden="true"
-              >badge</span
-            >
-            <span>Profesores</span>
-          </a>
-          <a class="sidebar-link" aria-current="page" href="plans-admin.html">
-            <span class="material-symbols-outlined" aria-hidden="true"
-              >loyalty</span
-            >
-            <span>Planes</span>
-          </a>
-          <a class="sidebar-link" href="members-admin.html">
-            <span class="material-symbols-outlined" aria-hidden="true"
-              >groups</span
-            >
-            <span>Socios</span>
-          </a>
-          <a class="sidebar-link" href="bookings-admin.html">
-            <span class="material-symbols-outlined" aria-hidden="true"
-              >event_available</span
-            >
-            <span>Reservas</span>
-          </a>
-        </nav>
-      </div>
-
-      <footer class="sidebar-footer">
-        <a class="sidebar-back-link" href="../../index.html">
-          <span class="material-symbols-outlined" aria-hidden="true"
-            >arrow_back</span
-          >
-          <span>Volver al Sitio</span>
-        </a>
-      </footer>
+        <footer class="sidebar-footer">
+            <a class="sidebar-back-link" href="../../index.html">
+                <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+                <span>Volver al Sitio</span>
+            </a>
+        </footer>
     </aside>
 
     <!-- Área de contenido principal -->
     <div class="admin-layout">
-      <main class="admin-main">
-        <div class="admin-container">
-          <!-- Encabezado de la vista -->
-          <header class="admin-header">
-            <div class="admin-header-info">
-              <h1 class="admin-title">Gestión de Horarios Semanales</h1>
-              <p class="admin-subtitle">
-                Planifica las clases semanales asignando la actividad, el día,
-                la hora de inicio y el profesor responsable.
-              </p>
-            </div>
-            <button
-              id="btn-open-create-schedule"
-              class="btn btn-primary"
-              type="button"
-            >
-              <span class="material-symbols-outlined" aria-hidden="true"
-                >add</span
-              >
-              <span>Añadir Clase Semanal</span>
+        <!-- Barra superior visible exclusivamente en móviles/tablets -->
+        <header class="admin-mobile-bar">
+            <button id="btn-open-sidebar" class="btn-icon-menu" type="button" aria-label="Abrir menú de navegación" aria-expanded="false">
+                <span class="material-symbols-outlined" aria-hidden="true">menu</span>
             </button>
-          </header>
-
-          <!-- Tabla de horarios (Renderizada dinámicamente) -->
-          <section
-            class="table-wrapper"
-            aria-label="Listado de clases programadas"
-          >
-            <div class="table-responsive">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th scope="col">Actividad</th>
-                    <th scope="col">Día Semanal</th>
-                    <th scope="col">Hora de Inicio</th>
-                    <th scope="col">Profesor</th>
-                    <th scope="col" class="text-right">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody id="schedules-table-body">
-                  <tr id="table-loading-row">
-                    <td colspan="5" class="text-center table-state-row">
-                      Cargando cartelera de horarios...
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+            <div class="mobile-bar-brand">
+                <span class="mobile-bar-title">PulseGym</span>
+                <span class="mobile-bar-badge">Admin</span>
             </div>
-            <div id="schedules-pagination" class="table-pagination hidden"></div>
-          </section>
-        </div>
-      </main>
+        </header>
+
+        <main class="admin-main">
+            <div class="admin-container">
+                <!-- Encabezado de la vista -->
+                <header class="admin-header">
+                    <div class="admin-header-info">
+                        <h1 class="admin-title">Gestión de Horarios Semanales</h1>
+                        <p class="admin-subtitle">
+                            Planifica las clases semanales asignando la actividad, el día, la hora de inicio y el profesor responsable.
+                        </p>
+                    </div>
+                    <button id="btn-open-create-schedule" class="btn btn-primary" type="button">
+                        <span class="material-symbols-outlined" aria-hidden="true">add</span>
+                        <span>Añadir Clase Semanal</span>
+                    </button>
+                </header>
+
+                <!-- Tabla de horarios (Renderizada dinámicamente) -->
+                <section class="table-wrapper" aria-label="Listado de clases programadas">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Actividad</th>
+                                    <th scope="col">Día Semanal</th>
+                                    <th scope="col">Hora de Inicio</th>
+                                    <th scope="col">Profesor</th>
+                                    <th scope="col" class="text-right">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="schedules-table-body">
+                                <tr id="table-loading-row">
+                                    <td colspan="5" class="text-center table-state-row">
+                                        Cargando cartelera de horarios...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="schedules-pagination" class="table-pagination hidden"></div>
+                </section>
+            </div>
+        </main>
     </div>
 
     <!-- Modal: Crear / Editar Clase Semanal -->
-    <div
-      id="schedule-modal"
-      class="modal-backdrop hidden"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="modal-schedule-title"
-    >
-      <div class="modal-card">
-        <header class="modal-header">
-          <div class="modal-header-info">
-            <h2 id="modal-schedule-title" class="modal-title">
-              Añadir Clase Semanal
-            </h2>
-            <p class="modal-subtitle">
-              Asignación de turno y profesor responsable
-            </p>
-          </div>
-          <button
-            id="btn-close-schedule-modal"
-            class="btn-icon"
-            type="button"
-            aria-label="Cerrar modal"
-          >
-            <span class="material-symbols-outlined" aria-hidden="true"
-              >close</span
-            >
-          </button>
-        </header>
+    <div id="schedule-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modal-schedule-title">
+        <div class="modal-card">
+            <header class="modal-header">
+                <div class="modal-header-info">
+                    <h2 id="modal-schedule-title" class="modal-title">Añadir Clase Semanal</h2>
+                    <p class="modal-subtitle">Asignación de turno y profesor responsable</p>
+                </div>
+                <button id="btn-close-schedule-modal" class="btn-icon" type="button" aria-label="Cerrar modal">
+                    <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                </button>
+            </header>
 
-        <form id="schedule-form">
-          <!-- 1. Tipo de Actividad -->
-          <div class="form-group">
-            <label class="form-label" for="modal-activity-id">
-              Tipo de Actividad <span class="required">*</span>
-            </label>
-            <select id="modal-activity-id" class="form-select" required>
-              <option value="1">Crossfit Studio (50 min · 16 plazas)</option>
-              <option value="2">Hyrox Conditioning (50 min · 20 plazas)</option>
-              <option value="3">HIIT Circuit (50 min · 18 plazas)</option>
-              <option value="4">Vinyasa Yoga (50 min · 14 plazas)</option>
-              <option value="5">Pilates Reformer (50 min · 12 plazas)</option>
-            </select>
-          </div>
-
-          <!-- 2. Selector de Día tipo Calendario Semanal (1 a 7) -->
-          <div class="form-group">
-            <label for="modal-date">Fecha de la sesión</label>
-            <input id="modal-date" class="form-input" type="date" required />
-          </div>
-
-          <!-- <div class="form-group">
-                    <label class="form-label">
-                        Día de la semana <span class="required">*</span>
+            <form id="schedule-form">
+                <!-- 1. Tipo de Actividad -->
+                <div class="form-group">
+                    <label class="form-label" for="modal-activity-id">
+                        Tipo de Actividad <span class="required">*</span>
                     </label>
-                    <input type="hidden" id="modal-day" value="3" />
-                    <div class="calendar-day-selector" id="calendar-day-selector">
-                        <button type="button" class="calendar-day-btn" data-day="1">
-                            <span class="day-name">Lun</span>
-                            <span class="day-number">1</span>
-                        </button>
-                        <button type="button" class="calendar-day-btn" data-day="2">
-                            <span class="day-name">Mar</span>
-                            <span class="day-number">2</span>
-                        </button>
-                        <button type="button" class="calendar-day-btn active" data-day="3">
-                            <span class="day-name">Mié</span>
-                            <span class="day-number">3</span>
-                        </button>
-                        <button type="button" class="calendar-day-btn" data-day="4">
-                            <span class="day-name">Jue</span>
-                            <span class="day-number">4</span>
-                        </button>
-                        <button type="button" class="calendar-day-btn" data-day="5">
-                            <span class="day-name">Vie</span>
-                            <span class="day-number">5</span>
-                        </button>
-                        <button type="button" class="calendar-day-btn" data-day="6">
-                            <span class="day-name">Sáb</span>
-                            <span class="day-number">6</span>
-                        </button>
-                        <button type="button" class="calendar-day-btn" data-day="7">
-                            <span class="day-name">Dom</span>
-                            <span class="day-number">7</span>
-                        </button>
-                    </div>
-                    <span id="selected-day-display" class="form-helper" style="color: var(--color-secondary); font-weight: 600;">
-                        Miércoles seleccionado (Día 3)
-                    </span>
-                </div> -->
+                    <select id="modal-activity-id" class="form-select" required>
+                        <option value="1">Crossfit Studio (50 min · 16 plazas)</option>
+                        <option value="2">Hyrox Conditioning (50 min · 20 plazas)</option>
+                        <option value="3">HIIT Circuit (50 min · 18 plazas)</option>
+                        <option value="4">Vinyasa Yoga (50 min · 14 plazas)</option>
+                        <option value="5">Pilates Reformer (50 min · 12 plazas)</option>
+                    </select>
+                </div>
 
-          <!-- 3. Hora de inicio -->
-          <div class="form-group">
-            <label for="modal-time">Hora de inicio</label>
-            <input
-              id="modal-time"
-              class="form-input"
-              type="time"
-              value="09:00"
-              required
-            />
-          </div>
-          <!-- <div class="form-group">
+                <!-- 2. Fecha de la sesión -->
+                <div class="form-group">
+                    <label class="form-label" for="modal-date">
+                        Fecha de la sesión <span class="required">*</span>
+                    </label>
+                    <input id="modal-date" class="form-input" type="date" required />
+                </div>
+
+                <!-- 3. Hora de inicio -->
+                <div class="form-group">
                     <label class="form-label" for="modal-time">
                         Hora de inicio <span class="required">*</span>
                     </label>
                     <div class="input-with-icon">
-                        <input id="modal-time" class="form-input" type="time" required value="09:00" />
+                        <input id="modal-time" class="form-input" type="time" value="09:00" required />
                         <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
                     </div>
-                </div> -->
+                </div>
 
-          <!-- 4. Profesor asignado -->
-          <div class="form-group">
-            <label class="form-label" for="modal-teacher-id">
-              Profesor responsable <span class="required">*</span>
-            </label>
-            <select id="modal-teacher-id" class="form-select" required>
-              <option value="1">Marc Soler</option>
-              <option value="2">Elena Gómez</option>
-              <option value="3">Clara Vega</option>
-              <option value="4">David Rivas</option>
-            </select>
-          </div>
+                <!-- 4. Profesor asignado -->
+                <div class="form-group">
+                    <label class="form-label" for="modal-teacher-id">
+                        Profesor responsable <span class="required">*</span>
+                    </label>
+                    <select id="modal-teacher-id" class="form-select" required>
+                        <option value="1">Marc Soler</option>
+                        <option value="2">Elena Gómez</option>
+                        <option value="3">Clara Vega</option>
+                        <option value="4">David Rivas</option>
+                    </select>
+                </div>
 
-          <!-- Botones de acción -->
-          <footer class="modal-footer">
-            <button
-              id="btn-cancel-schedule-modal"
-              class="btn btn-secondary"
-              type="button"
-            >
-              Cancelar
-            </button>
-            <button type="submit" class="btn btn-primary">Guardar Clase</button>
-          </footer>
-        </form>
-      </div>
+                <!-- Botones de acción -->
+                <footer class="modal-footer">
+                    <button id="btn-cancel-schedule-modal" class="btn btn-secondary" type="button">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Clase</button>
+                </footer>
+            </form>
+        </div>
     </div>
 
     <!-- Modal: Confirmación de Eliminación -->
-    <div
-      id="delete-schedule-modal"
-      class="modal-backdrop hidden"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="delete-schedule-title"
-    >
-      <div class="modal-card modal-card-sm">
-        <header class="modal-header">
-          <div class="modal-title-with-icon">
-            <div class="icon-badge-danger" aria-hidden="true">
-              <span class="material-symbols-outlined">event_busy</span>
+    <div id="delete-schedule-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="delete-schedule-title">
+        <div class="modal-card modal-card-sm">
+            <header class="modal-header">
+                <div class="modal-title-with-icon">
+                    <div class="icon-badge-danger" aria-hidden="true">
+                        <span class="material-symbols-outlined">event_busy</span>
+                    </div>
+                    <h2 id="delete-schedule-title" class="modal-title">Eliminar Horario</h2>
+                </div>
+                <button id="btn-close-delete-schedule-modal" class="btn-icon" type="button" aria-label="Cerrar modal">
+                    <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                </button>
+            </header>
+
+            <div class="modal-body-text">
+                <p>
+                    ¿Estás seguro de que deseas eliminar la sesión de
+                    <strong id="delete-schedule-name" style="color: var(--color-primary)">esta clase</strong>?
+                </p>
+                <p class="form-helper" style="margin-top: 0.5rem">
+                    Esta sesión dejará de aparecer en la cartelera semanal para reservas.
+                </p>
             </div>
-            <h2 id="delete-schedule-title" class="modal-title">
-              Eliminar Horario
-            </h2>
-          </div>
-          <button
-            id="btn-close-delete-schedule-modal"
-            class="btn-icon"
-            type="button"
-            aria-label="Cerrar modal"
-          >
-            <span class="material-symbols-outlined" aria-hidden="true"
-              >close</span
-            >
-          </button>
-        </header>
 
-        <div class="modal-body-text">
-          <p>
-            ¿Estás seguro de que deseas eliminar la sesión de
-            <strong
-              id="delete-schedule-name"
-              style="color: var(--color-primary)"
-              >esta clase</strong
-            >?
-          </p>
-          <p class="form-helper" style="margin-top: 0.5rem">
-            Esta sesión dejará de aparecer en la cartelera semanal para
-            reservas.
-          </p>
+            <footer class="modal-footer">
+                <button id="btn-cancel-delete-schedule" class="btn btn-secondary" type="button">Volver</button>
+                <button id="btn-confirm-delete-schedule" class="btn btn-danger" type="button">Confirmar Eliminación</button>
+            </footer>
         </div>
-
-        <footer class="modal-footer">
-          <button
-            id="btn-cancel-delete-schedule"
-            class="btn btn-secondary"
-            type="button"
-          >
-            Volver
-          </button>
-          <button
-            id="btn-confirm-delete-schedule"
-            class="btn btn-danger"
-            type="button"
-          >
-            Confirmar Eliminación
-          </button>
-        </footer>
-      </div>
     </div>
 
-    <!-- Script de lógica de horarios -->
+    <!-- Scripts modulares -->
+    <script type="module" src="../../src/js/admin/admin-sidebar.js"></script>
     <script type="module" src="../../src/js/admin/schedules.js"></script>
-  </body>
+</body>
+
 </html>
