@@ -6,14 +6,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PulseGym - Mi Espacio</title>
 
+    <!-- Favicon institucional -->
+    <link rel="icon" type="image/svg+xml" href="../src/assets/favicon.svg" />
+
     <!-- Axios -->
     <script src="https://cdn.jsdelivr.net/npm/axios@1/dist/axios.min.js"></script>
-    <link rel="icon" type="image/png" href="../src/img/favicon.ico">
+
     <!-- Hoja de estilos central -->
     <link rel="stylesheet" href="../src/css/styles.css" />
 </head>
 
 <body>
+    <!-- Telón de fondo móvil -->
+    <div id="client-nav-backdrop" class="client-nav-backdrop" aria-hidden="true"></div>
+
+    <!-- Cajón lateral de navegación móvil (Drawer) -->
+    <aside id="client-mobile-drawer" class="client-mobile-drawer" aria-label="Menú de navegación móvil">
+        <div class="drawer-top">
+            <div class="drawer-header">
+                <span class="drawer-title">Menú</span>
+                <button id="btn-close-client-nav" class="btn-icon" type="button" aria-label="Cerrar menú">
+                    <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                </button>
+            </div>
+
+            <nav class="drawer-nav" aria-label="Enlaces de navegación móvil">
+                <a class="nav-link" href="../index.html">
+                    <span class="material-symbols-outlined" aria-hidden="true">fitness_center</span>
+                    <span>Actividades</span>
+                </a>
+                <a class="nav-link hidden" href="calendar.html">
+                    <span class="material-symbols-outlined" aria-hidden="true">calendar_month</span>
+                    <span>Horario Semanal</span>
+                </a>
+                <a class="nav-link active hidden" href="user.html" aria-current="page">
+                    <span class="material-symbols-outlined" aria-hidden="true">account_circle</span>
+                    <span>Mi Espacio</span>
+                </a>
+            </nav>
+        </div>
+
+        <div class="drawer-footer">
+            <a class="drawer-admin-link" href="admin/activities-admin.html">
+                <span class="material-symbols-outlined" aria-hidden="true">admin_panel_settings</span>
+                <span>Acceso Administración</span>
+            </a>
+        </div>
+    </aside>
+
     <!-- Encabezado público -->
     <header class="app-header">
         <div class="header-container">
@@ -33,8 +73,13 @@
             </div>
 
             <div class="header-actions">
-            <a id="btn-member-access" class="btn-pill btn-pill-gold" href="#">Acceso Socio</a>
+                <a id="btn-member-access" class="btn-pill btn-pill-gold" href="#">Acceso Socio</a>
                 <a class="btn-pill btn-pill-navy" href="admin/activities-admin.html">Acceso Admin</a>
+
+                <!-- Botón menú hamburguesa para móvil -->
+                <button id="btn-open-client-nav" class="btn-icon-mobile-nav" type="button" aria-label="Abrir menú" aria-expanded="false">
+                    <span class="material-symbols-outlined" aria-hidden="true">menu</span>
+                </button>
             </div>
         </div>
     </header>
@@ -48,85 +93,85 @@
 
                 <!-- Columna Izquierda: Ficha de Perfil y pestañas -->
                 <div class="member-side-column">
-                <aside class="member-profile-card" aria-labelledby="member-name">
-                    <header class="profile-card-header">
-                        <div>
-                            <h2 id="member-name" class="profile-card-name">-</h2>
-                            <span class="badge-active-status">
-                                <span class="badge-dot-green" aria-hidden="true"></span>
-                                <span>Socio Activo</span>
-                            </span>
-                        </div>
-                        <button id="btn-logout" class="btn-profile-logout" type="button" title="Cerrar sesión">
-                            <span class="material-symbols-outlined" aria-hidden="true">logout</span>
-                            <span>Salir</span>
+                    <aside class="member-profile-card" aria-labelledby="member-name">
+                        <header class="profile-card-header">
+                            <div>
+                                <h2 id="member-name" class="profile-card-name">-</h2>
+                                <span class="badge-active-status">
+                                    <span class="badge-dot-green" aria-hidden="true"></span>
+                                    <span>Socio Activo</span>
+                                </span>
+                            </div>
+                            <button id="btn-logout" class="btn-profile-logout" type="button" title="Cerrar sesión">
+                                <span class="material-symbols-outlined" aria-hidden="true">logout</span>
+                                <span>Salir</span>
+                            </button>
+                        </header>
+
+                        <dl class="profile-card-fields">
+                            <div class="profile-field-row">
+                                <dt class="profile-field-label">
+                                    <span class="material-symbols-outlined" aria-hidden="true">badge</span>
+                                    <span>Código / DNI</span>
+                                </dt>
+                                <dd id="member-code" class="profile-field-value mono">-</dd>
+                            </div>
+                            <div class="profile-field-row">
+                                <dt class="profile-field-label">
+                                    <span class="material-symbols-outlined" aria-hidden="true">cake</span>
+                                    <span>Edad</span>
+                                </dt>
+                                <dd id="member-age" class="profile-field-value">-</dd>
+                            </div>
+                            <div class="profile-field-row">
+                                <dt class="profile-field-label">
+                                    <span class="material-symbols-outlined" aria-hidden="true">location_city</span>
+                                    <span>Ciudad</span>
+                                </dt>
+                                <dd id="member-city" class="profile-field-value">-</dd>
+                            </div>
+                            <div class="profile-field-row">
+                                <dt class="profile-field-label">
+                                    <span class="material-symbols-outlined" aria-hidden="true">home</span>
+                                    <span>Dirección</span>
+                                </dt>
+                                <dd id="member-address" class="profile-field-value">-</dd>
+                            </div>
+                            <div class="profile-field-row">
+                                <dt class="profile-field-label">
+                                    <span class="material-symbols-outlined" aria-hidden="true">stars</span>
+                                    <span>Créditos</span>
+                                </dt>
+                                <dd id="member-credits" class="profile-field-value credits">-</dd>
+                            </div>
+                        </dl>
+                    </aside>
+
+                    <!-- Pestañas de reservas -->
+                    <div class="bookings-tabs" role="tablist" aria-label="Vistas de reservas">
+                        <button
+                            id="bookings-tab-upcoming"
+                            class="bookings-tab active"
+                            type="button"
+                            role="tab"
+                            aria-selected="true"
+                            aria-controls="bookings-list"
+                        >
+                            <span class="material-symbols-outlined" aria-hidden="true">event_available</span>
+                            <span>Mis Reservas</span>
                         </button>
-                    </header>
-
-                    <dl class="profile-card-fields">
-                        <div class="profile-field-row">
-                            <dt class="profile-field-label">
-                                <span class="material-symbols-outlined" aria-hidden="true">badge</span>
-                                <span>Código / DNI</span>
-                            </dt>
-                            <dd id="member-code" class="profile-field-value mono">-</dd>
-                        </div>
-                        <div class="profile-field-row">
-                            <dt class="profile-field-label">
-                                <span class="material-symbols-outlined" aria-hidden="true">cake</span>
-                                <span>Edad</span>
-                            </dt>
-                            <dd id="member-age" class="profile-field-value">-</dd>
-                        </div>
-                        <div class="profile-field-row">
-                            <dt class="profile-field-label">
-                                <span class="material-symbols-outlined" aria-hidden="true">location_city</span>
-                                <span>Ciudad</span>
-                            </dt>
-                            <dd id="member-city" class="profile-field-value">-</dd>
-                        </div>
-                        <div class="profile-field-row">
-                            <dt class="profile-field-label">
-                                <span class="material-symbols-outlined" aria-hidden="true">home</span>
-                                <span>Dirección</span>
-                            </dt>
-                            <dd id="member-address" class="profile-field-value">-</dd>
-                        </div>
-                        <div class="profile-field-row">
-                            <dt class="profile-field-label">
-                                <span class="material-symbols-outlined" aria-hidden="true">stars</span>
-                                <span>Créditos</span>
-                            </dt>
-                            <dd id="member-credits" class="profile-field-value credits">-</dd>
-                        </div>
-                    </dl>
-                </aside>
-
-                <!-- Pestañas de reservas, debajo de los datos del socio -->
-                <div class="bookings-tabs" role="tablist" aria-label="Vistas de reservas">
-                    <button
-                        id="bookings-tab-upcoming"
-                        class="bookings-tab active"
-                        type="button"
-                        role="tab"
-                        aria-selected="true"
-                        aria-controls="bookings-list"
-                    >
-                        <span class="material-symbols-outlined" aria-hidden="true">event_available</span>
-                        <span>Mis Reservas</span>
-                    </button>
-                    <button
-                        id="bookings-tab-history"
-                        class="bookings-tab"
-                        type="button"
-                        role="tab"
-                        aria-selected="false"
-                        aria-controls="bookings-list"
-                    >
-                        <span class="material-symbols-outlined" aria-hidden="true">history</span>
-                        <span>Historial</span>
-                    </button>
-                </div>
+                        <button
+                            id="bookings-tab-history"
+                            class="bookings-tab"
+                            type="button"
+                            role="tab"
+                            aria-selected="false"
+                            aria-controls="bookings-list"
+                        >
+                            <span class="material-symbols-outlined" aria-hidden="true">history</span>
+                            <span>Historial</span>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Columna Derecha: Reservas Activas -->
@@ -148,7 +193,6 @@
 
                     <!-- Lista de Tarjetas de Reserva -->
                     <div id="bookings-list" class="bookings-items-list" role="tabpanel" aria-live="polite">
-                        <!-- Se inyecta dinámicamente con JS -->
                     </div>
                 </section>
 
@@ -200,7 +244,8 @@
         </div>
     </footer>
 
-    <!-- Controlador JS del cliente -->
+    <!-- Scripts modulares -->
+    <script type="module" src="../src/js/client/client-nav.js"></script>
     <script type="module" src="../src/js/client/user.js"></script>
     <script type="module" src="../src/js/client/client_access.js"></script>
 </body>

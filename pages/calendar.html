@@ -6,14 +6,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PulseGym - Horario Semanal</title>
 
+    <!-- Favicon institucional -->
+    <link rel="icon" type="image/svg+xml" href="../src/assets/favicon.svg" />
+
     <!-- Axios -->
     <script src="https://cdn.jsdelivr.net/npm/axios@1/dist/axios.min.js"></script>
-    <link rel="icon" type="image/png" href="../src/img/favicon.ico">
+
     <!-- Hoja de estilos central -->
     <link rel="stylesheet" href="../src/css/styles.css" />
 </head>
 
 <body>
+    <!-- Telón de fondo móvil -->
+    <div id="client-nav-backdrop" class="client-nav-backdrop" aria-hidden="true"></div>
+
+    <!-- Cajón lateral de navegación móvil (Drawer) -->
+    <aside id="client-mobile-drawer" class="client-mobile-drawer" aria-label="Menú de navegación móvil">
+        <div class="drawer-top">
+            <div class="drawer-header">
+                <span class="drawer-title">Menú</span>
+                <button id="btn-close-client-nav" class="btn-icon" type="button" aria-label="Cerrar menú">
+                    <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                </button>
+            </div>
+
+            <nav class="drawer-nav" aria-label="Enlaces de navegación móvil">
+                <a class="nav-link" href="../index.html">
+                    <span class="material-symbols-outlined" aria-hidden="true">fitness_center</span>
+                    <span>Actividades</span>
+                </a>
+                <a class="nav-link active hidden" href="calendar.html" aria-current="page">
+                    <span class="material-symbols-outlined" aria-hidden="true">calendar_month</span>
+                    <span>Horario Semanal</span>
+                </a>
+                <a class="nav-link hidden" href="user.html">
+                    <span class="material-symbols-outlined" aria-hidden="true">account_circle</span>
+                    <span>Mi Espacio</span>
+                </a>
+            </nav>
+        </div>
+
+        <div class="drawer-footer">
+            <a class="drawer-admin-link" href="admin/activities-admin.html">
+                <span class="material-symbols-outlined" aria-hidden="true">admin_panel_settings</span>
+                <span>Acceso Administración</span>
+            </a>
+        </div>
+    </aside>
+
     <!-- Encabezado público -->
     <header class="app-header">
         <div class="header-container">
@@ -35,6 +75,11 @@
             <div class="header-actions">
                 <a id="btn-member-access" class="btn-pill btn-pill-gold" href="#">Acceso Socio</a>
                 <a class="btn-pill btn-pill-navy" href="admin/activities-admin.html">Acceso Admin</a>
+
+                <!-- Botón menú hamburguesa para móvil -->
+                <button id="btn-open-client-nav" class="btn-icon-mobile-nav" type="button" aria-label="Abrir menú" aria-expanded="false">
+                    <span class="material-symbols-outlined" aria-hidden="true">menu</span>
+                </button>
             </div>
         </div>
     </header>
@@ -71,7 +116,6 @@
 
             <!-- Selector Semanal (Renderizado dinámico de fechas por JS) -->
             <nav id="schedule-week-bar" class="schedule-week-bar" aria-label="Selector de días de la semana">
-                <!-- Se inyecta dinámicamente con los días de la semana actual -->
             </nav>
 
             <!-- Listado de Actividades y Clases (Renderizado dinámico por JS) -->
@@ -168,7 +212,8 @@
         </div>
     </footer>
 
-    <!-- Script del controlador cliente -->
+    <!-- Scripts modulares -->
+    <script type="module" src="../src/js/client/client-nav.js"></script>
     <script type="module" src="../src/js/client/calendar.js"></script>
     <script type="module" src="../src/js/client/client_access.js"></script>
 </body>
