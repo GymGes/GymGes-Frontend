@@ -229,19 +229,44 @@ Los endpoints siguen convenciones RESTful bajo FastAPI. Los modelos del backend 
 
 ## 📋 Tablero de Estado de Entregables — Panel de Administración (Sprint Milestones)
 
+### Backend — API y lógica de negocio
+
+| Módulo | Entregable / Funcionalidad | Estado | Descripción técnica |
+| :--- | :--- | :---: | :--- |
+| **Gestión Multimedia** | Integración con CDN Cloudinary | ✅ Completado | Servicio desacoplado (`cloudinary_service.py` y `cloudinary_config.py`) para subida, almacenamiento y optimización de fotografías de actividades. |
+| **Gestión de Socios** | API y operaciones CRUD de miembros | ✅ Implementado | Endpoints para crear, consultar, actualizar y eliminar socios, con asignación inicial de créditos según el plan al dar de alta. |
+| **Gestión de Planes** | Gestión de planes y créditos | ✅ Completado | CRUD de planes y configuración de los créditos asociados a cada tarifa. |
+| **Actividades Deportivas** | API de catálogo y configuración de disciplinas | ✅ Completado | CRUD de actividades con definición de duración, aforo máximo y vinculación de fotografías optimizadas en Cloudinary. |
+| **Horarios y Sesiones** | Gestión de sesiones grupales | ✅ Completado | Creación, consulta y anulación de sesiones grupales asociadas a disciplina, monitor, fecha y plazas disponibles. |
+| **Gestión Docente** | API del profesorado e instructores | ✅ Completado | Operaciones de mantenimiento de los perfiles de instructores vinculados a la impartición de clases semanales. |
+| **Control de Reservas** | Gestión y validación de reservas | ✅ Completado | Creación, consulta y cancelación de reservas, con control de aforos, créditos disponibles, reservas duplicadas y restricciones de cancelación. |
+
+### Frontend — Interfaz y experiencia de usuario
+
 | Módulo | Entregable / Funcionalidad | Estado | Descripción técnica |
 | :--- | :--- | :---: | :--- |
 | **Arquitectura** | Sistema de diseño y estilos CSS modular desde cero | ✅ Completado | Arquitectura BEM y variables CSS nativas (`variables.css`), estructurada por componentes (`components/`) y layout sin dependencias de frameworks externos. |
 | **Arquitectura** | Capa adaptadora de servicios (Data Mapper) | ✅ Completado | Transformación bidireccional transparente entre esquemas de API en inglés y controladores frontend (`memberService.js`, `planService.js`, etc.). |
-| **Gestión Multimedia** | Integración con CDN Cloudinary | ✅ Completado | Servicio desacoplado (`cloudinary_service.py` y `cloudinary_config.py`) para subida, almacenamiento y optimización de fotografías de actividades. |
-| **Gestión de Socios** | Directorio y operaciones CRUD de miembros | ✅ Implementado | Listado reactivo, formularios modales para alta/edición, validación del código de socio y asignación inicial de créditos según el plan al dar de alta. |
+| **Gestión de Socios** | Directorio y operaciones CRUD de miembros | ✅ Implementado | Listado reactivo, formularios modales para alta/edición, validación del código de socio y visualización de los créditos asociados al plan. |
 | **Gestión de Socios** | Barra de búsqueda y filtrado por código | ✅ Completado | Componente reutilizable `.table-toolbar` integrado en la tabla con consulta por endpoint, reseteo de lista y feedback de estado accesible. |
 | **Gestión de Socios** | Modal de baja y confirmación destructiva | ✅ Completado | Diálogo accesible de confirmación para eliminación de socios con advertencia de liberación de plazas y cancelación de reservas. |
 | **Gestión de Planes** | Catálogo de tarifas y balance de créditos | ✅ Completado | Lectura y vinculación de planes activos para parametrizar altas y consumos de créditos por sesión. |
-| **Actividades Deportivas** | Catálogo y configuración de disciplinas | ✅ Completado | CRUD de actividades con definición de duración, aforo máximo y vinculación de fotografías optimizadas en Cloudinary. |
-| **Horarios y Sesiones** | Programación del cuadrante semanal | ✅ Completado | Creación, consulta y anulación de sesiones grupales asociadas a disciplina, monitor, fecha y plazas disponibles. |
-| **Gestión Docente** | Directorio del profesorado e instructores | ✅ Completado | Mantenimiento de perfiles de instructores vinculados a la impartición de clases semanales. |
-| **Control de Reservas** | Monitor global de asistencia del centro | ✅ Completado | Auditoría administrativa de reservas activas, control de aforos y anulación manual de plazas. |
+| **Actividades Deportivas** | Catálogo y configuración de disciplinas | ✅ Completado | Interfaz de administración de actividades, con definición de duración, aforo máximo y gestión de fotografías mediante Cloudinary. |
+| **Actividades Deportivas** | Catálogo público de actividades | ✅ Completado | Visualización de las actividades disponibles con su información e imágenes. |
+| **Horarios y Sesiones** | Programación del cuadrante semanal | ✅ Completado | Interfaz para crear, consultar y anular sesiones grupales asociadas a disciplina, monitor, fecha y plazas disponibles. |
+| **Gestión Docente** | Directorio del profesorado e instructores | ✅ Completado | Interfaz para el mantenimiento de perfiles de instructores vinculados a la impartición de clases semanales. |
+| **Control de Reservas** | Monitor global de asistencia del centro | ✅ Completado | Panel administrativo de reservas activas, control visual de aforos y anulación manual de plazas. |
+| **Acceso del Socio** | Acceso mediante código de socio | ✅ Completado | Acceso a la zona del socio mediante su código y gestión de la información de acceso en el navegador. |
+| **Perfil del Socio** | Consulta de datos personales y créditos | ✅ Completado | Visualización de los datos personales del socio y de su saldo de créditos disponibles. |
+| **Reservas del Socio** | Consulta de reservas activas e históricas | ✅ Completado | Visualización de las reservas del socio, diferenciando las activas de las históricas. |
+| **Reservas del Socio** | Reserva y cancelación de sesiones | ✅ Completado | Interfaz para reservar plazas desde el calendario y cancelar reservas existentes mediante confirmación. |
+| **Calendario** | Calendario semanal de actividades | ✅ Completado | Visualización de sesiones y selección de fechas para consultar las actividades disponibles. |
+| **Interfaz y Validaciones** | Modales, confirmaciones y mensajes | ✅ Completado | Ventanas de confirmación, mensajes de éxito y tratamiento de errores en las operaciones de la aplicación. |
+
+### Entrega / Release
+
+| Módulo | Entregable / Funcionalidad | Estado | Descripción técnica |
+| :--- | :--- | :---: | :--- |
 | **Entrega / Release** | Consolidación y entrega en rama principal (`main`) | 🚀 Listo para entrega | Código verificado, libre de dependencias superfluas y documentado para la presentación técnica. |
 
 ---
