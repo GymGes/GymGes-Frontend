@@ -347,13 +347,13 @@ bookingForm?.addEventListener('submit', async (e) => {
 
     const member = members.find(m => m.codigo === socioCodigo);
     if (member && member.creditos_restantes <= 0) {
-        alert('No se puede realizar la reserva: el socio seleccionado no dispone de créditos suficientes.');
+        modalService.error('No se puede realizar la reserva: el socio seleccionado no dispone de créditos suficientes.');
         return;
     }
 
     const duplicate = bookings.some(b => b.socio_codigo === socioCodigo && b.clase_id === claseId);
     if (duplicate) {
-        alert('Este socio ya cuenta con una reserva activa para esta misma sesión.');
+        modalService.error('Este socio ya cuenta con una reserva activa para esta misma sesión.');
         return;
     }
 
