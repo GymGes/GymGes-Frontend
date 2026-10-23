@@ -366,29 +366,7 @@ bookingForm?.addEventListener('submit', async (e) => {
         renderScheduleForDay(selectedDay);
         modalService.success(`¡Plaza reservada con éxito para el socio ${code}!`)
     } catch (error) {
-        console.error('Error al registrar la reserva:', error);
-
-        closeBookingModal();
-
-        const resData = error.response?.data;
-        const detail = typeof resData?.detail === 'string' ? resData.detail : (resData?.message || '');
-
-        let title = 'Créditos Insuficientes';
-        let message = 'No te quedan créditos disponibles para realizar esta reserva. Puedes consultar tu saldo actual desde tu espacio de socio.';
-
-        if (detail.toLowerCase().includes('ya') && detail.toLowerCase().includes('reserva')) {
-            title = 'Ya tienes plaza';
-            message = 'Ya dispones de una reserva confirmada para esta misma sesión.';
-        } else if (detail && (detail.toLowerCase().includes('crédit') || detail.toLowerCase().includes('saldo'))) {
-            message = detail;
-        }
-
-        openNoticeModal({
-            title,
-            message,
-            activityName: currentActivityName,
-            activityDetails: currentActivityDetails
-        });
+        modalService.error(`No se pudo reservar la plaza para el socio ${code}. ${error?.message || ''}`);
     }
 });
 
