@@ -6,14 +6,54 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PulseGym - Nuestras Actividades</title>
 
+  <!-- Favicon institucional -->
+  <link rel="icon" type="image/svg+xml" href="src/assets/favicon.svg" />
+
   <!-- Axios para consumo de API -->
   <script src="https://cdn.jsdelivr.net/npm/axios@1/dist/axios.min.js"></script>
-  <link rel="icon" type="image/png" href="./src/img/favicon.ico">
+  
   <!-- Única hoja de estilos central -->
   <link rel="stylesheet" href="src/css/styles.css" />
 </head>
 
 <body>
+  <!-- Telón de fondo móvil -->
+  <div id="client-nav-backdrop" class="client-nav-backdrop" aria-hidden="true"></div>
+
+  <!-- Cajón lateral de navegación móvil -->
+  <aside id="client-mobile-drawer" class="client-mobile-drawer" aria-label="Menú de navegación móvil">
+    <div class="drawer-top">
+      <div class="drawer-header">
+        <span class="drawer-title">Menú</span>
+        <button id="btn-close-client-nav" class="btn-icon" type="button" aria-label="Cerrar menú">
+          <span class="material-symbols-outlined" aria-hidden="true">close</span>
+        </button>
+      </div>
+
+      <nav class="drawer-nav" aria-label="Enlaces de navegación móvil">
+        <a class="nav-link active" href="index.html">
+          <span class="material-symbols-outlined" aria-hidden="true">fitness_center</span>
+          <span>Actividades</span>
+        </a>
+        <a class="nav-link hidden" href="pages/calendar.html">
+          <span class="material-symbols-outlined" aria-hidden="true">calendar_month</span>
+          <span>Horario Semanal</span>
+        </a>
+        <a class="nav-link hidden" href="pages/user.html">
+          <span class="material-symbols-outlined" aria-hidden="true">account_circle</span>
+          <span>Mi Espacio</span>
+        </a>
+      </nav>
+    </div>
+
+    <div class="drawer-footer">
+      <a class="drawer-admin-link" href="pages/admin/activities-admin.html">
+        <span class="material-symbols-outlined" aria-hidden="true">admin_panel_settings</span>
+        <span>Acceso Administración</span>
+      </a>
+    </div>
+  </aside>
+
   <!-- Header persistente -->
   <header class="app-header">
     <div class="header-container">
@@ -28,6 +68,7 @@
           <span class="header-brand-title">PulseGym</span>
         </a>
 
+        <!-- Enlaces visibles únicamente en escritorio -->
         <nav class="header-nav" aria-label="Navegación principal">
           <a class="nav-link active" aria-current="page" href="index.html">Actividades</a>
           <a class="nav-link hidden" href="pages/calendar.html">Horario Semanal</a>
@@ -35,9 +76,15 @@
         </nav>
       </div>
 
+      <!-- Acciones y botón hamburguesa -->
       <nav class="header-actions" aria-label="Accesos directos">
         <a id="btn-member-access" class="btn-pill btn-pill-gold" href="#">Acceso Socio</a>
         <a class="btn-pill btn-pill-navy" href="pages/admin/activities-admin.html">Acceso Admin</a>
+
+        <!-- Botón menú hamburguesa visible en móviles -->
+        <button id="btn-open-client-nav" class="btn-icon-mobile-nav" type="button" aria-label="Abrir menú" aria-expanded="false">
+          <span class="material-symbols-outlined" aria-hidden="true">menu</span>
+        </button>
       </nav>
     </div>
   </header>
@@ -97,6 +144,7 @@
   </footer>
 
   <!-- Scripts de cliente -->
+  <script type="module" src="src/js/client/client-nav.js"></script>
   <script type="module" src="src/js/client/activities.js"></script>
   <script type="module" src="src/js/client/client_access.js"></script>
 </body>

@@ -1,19 +1,28 @@
 /* src/css/components/banners.css */
 .info-banner {
-    margin-top: 2.5rem;
+    margin-top: 2rem;
     background-color: var(--color-surface-low);
     border-radius: var(--radius-md);
     border: 1px solid var(--color-surface-border);
-    padding: 2rem;
+    padding: 1.25rem 1rem;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 1.5rem;
+    gap: 1.25rem;
+}
+
+@media (min-width: 640px) {
+    .info-banner {
+        padding: 1.75rem;
+        gap: 1.5rem;
+    }
 }
 
 @media (min-width: 768px) {
     .info-banner {
+        margin-top: 2.5rem;
+        padding: 2rem;
         flex-direction: row;
         align-items: center;
     }
@@ -22,13 +31,19 @@
 .banner-content {
     display: flex;
     align-items: flex-start;
-    gap: 1.25rem;
+    gap: 1rem;
     max-width: 48rem;
 }
 
+@media (min-width: 640px) {
+    .banner-content {
+        gap: 1.25rem;
+    }
+}
+
 .banner-icon-badge {
-    width: 3rem;
-    height: 3rem;
+    width: 2.5rem;
+    height: 2.5rem;
     border-radius: var(--radius-full);
     background-color: rgba(202, 230, 255, 0.95);
     display: flex;
@@ -38,8 +53,21 @@
     color: var(--color-primary);
 }
 
+@media (min-width: 640px) {
+    .banner-icon-badge {
+        width: 3rem;
+        height: 3rem;
+    }
+}
+
 .banner-icon-badge .material-symbols-outlined {
-    font-size: 1.5rem;
+    font-size: 1.35rem;
+}
+
+@media (min-width: 640px) {
+    .banner-icon-badge .material-symbols-outlined {
+        font-size: 1.5rem;
+    }
 }
 
 .banner-body {
@@ -48,17 +76,30 @@
 }
 
 .banner-title {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     font-weight: 700;
     color: var(--color-primary);
     margin-bottom: 0.25rem;
     letter-spacing: -0.015em;
 }
 
+@media (min-width: 640px) {
+    .banner-title {
+        font-size: 1.25rem;
+    }
+}
+
 .banner-text {
-    font-size: 0.875rem;
-    line-height: 1.6;
+    font-size: 0.8125rem;
+    line-height: 1.55;
     color: var(--color-text-muted);
+}
+
+@media (min-width: 640px) {
+    .banner-text {
+        font-size: 0.875rem;
+        line-height: 1.6;
+    }
 }
 
 .banner-action {
@@ -77,7 +118,7 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    padding: 0.875rem 1.75rem;
+    padding: 0.8125rem 1.5rem;
     background-color: var(--color-primary);
     color: #ffffff;
     font-family: var(--font-family);
@@ -92,6 +133,7 @@
 @media (min-width: 768px) {
     .btn-banner {
         width: auto;
+        padding: 0.875rem 1.75rem;
     }
 }
 
